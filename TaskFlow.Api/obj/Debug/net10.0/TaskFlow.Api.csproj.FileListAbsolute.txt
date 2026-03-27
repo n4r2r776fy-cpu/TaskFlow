@@ -7,7 +7,6 @@ C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\TaskFlow
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\TaskFlow.Api.dll
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\TaskFlow.Api.pdb
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\Humanizer.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\Microsoft.Build.Framework.dll
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\Microsoft.CodeAnalysis.dll
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\Microsoft.CodeAnalysis.CSharp.dll
@@ -121,3 +120,15 @@ C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net10.0\refint\T
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net10.0\TaskFlow.Api.pdb
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net10.0\TaskFlow.Api.genruntimeconfig.cache
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net10.0\ref\TaskFlow.Api.dll
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\BCrypt.Net-Next.dll
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net10.0\System.IdentityModel.Tokens.Jwt.dll
