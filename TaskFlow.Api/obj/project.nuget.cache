@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "8UW5/iLOHYE=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\andri\\Documents\\GitHub\\TaskFlow\\TaskFlow.Api\\TaskFlow.Api.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\andri\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.3\\microsoft.aspnetcore.openapi.10.0.3.nupkg.sha512",
+    "C:\\Users\\andri\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
