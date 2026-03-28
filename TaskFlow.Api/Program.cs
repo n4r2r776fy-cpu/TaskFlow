@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models; // Додали цей рядок для налаштувань Swagger
+using Microsoft.OpenApi.Models; 
 using System.Text;
 using TaskFlow.Api.Data;
 
@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 2. Налаштування JWT (щоб сервер міг перевіряти "печатки" на токенах)
+// 2. Налаштування JWT (перевірка "печаток" на токенах)
 var jwtKey = builder.Configuration["Jwt:Key"];
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -28,7 +28,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// 3. Оновлені налаштування Swagger (Додаємо кнопку "Authorize")
+// 3. Налаштування Swagger (з кнопкою Authorize)
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -56,7 +56,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// НОВЕ: Налаштування CORS (Дозволяємо будь-якому фронтенду підключатися)
+// 4. Налаштування CORS (Дозволяємо будь-якому фронтенду підключатися)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -69,6 +69,10 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// ==========================================
+// Налаштування конвеєра (Middleware)
+// ==========================================
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -77,10 +81,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// НОВЕ: Вмикаємо CORS (обов'язково ДО перевірки токенів)
+// ВМИКАЄМО CORS (Обов'язково ДО авторизації!)
 app.UseCors("AllowAll");
 
-// 4. Вмикаємо перевірку "пропусків" (авторизацію)
+// Вмикаємо перевірку "пропусків" (авторизацію)
 app.UseAuthentication();
 app.UseAuthorization();
 

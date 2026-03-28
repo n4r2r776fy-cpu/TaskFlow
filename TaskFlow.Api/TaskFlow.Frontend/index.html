@@ -38,7 +38,11 @@
 
     <nav>
         <a href="#" class="logo">🚀 TaskFlow</a>
-        <a href="login.html" class="nav-btn" id="loginBtn">Увійти в акаунт</a>
+        
+        <div style="display: flex; gap: 15px;">
+            <a href="login.html" class="nav-btn" style="background: transparent; color: #4f46e5; border: 1px solid #4f46e5;" id="loginBtn">Увійти</a>
+            <a href="register.html" class="nav-btn" id="regBtn">Реєстрація</a>
+        </div>
     </nav>
 
     <section class="hero">
@@ -71,12 +75,21 @@
 
     <script>
         // Розумна логіка: якщо користувач вже увійшов (має токен), 
-        // кнопки ведуть одразу на його завдання, а не на логін
+        // кнопки ведуть одразу на його завдання, а реєстрація ховається
         const token = localStorage.getItem("token");
         if (token) {
-            document.getElementById("loginBtn").innerText = "Мої завдання";
-            document.getElementById("loginBtn").href = "tasks.html";
+            // Переробляємо кнопку "Увійти" на "Мої завдання"
+            const loginBtn = document.getElementById("loginBtn");
+            loginBtn.innerText = "Мої завдання";
+            loginBtn.href = "tasks.html";
+            loginBtn.style.background = "#4f46e5"; // Робимо її знову повністю синьою
+            loginBtn.style.color = "white";
             
+            // Ховаємо кнопку "Реєстрація"
+            const regBtn = document.getElementById("regBtn");
+            if (regBtn) regBtn.style.display = "none";
+            
+            // Змінюємо велику кнопку по центру
             document.getElementById("startBtn").innerText = "Перейти до завдань";
             document.getElementById("startBtn").href = "tasks.html";
         }
