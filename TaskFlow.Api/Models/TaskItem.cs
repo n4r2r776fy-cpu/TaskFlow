@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization; // ДОДАЛИ ЦЕ
+using System.Text.Json.Serialization;
 
 namespace TaskFlow.Api.Models
 {
     public class TaskItem
     {
         public long Id { get; set; } 
+        
+        // Зв'язок з користувачем (тепер обов'язковий)
         public long UserId { get; set; } 
+        
+        // Зв'язок з проєктом (може бути порожнім, якщо завдання "загальне")
         public long? ProjectId { get; set; } 
         
         public string Title { get; set; } = string.Empty; 
@@ -20,7 +24,9 @@ namespace TaskFlow.Api.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        // ДОДАЛИ [JsonIgnore] сюди:
+        // Ігноруємо ці поля при відправці JSON на фронтенд, 
+        // щоб не було нескінченних циклів
+        
         [JsonIgnore]
         public User? User { get; set; }
         

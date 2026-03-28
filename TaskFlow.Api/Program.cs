@@ -1,25 +1,25 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models; 
+using OpenApiModels = Microsoft.OpenApi.Models; // Використовуємо аліас для Swagger
 using System.Text;
 using TaskFlow.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Підключення до PostgreSQL
+// 1. Підключення до БД (PostgreSQL)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 2. Налаштування JWT (перевірка "печаток" на токенах)
-var jwtKey = builder.Configuration["Jwt:Key"];
+// 2. Налаштування JWT
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "super_secret_key_1234567890123456"; 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey!)),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
             ValidateIssuer = false,
             ValidateAudience = false
         };
@@ -28,27 +28,27 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// 3. Налаштування Swagger (з кнопкою Authorize)
+// 3. Налаштування Swagger (з використанням аліасу OpenApiModels)
 builder.Services.AddSwaggerGen(options =>
 {
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("Bearer", new OpenApiModels.OpenApiSecurityScheme
     {
-        Description = "Введіть сюди токен у форматі: Bearer {твій_токен}",
+        Description = "Введіть токен у форматі: Bearer {твій_токен}",
         Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
+        In = OpenApiModels.ParameterLocation.Header,
+        Type = OpenApiModels.SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
 
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    options.AddSecurityRequirement(new OpenApiModels.OpenApiSecurityRequirement
     {
         {
-            new OpenApiSecurityScheme
+            new OpenApiModels.OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
+                Reference = new OpenApiModels.OpenApiReference 
+                { 
+                    Type = OpenApiModels.ReferenceType.SecurityScheme, 
+                    Id = "Bearer" 
                 }
             },
             Array.Empty<string>()
@@ -56,35 +56,31 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// 4. Налаштування CORS (Дозволяємо будь-якому фронтенду підключатися)
+// 4. CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
 });
 
 var app = builder.Build();
 
-// ==========================================
-// Налаштування конвеєра (Middleware)
-// ==========================================
-
-if (app.Environment.IsDevelopment())
+// АВТОМАТИЧНІ МІГРАЦІЇ (Для сервера)
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
 }
 
-app.UseHttpsRedirection();
+// Swagger вмикаємо ЗАВЖДИ
+app.UseSwagger();
+app.UseSwaggerUI();
 
-// ВМИКАЄМО CORS (Обов'язково ДО авторизації!)
+app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
-// Вмикаємо перевірку "пропусків" (авторизацію)
 app.UseAuthentication();
 app.UseAuthorization();
 
