@@ -7,117 +7,110 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --bg-color: #020617; 
-            --text-main: #f8fafc; 
-            --glass-bg: rgba(15, 23, 42, 0.6); 
-            --border: rgba(255, 255, 255, 0.05); 
-        }
-        .light-theme { 
-            --bg-color: #f8fafc; 
-            --text-main: #0f172a; 
-            --glass-bg: rgba(255, 255, 255, 0.7); 
-            --border: rgba(0, 0, 0, 0.05); 
-        }
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-main); 
-            transition: all 0.5s ease; 
-            overflow-x: hidden; 
-        }
-        .glass { 
-            background: var(--glass-bg); 
-            backdrop-filter: blur(16px); 
-            border: 1px solid var(--border); 
-        }
-        @keyframes float { 
-            0%, 100% { transform: translateY(0px) rotate(0deg); } 
-            50% { transform: translateY(-25px) rotate(-3deg); } 
-        }
-        .animate-3d-rocket { 
-            animation: float 7s ease-in-out infinite; 
-        }
+        :root { --bg: #020617; --txt: #f8fafc; --glass: rgba(15, 23, 42, 0.6); --brd: rgba(255, 255, 255, 0.05); }
+        .light-theme { --bg: #f8fafc; --txt: #0f172a; --glass: rgba(255, 255, 255, 0.7); --brd: rgba(0, 0, 0, 0.05); }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--txt); transition: 0.5s; overflow-x: hidden; }
+        .glass { background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--brd); }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        .animate-rocket { animation: float 6s ease-in-out infinite; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
-
-    <nav class="fixed top-0 w-full z-50 glass border-b">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="index.html" class="text-2xl font-extrabold flex items-center gap-2">
-                <div class="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+    <nav class="fixed top-0 w-full z-50 glass border-b h-20">
+        <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="p-2 hover:bg-white/10 rounded-lg transition-colors text-slate-400 hover:text-white">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+                </a>
+                <div class="text-2xl font-extrabold flex items-center gap-2">
+                    <div class="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center text-white shadow-lg">✓</div>
+                    TaskFlow
                 </div>
-                TaskFlow
-            </a>
-            
-            <button id="themeToggle" class="p-2.5 rounded-xl border border-white/10 glass hover:scale-110 transition-transform">
-                <span id="themeIcon" class="text-xl">🌙</span>
-            </button>
+            </div>
+            <div class="flex items-center gap-3">
+                <button id="themeToggle" class="p-2.5 rounded-xl border border-white/10 glass hover:scale-110 transition-transform">🌙</button>
+                <div id="authButtons"></div>
+            </div>
         </div>
     </nav>
 
     <div class="flex-grow flex items-center justify-center p-6 mt-20">
         <div class="w-full max-w-5xl grid md:grid-cols-2 shadow-2xl rounded-[40px] overflow-hidden glass">
-            
-            <div class="relative bg-emerald-950/20 hidden md:flex items-center justify-center p-12 overflow-hidden border-r border-white/5">
-                <div class="absolute top-[-10%] left-[-10%] w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
-                <img src="https://cdn3d.iconscout.com/3d/premium/thumb/rocket-4811128-4003295.png" 
-                     class="w-full max-w-[320px] animate-3d-rocket drop-shadow-[0_35px_35px_rgba(16,185,129,0.3)]">
+            <div class="bg-emerald-950/10 hidden md:flex items-center justify-center p-12 border-r border-white/5">
+                <img src="https://cdn3d.iconscout.com/3d/premium/thumb/rocket-4811128-4003295.png" class="w-72 animate-rocket">
             </div>
-
             <div class="p-12 lg:p-20 flex flex-col justify-center">
-                <h1 class="text-4xl font-extrabold mb-3 tracking-tight">Створити акаунт </h1>
-                <p class="text-slate-400 mb-10 font-medium">Почни свій шлях до продуктивності прямо зараз.</p>
-                
-                <form id="registerForm" class="space-y-5">
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">Твій Email</label>
-                        <input type="email" required placeholder="name@mail.com" 
-                               class="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all text-current">
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase ml-1">Пароль</label>
-                        <input type="password" required placeholder="мінімум 6 символів" 
-                               class="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all text-current">
-                    </div>
-
-                    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-4 rounded-2xl shadow-xl shadow-emerald-500/20 transition-all active:scale-[0.98] mt-4">
-                        Зареєструватися
-                    </button>
+                <h1 class="text-4xl font-extrabold mb-2">Створити акаунт 🚀</h1>
+                <p class="text-slate-400 mb-10">Почни свій шлях до продуктивності.</p>
+                <form id="regForm" class="space-y-5">
+                    <input type="email" id="email" required placeholder="Email" class="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
+                    <input type="password" id="pass" required placeholder="Пароль" class="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all">
+                    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95">Зареєструватися</button>
                 </form>
-
-                <p class="mt-10 text-center text-sm text-slate-400">
-                    Вже маєш профіль? 
-                    <a href="login.html" class="text-emerald-500 font-bold hover:underline">Увійти</a>
-                </p>
+                <p class="mt-8 text-center text-sm">Вже є профіль? <a href="login.html" class="text-emerald-500 font-bold hover:underline">Увійти</a></p>
             </div>
         </div>
     </div>
 
     <script>
-        const btn = document.getElementById('themeToggle');
-        const icon = document.getElementById('themeIcon');
-        
-        function updateTheme() {
-            const isLight = localStorage.getItem('theme') === 'light';
-            if (isLight) {
-                document.body.classList.add('light-theme');
-                icon.innerText = '☀️';
-            } else {
-                document.body.classList.remove('light-theme');
-                icon.innerText = '🌙';
-            }
+    // Тема (залишаємо як було)
+    const btn = document.getElementById('themeToggle');
+    if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme');
+    btn.onclick = () => {
+        const isL = document.body.classList.toggle('light-theme');
+        localStorage.setItem('theme', isL ? 'light' : 'dark');
+        btn.innerText = isL ? '☀️' : '🌙';
+    };
+
+    // Оновлення кнопок навігації
+    function updateNav() {
+        const token = localStorage.getItem('token');
+        const authContainer = document.getElementById('authButtons');
+        if (token) {
+            authContainer.innerHTML = `<a href="tasks.html" class="px-4 py-2 bg-emerald-500/10 text-emerald-500 rounded-xl font-bold hover:bg-emerald-500/20 transition-all">Мій кабінет</a>`;
+        } else {
+            authContainer.innerHTML = `<a href="login.html" class="px-4 py-2 text-slate-400 font-bold hover:text-white">Вхід</a>`;
         }
+    }
+    updateNav();
 
-        updateTheme();
+    // ФІКС РЕЄСТРАЦІЇ
+    document.getElementById('regForm').onsubmit = async (e) => {
+        e.preventDefault();
+        
+        const emailValue = document.getElementById('email').value;
+        const passwordValue = document.getElementById('pass').value;
 
-        btn.addEventListener('click', () => {
-            const isLight = document.body.classList.toggle('light-theme');
-            localStorage.setItem('theme', isLight ? 'light' : 'dark');
-            icon.innerText = isLight ? '☀️' : '🌙';
-        });
-    </script>
+        // Створюємо об'єкт, який ТОЧНО відповідає твоєму UserRegisterDto
+        const userData = {
+            Username: emailValue.split('@')[0], // Генеруємо юзернейм
+            Email: emailValue,
+            Password: passwordValue
+        };
+
+        try {
+            const res = await fetch('http://localhost:5143/api/auth/register', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
+
+            if (res.ok) {
+                alert("Реєстрація пройшла успішно! Тепер увійдіть.");
+                window.location.href = 'login.html';
+            } else {
+                // Якщо сервер повернув помилку (наприклад, 400), виводимо текст помилки
+                const errorText = await res.text();
+                alert("Помилка: " + (errorText || "Перевірте дані"));
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Не вдалося з'єднатися з сервером. Перевір, чи запущено dotnet run!");
+        }
+    };
+</script>
 </body>
-</html> 
+</html>

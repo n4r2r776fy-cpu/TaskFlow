@@ -7,56 +7,89 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-color: #020617; --text-main: #f8fafc; --glass-bg: rgba(15, 23, 42, 0.6); --border: rgba(255, 255, 255, 0.05); }
-        .light-theme { --bg-color: #f8fafc; --text-main: #0f172a; --glass-bg: rgba(255, 255, 255, 0.7); --border: rgba(0, 0, 0, 0.05); }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-main); transition: all 0.5s ease; overflow-x: hidden; }
-        .glass { background: var(--glass-bg); backdrop-filter: blur(16px); border: 1px solid var(--border); }
-        @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(5deg); } }
-        .animate-3d { animation: float 6s ease-in-out infinite; }
+        :root { --bg: #020617; --txt: #f8fafc; --glass: rgba(15, 23, 42, 0.6); --brd: rgba(255, 255, 255, 0.05); }
+        .light-theme { --bg: #f8fafc; --txt: #0f172a; --glass: rgba(255, 255, 255, 0.7); --brd: rgba(0, 0, 0, 0.05); }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--txt); transition: 0.5s; overflow-x: hidden; }
+        .glass { background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--brd); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
-
-    <nav class="fixed top-0 w-full z-50 glass border-b">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="index.html" class="text-2xl font-extrabold flex items-center gap-2">
-                <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white">✓</div>
-                TaskFlow
-            </a>
-            <button id="themeToggle" class="p-2.5 rounded-xl border border-white/10 glass">
-                <span id="themeIcon">🌙</span>
-            </button>
+    <nav class="fixed top-0 w-full z-50 glass border-b h-20">
+        <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="p-2 hover:bg-white/10 rounded-lg transition-colors text-slate-400 hover:text-white">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+                </a>
+                <div class="text-2xl font-extrabold flex items-center gap-2">
+                    <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg">✓</div>
+                    TaskFlow
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button id="themeToggle" class="p-2.5 rounded-xl border border-white/10 glass hover:scale-110 transition-transform">🌙</button>
+                <div id="authButtons"></div>
+            </div>
         </div>
     </nav>
 
     <div class="flex-grow flex items-center justify-center p-6 mt-20">
-        <div class="w-full max-w-5xl grid md:grid-cols-2 shadow-2xl rounded-[40px] overflow-hidden bg-white/5 border border-white/10 glass">
+        <div class="w-full max-w-5xl grid md:grid-cols-2 shadow-2xl rounded-[40px] overflow-hidden glass">
             <div class="p-12 lg:p-20 flex flex-col justify-center">
-                <h1 class="text-4xl font-extrabold mb-3">З поверненням!</h1>
-                <p class="text-slate-400 mb-8">Введіть дані для входу.</p>
-                <form class="space-y-4">
-                    <input type="email" placeholder="Email" class="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-indigo-500 transition-all text-white">
-                    <input type="password" placeholder="Пароль" class="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-indigo-500 transition-all text-white">
-                    <button class="w-full bg-indigo-600 py-4 rounded-2xl font-bold shadow-lg hover:bg-indigo-700 transition">Увійти</button>
+                <h1 class="text-4xl font-extrabold mb-3">З поверненням 👋</h1>
+                <p class="text-slate-400 mb-10">Увійдіть у свій акаунт.</p>
+                <form id="logForm" class="space-y-5">
+                    <input type="email" id="email" required placeholder="Email" class="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+                    <input type="password" id="pass" required placeholder="Пароль" class="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95">Увійти</button>
                 </form>
-                <p class="mt-8 text-center text-sm text-slate-400">Немає акаунту? <a href="register.html" class="text-indigo-400 font-bold">Реєстрація</a></p>
+                <p class="mt-8 text-center text-sm">Немає акаунту? <a href="register.html" class="text-indigo-500 font-bold hover:underline">Створити</a></p>
             </div>
-            <div class="relative bg-slate-900/50 hidden md:flex items-center justify-center p-12">
-                <img src="https://cdn3d.iconscout.com/3d/premium/thumb/key-5682855-4731215.png" class="w-full max-w-[300px] animate-3d">
+            <div class="bg-indigo-950/10 hidden md:flex items-center justify-center border-l border-white/5">
+                <img src="https://cdn3d.iconscout.com/3d/premium/thumb/key-5682855-4731215.png" class="w-64">
             </div>
         </div>
     </div>
 
     <script>
         const btn = document.getElementById('themeToggle');
-        const icon = document.getElementById('themeIcon');
         if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme');
-        btn.addEventListener('click', () => {
-            document.body.classList.toggle('light-theme');
-            const isLight = document.body.classList.contains('light-theme');
-            localStorage.setItem('theme', isLight ? 'light' : 'dark');
-            icon.innerText = isLight ? '☀️' : '🌙';
-        });
+        btn.onclick = () => {
+            const isL = document.body.classList.toggle('light-theme');
+            localStorage.setItem('theme', isL ? 'light' : 'dark');
+            btn.innerText = isL ? '☀️' : '🌙';
+        };
+
+        function logout() { localStorage.removeItem('token'); location.reload(); }
+
+        function updateNav() {
+            const token = localStorage.getItem('token');
+            const authContainer = document.getElementById('authButtons');
+            if (token) {
+                authContainer.innerHTML = `<button onclick="logout()" class="px-4 py-2 text-rose-500 font-bold hover:text-rose-400">Вихід</button>`;
+            } else {
+                authContainer.innerHTML = `<a href="register.html" class="px-4 py-2 bg-indigo-500 text-white rounded-xl font-bold shadow-lg">Реєстрація</a>`;
+            }
+        }
+        updateNav();
+
+        document.getElementById('logForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('pass').value;
+            try {
+                const res = await fetch('http://localhost:5143/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    localStorage.setItem('token', data.token);
+                    alert("Успішний вхід!");
+                    window.location.href = 'tasks.html';
+                } else alert("Невірні дані");
+            } catch { alert("Сервер офлайн (порт 5143)"); }
+        };
     </script>
 </body>
 </html>
