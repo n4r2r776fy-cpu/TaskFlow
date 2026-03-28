@@ -29,8 +29,6 @@
 </div>
 
 <script>
-    // ⚠️ ВАЖЛИВО: Заміни "ПОРТ" на той, на якому працює твій бекенд!
-    // Подивись у термінал, де запущено сервер. Там буде щось типу "Now listening on: https://localhost:7123"
     const API_URL = "https://localhost:5143/api/Auth/login"; 
 
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
@@ -60,8 +58,7 @@
                 
                 successDiv.style.display = "block";
                 
-                // Пізніше ми тут додамо код, який перекине нас на сторінку із завданнями:
-                // setTimeout(() => { window.location.href = "tasks.html"; }, 1500);
+                setTimeout(() => { window.location.href = "tasks.html"; }, 1500);
             } else {
                 errorDiv.style.display = "block";
             }

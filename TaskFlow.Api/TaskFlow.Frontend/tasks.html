@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Мої Завдання</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; max-width: 800px; margin: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; margin-top: 20px;}
+        .header h2 { margin: 0; color: #333; }
+        .logout-btn { background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .logout-btn:hover { background: #c82333; }
+        
+        /* Новий стиль для форми створення */
+        .create-box { background: white; padding: 20px 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .create-box input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+        .create-box button { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .create-box button:hover { background: #218838; }
+
+        .task-list { display: grid; gap: 15px; }
+        .task-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid #007bff; }
+        .task-card h3 { margin: 0 0 10px 0; display: flex; justify-content: space-between; }
+        .status { font-size: 14px; padding: 3px 8px; border-radius: 4px; background: #e9ecef; color: #495057; }
+        .task-card p { margin: 0; color: #666; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>Мої Завдання</h2>
+        <button class="logout-btn" onclick="logout()">Вийти</button>
+    </div>
+
+    <div class="create-box">
+        <form id="createTaskForm">
+            <input type="text" id="taskTitle" placeholder="Що потрібно зробити?" required>
+            <input type="text" id="taskDesc" placeholder="Детальний опис (необов'язково)">
+            <button type="submit">+ Додати завдання</button>
+        </form>
+    </div>
+
+    <div class="task-list" id="tasksContainer">
+        <p>Завантаження завдань...</p>
+    </div>
+
+    <script>
+        const token = localStorage.getItem("token");
+        if (!token) window.location.href = "index.html";
+
+        // ⚠️ ЗАМІНИ ПОРТ ТУТ:
+        const API_URL = "https://localhost:5143/api/Tasks";
+
+        // Завантаження завдань (як і було)
+        async function loadTasks() {
+            try {
+                const response = await fetch(API_URL, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const tasks = await response.json();
+                    displayTasks(tasks);
+                } else if (response.status === 401) {
+                    logout();
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function displayTasks(tasks) {
+            const container = document.getElementById("tasksContainer");
+            if (tasks.length === 0) {
+                container.innerHTML = "<p>У вас ще немає завдань.</p>";
+                return;
+            }
+            container.innerHTML = ""; 
+            tasks.forEach(task => {
+                container.innerHTML += `
+                    <div class="task-card">
+                        <h3>${task.title} <span class="status">${task.status}</span></h3>
+                        <p>${task.description || "Опис відсутній"}</p>
+                    </div>
+                `;
+            });
+        }
+
+        // НОВЕ: Логіка створення завдання
+        document.getElementById("createTaskForm").addEventListener("submit", async (e) => {
+            e.preventDefault(); // Щоб сторінка не перезавантажувалась
+            
+            const title = document.getElementById("taskTitle").value;
+            const desc = document.getElementById("taskDesc").value;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        description: desc,
+                        priority: "medium"
+                    })
+                });
+
+                if (response.ok) {
+                    // Очищаємо поля
+                    document.getElementById("taskTitle").value = "";
+                    document.getElementById("taskDesc").value = "";
+                    // Одразу перезавантажуємо список завдань, щоб побачити нове!
+                    loadTasks();
+                } else {
+                    alert("Не вдалося створити завдання.");
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "index.html";
+        }
+
+        loadTasks();
+    </script>
+
+</body>
+</html>
