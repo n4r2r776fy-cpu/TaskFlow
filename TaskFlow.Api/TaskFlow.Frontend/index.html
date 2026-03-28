@@ -6,39 +6,188 @@
     <title>TaskFlow - Організуй своє життя</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #ffffff; color: #1f2937; line-height: 1.6; }
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --accent: #10b981;
+            --bg-light: #f8fafc;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #ffffff; 
+            color: #1f2937; 
+            line-height: 1.6; 
+            overflow-x: hidden;
+        }
         
-        /* Навігація (Верхнє меню) */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 50px; background: white; border-bottom: 1px solid #f3f4f6; }
-        .logo { font-size: 24px; font-weight: 800; color: #4f46e5; text-decoration: none; display: flex; align-items: center; gap: 8px;}
-        .nav-btn { background: #4f46e5; color: white; padding: 10px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; transition: background 0.3s; }
-        .nav-btn:hover { background: #4338ca; }
+        /* Навігація */
+        nav { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px 50px; 
+            background: rgba(255, 255, 255, 0.8); 
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #f3f4f6; 
+            position: fixed;
+            top: 0; width: 100%; box-sizing: border-box;
+            z-index: 1000;
+        }
 
-        /* Головний екран (Hero Section) */
-        .hero { text-align: center; padding: 100px 20px; background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%); }
-        .hero h1 { font-size: 54px; font-weight: 800; margin-bottom: 20px; color: #111827; max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.2; }
-        .hero h1 span { color: #4f46e5; }
-        .hero p { font-size: 20px; color: #6b7280; max-width: 600px; margin: 0 auto 40px auto; }
-        .hero-btn { display: inline-block; background: #10b981; color: white; padding: 16px 40px; font-size: 18px; font-weight: 700; text-decoration: none; border-radius: 50px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3); }
-        .hero-btn:hover { transform: translateY(-3px); box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.4); }
+        .logo { 
+            font-size: 24px; 
+            font-weight: 800; 
+            color: var(--primary); 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+        }
 
-        /* Блок з перевагами (Тексти) */
-        .features { display: flex; justify-content: center; gap: 40px; padding: 80px 50px; background: white; flex-wrap: wrap; }
-        .feature-card { flex: 1; min-width: 250px; max-width: 350px; padding: 30px; border-radius: 16px; background: #f9fafb; border: 1px solid #f3f4f6; text-align: left; transition: transform 0.3s; }
-        .feature-card:hover { transform: translateY(-10px); }
-        .feature-icon { font-size: 40px; margin-bottom: 20px; display: inline-block; }
-        .feature-card h3 { font-size: 22px; margin-top: 0; color: #111827; }
-        .feature-card p { color: #6b7280; font-size: 16px; margin-bottom: 0; }
+        .nav-actions { display: flex; gap: 15px; }
 
-        /* Підвал сайту */
-        footer { text-align: center; padding: 40px 20px; background: #111827; color: #9ca3af; font-size: 14px; }
+        .nav-btn { 
+            padding: 10px 24px; 
+            text-decoration: none; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 14px;
+            transition: all 0.3s ease; 
+        }
+
+        .btn-outline { 
+            border: 1px solid var(--primary); 
+            color: var(--primary); 
+        }
+
+        .btn-outline:hover { background: #eef2ff; }
+
+        .btn-solid { 
+            background: var(--primary); 
+            color: white; 
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+        }
+
+        .btn-solid:hover { 
+            background: var(--primary-dark); 
+            transform: translateY(-1px);
+        }
+
+        /* Hero Section */
+        .hero { 
+            text-align: center; 
+            padding: 160px 20px 100px; 
+            background: radial-gradient(circle at top right, #eef2ff 0%, #ffffff 100%); 
+        }
+
+        .hero h1 { 
+            font-size: clamp(36px, 8vw, 64px); 
+            font-weight: 800; 
+            margin-bottom: 24px; 
+            color: #111827; 
+            max-width: 900px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            line-height: 1.1; 
+            letter-spacing: -0.02em;
+        }
+
+        .hero h1 span { 
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p { 
+            font-size: 20px; 
+            color: #6b7280; 
+            max-width: 600px; 
+            margin: 0 auto 40px auto; 
+        }
+
+        .hero-btn { 
+            display: inline-block; 
+            background: #111827; 
+            color: white; 
+            padding: 18px 45px; 
+            font-size: 18px; 
+            font-weight: 700; 
+            text-decoration: none; 
+            border-radius: 50px; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .hero-btn:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 20px 30px rgba(0,0,0,0.15); 
+        }
+
+        /* Features */
+        .features { 
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px; 
+            padding: 100px 8%; 
+            background: white; 
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card { 
+            padding: 40px; 
+            border-radius: 24px; 
+            background: #ffffff; 
+            border: 1px solid #f3f4f6; 
+            transition: all 0.3s ease; 
+        }
+
+        .feature-card:hover { 
+            transform: translateY(-10px); 
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        }
+
+        .feature-icon { 
+            width: 60px; height: 60px; 
+            background: #f5f3ff; 
+            border-radius: 16px; 
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 25px;
+            color: var(--primary);
+        }
+
+        .feature-card h3 { font-size: 22px; margin-bottom: 15px; color: #111827; }
+        .feature-card p { color: #6b7280; font-size: 16px; margin: 0; }
+
+        footer { 
+            text-align: center; 
+            padding: 50px 20px; 
+            background: #f9fafb; 
+            color: #9ca3af; 
+            font-size: 14px; 
+            border-top: 1px solid #f3f4f6;
+        }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="#" class="logo">🚀 TaskFlow</a>
-        <a href="login.html" class="nav-btn" id="loginBtn">Увійти в акаунт</a>
+        <a href="#" class="logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="32" height="32" rx="8" fill="#4F46E5"/>
+                <path d="M10 16L14 20L22 12" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            TaskFlow
+        </a>
+        
+        <div class="nav-actions">
+            <a href="login.html" class="nav-btn btn-outline" id="loginBtn">Увійти</a>
+            <a href="register.html" class="nav-btn btn-solid" id="regBtn">Реєстрація</a>
+        </div>
     </nav>
 
     <section class="hero">
@@ -49,19 +198,25 @@
 
     <section class="features">
         <div class="feature-card">
-            <div class="feature-icon">⚡️</div>
+            <div class="feature-icon">
+                <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
             <h3>Миттєва робота</h3>
-            <p>Наш бекенд написаний на потужному C# .NET, що забезпечує блискавичну швидкість збереження та завантаження твоїх завдань.</p>
+            <p>Наш бекенд на C# .NET забезпечує блискавичну швидкість збереження твоїх важливих завдань.</p>
         </div>
         <div class="feature-card">
-            <div class="feature-icon">🔒</div>
+            <div class="feature-icon">
+                <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
             <h3>Безпека даних</h3>
-            <p>Твої паролі надійно зашифровані, а доступ до завдань здійснюється через сучасні технології авторизації (JWT токени).</p>
+            <p>Паролі зашифровані, а доступ здійснюється через JWT токени. Твоя приватність — наш пріоритет.</p>
         </div>
         <div class="feature-card">
-            <div class="feature-icon">🎨</div>
+            <div class="feature-icon">
+                <svg width="28" height="28" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>
+            </div>
             <h3>Сучасний дизайн</h3>
-            <p>Ми створили чистий та інтуїтивно зрозумілий інтерфейс, який не відволікає від головного — виконання твоїх планів.</p>
+            <p>Чистий інтерфейс, який допомагає фокусуватися на головному, не відволікаючи на дрібниці.</p>
         </div>
     </section>
 
@@ -70,15 +225,20 @@
     </footer>
 
     <script>
-        // Розумна логіка: якщо користувач вже увійшов (має токен), 
-        // кнопки ведуть одразу на його завдання, а не на логін
         const token = localStorage.getItem("token");
         if (token) {
-            document.getElementById("loginBtn").innerText = "Мої завдання";
-            document.getElementById("loginBtn").href = "tasks.html";
+            const loginBtn = document.getElementById("loginBtn");
+            const regBtn = document.getElementById("regBtn");
+            const startBtn = document.getElementById("startBtn");
+
+            loginBtn.innerText = "Мої завдання";
+            loginBtn.href = "tasks.html";
+            loginBtn.className = "nav-btn btn-solid"; // Робимо її основною
             
-            document.getElementById("startBtn").innerText = "Перейти до завдань";
-            document.getElementById("startBtn").href = "tasks.html";
+            if (regBtn) regBtn.style.display = "none";
+            
+            startBtn.innerText = "Перейти до завдань";
+            startBtn.href = "tasks.html";
         }
     </script>
 
