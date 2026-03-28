@@ -9,7 +9,7 @@ namespace TaskFlow.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize] // Потрібен токен!
+    [Authorize] // Тільки для залогінених користувачів
     public class TimeLogsController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -19,21 +19,26 @@ namespace TaskFlow.Api.Controllers
             _context = context;
         }
 
-        // 1. ДОДАВАННЯ ВИТРАЧЕНОГО ЧАСУ
+        // 1. ДОДАВАННЯ ЗАПИСУ ЧАСУ
         [HttpPost]
         public async Task<IActionResult> AddTimeLog([FromBody] TimeLogCreateDto dto)
         {
+            // Дістаємо ID користувача з токена
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!long.TryParse(userIdString, out long userId)) return Unauthorized();
+            if (!long.TryParse(userIdString, out long userId)) 
+                return Unauthorized();
 
-            // Перевіряємо, чи існує завдання і чи належить воно цьому користувачу
-            var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == dto.TaskId && t.UserId == userId);
-            if (task == null) return BadRequest("Завдання не знайдено, або у вас немає до нього доступу.");
+            // Перевіряємо: чи існує завдання І чи належить воно саме цьому юзеру
+            var task = await _context.Tasks
+                .FirstOrDefaultAsync(t => t.Id == dto.TaskId && t.UserId == userId);
+
+            if (task == null) 
+                return BadRequest("Завдання не знайдено або у вас немає до нього доступу.");
 
             var newLog = new TimeLog
             {
                 TaskId = dto.TaskId,
-                UserId = userId,
+                UserId = userId, // Обов'язково записуємо, хто додав час
                 TimeSpent = dto.TimeSpent,
                 Comment = dto.Comment,
                 LoggedAt = DateTime.UtcNow
@@ -45,23 +50,41 @@ namespace TaskFlow.Api.Controllers
             return Ok(newLog);
         }
 
-        // 2. ОТРИМАННЯ ВСІХ ЗАПИСІВ ЧАСУ ДЛЯ КОНКРЕТНОГО ЗАВДАННЯ
+        // 2. ОТРИМАННЯ ВСІХ ЛОГІВ ДЛЯ КОНКРЕТНОГО ЗАВДАННЯ
         [HttpGet("task/{taskId}")]
         public async Task<IActionResult> GetLogsForTask(long taskId)
         {
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!long.TryParse(userIdString, out long userId)) return Unauthorized();
+            if (!long.TryParse(userIdString, out long userId)) 
+                return Unauthorized();
 
-            // Перевіряємо, чи має юзер доступ до цього завдання
-            var taskExists = await _context.Tasks.AnyAsync(t => t.Id == taskId && t.UserId == userId);
-            if (!taskExists) return NotFound("Завдання не знайдено.");
-
+            // Повертаємо логи тільки якщо вони належать цьому завданню ТА цьому юзеру
             var logs = await _context.TimeLogs
-                .Where(l => l.TaskId == taskId)
-                .OrderByDescending(l => l.LoggedAt) // Найновіші записи зверху
+                .Where(l => l.TaskId == taskId && l.UserId == userId)
+                .OrderByDescending(l => l.LoggedAt)
                 .ToListAsync();
 
             return Ok(logs);
+        }
+
+        // 3. ВИДАЛЕННЯ ЗАПИСУ ЧАСУ (якщо помилився при введенні)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteLog(long id)
+        {
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!long.TryParse(userIdString, out long userId)) 
+                return Unauthorized();
+
+            var log = await _context.TimeLogs
+                .FirstOrDefaultAsync(l => l.Id == id && l.UserId == userId);
+
+            if (log == null) 
+                return NotFound("Запис не знайдено.");
+
+            _context.TimeLogs.Remove(log);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Запис часу видалено." });
         }
     }
 }
