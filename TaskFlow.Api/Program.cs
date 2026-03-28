@@ -56,6 +56,17 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// НОВЕ: Налаштування CORS (Дозволяємо будь-якому фронтенду підключатися)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -65,6 +76,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// НОВЕ: Вмикаємо CORS (обов'язково ДО перевірки токенів)
+app.UseCors("AllowAll");
 
 // 4. Вмикаємо перевірку "пропусків" (авторизацію)
 app.UseAuthentication();

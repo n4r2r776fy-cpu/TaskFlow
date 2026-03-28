@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization; // ДОДАЛИ ЦЕ
 
 namespace TaskFlow.Api.Models
 {
@@ -12,8 +13,11 @@ namespace TaskFlow.Api.Models
         public string Comment { get; set; } = string.Empty; // Коментар до роботи
         public DateTime LoggedAt { get; set; } = DateTime.UtcNow; // Час створення логу
 
-        // Навігаційні властивості
+        // ДОДАЛИ [JsonIgnore], щоб Swagger не ламався
+        [JsonIgnore]
         public TaskItem? Task { get; set; }
+        
+        [JsonIgnore]
         public User? User { get; set; }
     }
 }
