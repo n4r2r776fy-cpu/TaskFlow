@@ -8,11 +8,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #020617;
-            --text-main: #f8fafc;
-            --glass-bg: rgba(15, 23, 42, 0.8);
-            --border: rgba(255, 255, 255, 0.1);
-        }
+    --bg-color: #020617;
+    --text-main: #f8fafc;
+    /* Початковий колір - індиго */
+    --accent: #4f46e5; 
+    --glass-bg: rgba(15, 23, 42, 0.6);
+    --border: rgba(255, 255, 255, 0.05);
+}
+:root {
+        --accent: #4f46e5; /* Стандартний синій */
+    }
+
+    /* Цей клас ми будемо давати кнопкам */
+    .bg-accent { 
+        background-color: var(--accent) !important; 
+    }
+/* Створюємо клас, який буде використовувати нашу змінну */
+.bg-accent { background-color: var(--accent) !important; }
+.text-accent { color: var(--accent) !important; }
+.border-accent { border-color: var(--accent) !important; }
+.shadow-accent { shadow: 0 10px 15px -3px var(--accent); opacity: 0.3; }
 
         .light-theme {
             --bg-color: #f8fafc;
