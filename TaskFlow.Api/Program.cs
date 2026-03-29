@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using OpenApiModels = Microsoft.OpenApi.Models; // Використовуємо аліас для Swagger
+using OpenApiModels = Microsoft.OpenApi.Models;
 using System.Text;
 using TaskFlow.Api.Data;
+using TaskFlow.Api.Models; // Додав для доступу до моделі User
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 2. Налаштування JWT
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "super_secret_key_1234567890123456"; 
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "SuperSecretKeyForTaskFlowApp_1234567890_MakeItVeryLong_1234567890"; 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -28,7 +29,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// 3. Налаштування Swagger (з використанням аліасу OpenApiModels)
+// 3. Налаштування Swagger
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiModels.OpenApiSecurityScheme
@@ -67,14 +68,43 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// АВТОМАТИЧНІ МІГРАЦІЇ (Для сервера)
+// --- БЛОК БАЗИ ДАНИХ ТА АДМІНІСТРАТОРА ---
+// --- БЛОК БАЗИ ДАНИХ ТА АДМІНІСТРАТОРА ---
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
-}
 
-// Swagger вмикаємо ЗАВЖДИ
+    var adminEmail = "admin@taskflow.com";
+    var adminUser = db.Users.FirstOrDefault(u => u.Email == adminEmail);
+
+    if (adminUser == null)
+    {
+        // Якщо адміна немає — створюємо з хешованим паролем
+        adminUser = new User
+        {
+            Username = "Admin", 
+            Email = adminEmail,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"), // ШИФРУЄМО ТУТ
+            Role = "Admin",
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+        db.Users.Add(adminUser);
+        db.SaveChanges();
+        Console.WriteLine("--> Admin account created with BCrypt hash!");
+    }
+    else if (adminUser.PasswordHash == "Admin123!")
+    {
+        // Якщо адмін є, але пароль там звичайним текстом (після минулої спроби)
+        // оновлюємо його на хеш
+        adminUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!");
+        db.SaveChanges();
+        Console.WriteLine("--> Admin password updated to BCrypt hash!");
+    }
+}
+// ----------------------------------------
+
 app.UseSwagger();
 app.UseSwaggerUI();
 

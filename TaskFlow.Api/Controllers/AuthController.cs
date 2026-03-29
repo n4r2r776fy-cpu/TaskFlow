@@ -7,6 +7,7 @@ using System.Text;
 using TaskFlow.Api.Data;
 using TaskFlow.Api.DTOs;
 using TaskFlow.Api.Models;
+using BCrypt.Net;
 
 namespace TaskFlow.Api.Controllers
 {
@@ -68,11 +69,12 @@ namespace TaskFlow.Api.Controllers
         {
             // Зашиваємо в токен ID користувача, його ім'я та email
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Email, user.Email)
-            };
+{
+    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+    new Claim(ClaimTypes.Name, user.Username),
+    new Claim(ClaimTypes.Email, user.Email), 
+    new Claim(ClaimTypes.Role, user.Role ?? "User") 
+};
 
             // Беремо наш секретний ключ з appsettings.json
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
