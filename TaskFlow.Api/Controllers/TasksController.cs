@@ -49,7 +49,8 @@ namespace TaskFlow.Api.Controllers
                 UserId = userId,
                 Status = "todo",
                 CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
+                DueDate = dto.DueDate // ДОДАНО ДЕДЛАЙН
             };
 
             _context.Tasks.Add(newTask);
@@ -93,6 +94,7 @@ namespace TaskFlow.Api.Controllers
             task.Priority = dto.Priority;
             task.ProjectId = dto.ProjectId;
             task.UpdatedAt = DateTime.UtcNow;
+            task.DueDate = dto.DueDate; // ДОДАНО ДЕДЛАЙН
 
             // Якщо передали новий статус — оновлюємо і його
             if (!string.IsNullOrEmpty(newStatus))

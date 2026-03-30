@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Реєстрація</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #f8fafc;
+        }
+        
+        /* Анімація плавання для 3D елемента */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(-3deg); }
+        }
+        .animate-3d-alt {
+            animation: float 7s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6 bg-slate-50">
+
+    <div class="w-full max-w-5xl grid md:grid-cols-2 shadow-[0_32px_80px_-15px_rgba(0,0,0,0.15)] rounded-[40px] overflow-hidden bg-white">
+        
+        <div class="relative bg-emerald-950 hidden md:flex items-center justify-center p-12 overflow-hidden">
+            <div class="absolute top-[-20%] left-[-20%] w-[500px] h-[500px] bg-emerald-600/20 rounded-full blur-[120px]"></div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-[300px] h-[300px] bg-cyan-500/15 rounded-full blur-[100px]"></div>
+
+            <div class="relative z-10 text-center">
+                <img src="https://cdn3d.iconscout.com/3d/premium/thumb/rocket-4811128-4003295.png" 
+                     alt="Start 3D" 
+                     class="w-full max-w-[380px] animate-3d-alt drop-shadow-[0_45px_45px_rgba(16,185,129,0.3)]">
+                
+                <div class="w-32 h-6 bg-black/20 rounded-[100%] blur-xl mt-8 mx-auto"></div>
+            </div>
+        </div>
+
+        <div class="p-12 lg:p-20 flex flex-col justify-center relative">
+            <div class="mb-8">
+                <a href="index.html" class="inline-flex items-center gap-2.5 text-emerald-600 font-bold mb-8 hover:opacity-80 transition group">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:-translate-x-1"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    Назад
+                </a>
+                <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-3">Створити акаунт </h1>
+                <p class="text-slate-500 font-medium">Приєднуйся до TaskFlow та почни планувати ефективно.</p>
+            </div>
+
+            <form id="registerForm" class="space-y-4">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Твій Email</label>
+                    <input type="email" id="email" required placeholder="name@mail.com" 
+                           class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 outline-none transition-all placeholder:text-slate-400">
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Придумати пароль</label>
+                    <input type="password" id="password" required placeholder="мінімум 6 символів" 
+                           class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 outline-none transition-all">
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold py-4 rounded-2xl shadow-xl shadow-emerald-100 transition-all active:scale-[0.97] mt-4">
+                    Зареєструватися
+                </button>
+            </form>
+
+            <p class="mt-10 text-center text-slate-500 text-sm font-medium">
+                Вже маєш акаунт? 
+                <a href="login.html" class="text-emerald-600 font-bold hover:underline">Увійти</a>
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Забороняємо формі перезавантажувати сторінку
+
+            // Отримуємо дані з полів вводу
+            const emailValue = document.getElementById('email').value;
+            const passwordValue = document.getElementById('password').value;
+            
+            // Створюємо username з першої частини email (до @)
+            const usernameValue = emailValue.split('@')[0];
+
+            try {
+                // Звертаємося до нашого API. Перевір, чи порт 5000 збігається з твоїм!
+                const response = await fetch('http://localhost:5143/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: usernameValue,
+                        email: emailValue,
+                        password: passwordValue
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Реєстрація успішна! Переходимо на сторінку входу.');
+                    window.location.href = 'login.html'; // Перенаправлення
+                } else {
+                    const errorMessage = await response.text();
+                    alert('Помилка реєстрації: ' + errorMessage);
+                }
+            } catch (error) {
+                console.error('Помилка:', error);
+                alert('Не вдалося з\'єднатися з сервером. Переконайся, що бекенд запущений (dotnet run).');
+            }
+        });
+    </script>
+</body>
+</html>

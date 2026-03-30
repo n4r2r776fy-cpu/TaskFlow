@@ -1,18 +1,23 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using OpenApiModels = Microsoft.OpenApi.Models; // Використовуємо аліас для Swagger
+using OpenApiModels = Microsoft.OpenApi.Models;
 using System.Text;
 using TaskFlow.Api.Data;
+using TaskFlow.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Підключення до БД (PostgreSQL)
+// 1. ПІДКЛЮЧЕННЯ ДО БД (Змінено на MySQL)
+// Замість старого блоку з AutoDetect
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 31)); // Версія 8.0 як на хостингу
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseMySql(connectionString, serverVersion));
 
 // 2. Налаштування JWT
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "super_secret_key_1234567890123456"; 
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "SuperSecretKeyForTaskFlowApp_1234567890_MakeItVeryLong_1234567890"; 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -28,7 +33,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// 3. Налаштування Swagger (з використанням аліасу OpenApiModels)
+// 3. Налаштування Swagger
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiModels.OpenApiSecurityScheme
@@ -67,23 +72,51 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// АВТОМАТИЧНІ МІГРАЦІЇ (Для сервера)
+// --- БЛОК БАЗИ ДАНИХ ТА АДМІНІСТРАТОРА ---
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    
+    // Автоматичне застосування міграцій при старті
     db.Database.Migrate();
-}
 
-// Swagger вмикаємо ЗАВЖДИ
+    var adminEmail = "admin@taskflow.com";
+    var adminUser = db.Users.FirstOrDefault(u => u.Email == adminEmail);
+
+    if (adminUser == null)
+    {
+        adminUser = new User
+        {
+            Username = "Admin", 
+            Email = adminEmail,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
+            Role = "Admin",
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+        db.Users.Add(adminUser);
+        db.SaveChanges();
+        Console.WriteLine("--> Admin account created with BCrypt hash!");
+    }
+}
+// ----------------------------------------
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+// 1. Статичні файли (фронтенд) мають бути на початку
+app.UseDefaultFiles(); // Дозволяє відкривати index.html за замовчуванням
+app.UseStaticFiles();  // Дозволяє завантажувати CSS, JS, картинки
+
 app.UseCors("AllowAll");
 
+// 2. Потім безпека
 app.UseAuthentication();
 app.UseAuthorization();
 
+// 3. І в самому кінці — маршрутизація API
 app.MapControllers();
 
 app.Run();
