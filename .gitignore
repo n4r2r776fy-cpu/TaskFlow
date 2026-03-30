@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 [Bb]in/
 [Oo]bj/
 .vs/
 *.user
 *.lock.json
+=======
+bin/
+obj/
+.vs/
+>>>>>>> main

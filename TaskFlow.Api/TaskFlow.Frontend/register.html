@@ -162,6 +162,7 @@
     </div>
 
     <script>
+<<<<<<< HEAD
         if (localStorage.getItem('theme') === 'light') {
             document.body.classList.add('light-theme');
         }
@@ -192,6 +193,44 @@
                 console.error("Помилка підключення до сервера");
             }
         };
+=======
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Забороняємо формі перезавантажувати сторінку
+
+            // Отримуємо дані з полів вводу
+            const emailValue = document.getElementById('email').value;
+            const passwordValue = document.getElementById('password').value;
+            
+            // Створюємо username з першої частини email (до @)
+            const usernameValue = emailValue.split('@')[0];
+
+            try {
+                // Звертаємося до нашого API. Перевір, чи порт 5000 збігається з твоїм!
+                const response = await fetch('http://localhost:5143/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: usernameValue,
+                        email: emailValue,
+                        password: passwordValue
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Реєстрація успішна! Переходимо на сторінку входу.');
+                    window.location.href = 'login.html'; // Перенаправлення
+                } else {
+                    const errorMessage = await response.text();
+                    alert('Помилка реєстрації: ' + errorMessage);
+                }
+            } catch (error) {
+                console.error('Помилка:', error);
+                alert('Не вдалося з\'єднатися з сервером. Переконайся, що бекенд запущений (dotnet run).');
+            }
+        });
+>>>>>>> main
     </script>
 </body>
 </html>

@@ -150,6 +150,7 @@
     </div>
 
     <script>
+<<<<<<< HEAD
         // Перевірка теми з localStorage
         if (localStorage.getItem('theme') === 'light') {
             document.body.classList.add('light-theme');
@@ -195,6 +196,46 @@
                 alert("Сервер не відповідає. Перевірте статус сервера (Offline/Online).");
             }
         };
+=======
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); 
+
+            const emailValue = document.getElementById('email').value;
+            const passwordValue = document.getElementById('password').value;
+            
+            try {
+                // Відправляємо запит на логін (з твоїм портом 5143)
+                const response = await fetch('http://localhost:5143/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: emailValue,
+                        password: passwordValue
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Зберігаємо токен
+                    localStorage.setItem('jwtToken', data.token);
+                    
+                    alert('Вхід успішний!');
+                    
+                    // Переходимо на сторінку із завданнями
+                    window.location.href = 'tasks.html'; 
+                } else {
+                    const errorData = await response.text();
+                    alert('Помилка входу: ' + (errorData || 'Невірний email або пароль'));
+                }
+            } catch (error) {
+                console.error('Помилка:', error);
+                alert('Не вдалося з\'єднатися з сервером. Переконайся, що сервер працює.');
+            }
+        });
+>>>>>>> main
     </script>
 </body>
 </html>

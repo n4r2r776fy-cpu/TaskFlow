@@ -7,8 +7,11 @@ C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.sourcelink.json
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
+=======
+>>>>>>> main
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\appsettings.json
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\TaskFlow.Api.staticwebassets.endpoints.json
@@ -117,6 +120,7 @@ C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\refint\Ta
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.pdb
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.genruntimeconfig.cache
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\ref\TaskFlow.Api.dll
+<<<<<<< HEAD
 D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\appsettings.Development.json
 D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\appsettings.json
 D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\TaskFlow.Api.staticwebassets.endpoints.json
@@ -235,3 +239,5 @@ D:\Практика з технологыъ веб програмування\Ta
 D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.genruntimeconfig.cache
 D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\ref\TaskFlow.Api.dll
 >>>>>>> Stashed changes
+=======
+>>>>>>> main
