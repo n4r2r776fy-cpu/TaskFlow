@@ -29,6 +29,12 @@
 .border-accent { border-color: var(--accent) !important; }
 .shadow-accent { shadow: 0 10px 15px -3px var(--accent); opacity: 0.3; }
 
+        /* Фікс для градієнта тексту, який я додав */
+        .bg-clip-text {
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
         /* М'яка "Паперова" світла тема */
         .light-theme {
             --bg-color: #f4f4f2; /* Колір матового паперу, не ріже очі */
@@ -233,24 +239,24 @@
 
         document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
 
-        // Логіка авторизації та кнопок
+        // Логіка авторизації та кнопок (ОСЬ ТУТ ДОДАНО ЗМІНИ)
         function updateUIBasedOnAuth() {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('jwtToken') || localStorage.getItem('token');
             const authButtons = document.getElementById('authButtons');
             const heroActions = document.getElementById('heroActions');
 
             // Повертаємо кнопки навігації
             if (token) {
                 // Користувач в системі
-                authButtons.innerHTML = `<a href="tasks.html" class="px-5 py-2 font-bold text-white bg-indigo-600 rounded-xl">Кабінет</a>`;
-                heroActions.innerHTML = `<a href="tasks.html" class="px-10 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-xl shadow-indigo-500/20">Продовжити роботу</a>`;
+                authButtons.innerHTML = `<a href="tasks.html" class="px-5 py-2 font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition">Кабінет</a>`;
+                heroActions.innerHTML = `<a href="tasks.html" class="px-10 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-xl shadow-indigo-500/20 hover:scale-105 transition-transform">Продовжити роботу</a>`;
             } else {
                 // Гість - ПОКАЗУЄМО КНОПКИ УВІЙТИ/РЕЄСТРАЦІЯ
                 authButtons.innerHTML = `
                     <a href="login.html" class="px-5 py-2 font-bold hover:opacity-80 transition">Увійти</a>
-                    <a href="register.html" class="px-5 py-2 font-bold text-white bg-indigo-600 rounded-xl">Реєстрація</a>
+                    <a href="register.html" class="px-5 py-2 font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition">Реєстрація</a>
                 `;
-                heroActions.innerHTML = `<a href="register.html" class="px-10 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-xl shadow-indigo-500/20">Почати безкоштовно</a>`;
+                heroActions.innerHTML = `<a href="register.html" class="px-10 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-xl shadow-indigo-500/20 hover:scale-105 transition-transform">Почати безкоштовно</a>`;
             }
         }
         updateUIBasedOnAuth();
@@ -265,8 +271,10 @@
             const checked = document.querySelectorAll('.demo-check:checked').length;
             const percentage = Math.round((checked / total) * 100);
             
-            progressBar.style.width = percentage + '%';
-            progressText.innerText = percentage + '% Готово';
+            if (progressBar && progressText) {
+                progressBar.style.width = percentage + '%';
+                progressText.innerText = percentage + '% Готово';
+            }
         }
 
         checkboxes.forEach(cb => cb.addEventListener('change', updateDemo));
