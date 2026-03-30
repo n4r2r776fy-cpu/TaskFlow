@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Налаштування - TaskFlow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #020617;
+            --text-main: #f8fafc;
+            --glass-bg: rgba(15, 23, 42, 0.6);
+            --border: rgba(255, 255, 255, 0.05);
+        }
+
+        .light-theme {
+            --bg-color: #f4f4f2;
+            --text-main: #1c1c1e;
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --border: rgba(0, 0, 0, 0.08);
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: all 0.5s ease;
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <nav class="glass border-b h-20 mb-12">
+        <div class="max-w-4xl mx-auto px-6 h-full flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 font-bold hover:text-indigo-500 transition">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+                На головну
+            </a>
+            <span class="text-xs font-black uppercase tracking-widest opacity-30">Settings</span>
+        </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto px-6">
+        
+        <section class="glass rounded-[32px] p-8 mb-6">
+            <h2 class="text-xl font-black mb-6 flex items-center gap-3">
+                <div class="w-2 h-6 bg-indigo-600 rounded-full"></div>
+                Інтерфейс
+            </h2>
+            <button id="themeToggle" class="flex items-center justify-between w-full p-4 rounded-2xl hover:bg-white/5 border border-white/5 transition">
+                <span class="text-sm font-medium">Змінити тему (Світла/Темна)</span>
+                <div class="w-10 h-6 bg-indigo-600/20 rounded-full relative">
+                    <div id="dot" class="w-4 h-4 bg-indigo-600 rounded-full absolute top-1 left-1 transition-all"></div>
+                </div>
+            </button>
+        </section>
+
+        <div id="profileSection">
+            </div>
+
+    </main>
+
+    <script>
+        const body = document.body;
+        const themeBtn = document.getElementById('themeToggle');
+        const dot = document.getElementById('dot');
+        const profileSection = document.getElementById('profileSection');
+        const token = localStorage.getItem('token');
+
+        // Логіка теми
+        function updateThemeUI(theme) {
+            if (theme === 'light') {
+                body.classList.add('light-theme');
+                dot.style.left = '22px';
+            } else {
+                body.classList.remove('light-theme');
+                dot.style.left = '4px';
+            }
+        }
+
+        updateThemeUI(localStorage.getItem('theme') || 'dark');
+
+        themeBtn.addEventListener('click', () => {
+            const isLight = body.classList.toggle('light-theme');
+            const theme = isLight ? 'light' : 'dark';
+            localStorage.setItem('theme', theme);
+            updateThemeUI(theme);
+        });
+
+        // Перевірка авторизації
+        if (token) {
+            profileSection.innerHTML = `
+                <section class="glass rounded-[32px] p-8 mb-6">
+                    <h2 class="text-xl font-black mb-6">Мій профіль</h2>
+                    <p class="text-sm text-slate-400 mb-6">Тут ви можете змінити свої дані.</p>
+                    <button class="w-full py-3 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition">Зберегти зміни</button>
+                </section>
+                <button onclick="logout()" class="w-full py-3 border border-rose-500/30 text-rose-500 font-bold rounded-2xl hover:bg-rose-500 hover:text-white transition">Вийти</button>
+            `;
+        } else {
+            profileSection.innerHTML = `
+                <div class="glass rounded-[32px] p-10 text-center border-dashed border-2 border-white/10 opacity-70">
+                    <h3 class="font-bold mb-4">Приватна зона</h3>
+                    <p class="text-sm text-slate-500 mb-6">Увійдіть, щоб отримати доступ до профілю</p>
+                    <a href="login.html" class="inline-block px-8 py-2 bg-indigo-600 text-white rounded-xl font-bold">Увійти</a>
+                </div>
+            `;
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.reload();
+        }
+    </script>
+</body>
+</html>
