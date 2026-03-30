@@ -52,13 +52,22 @@
         </p>
     </div>
 
-    <script>
-        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme');
+<script>
+        // Перевірка теми
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-theme');
+        }
 
-        document.getElementById('registerForm').addEventListener('submit', (e) => {
-            e.preventDefault();
+        const registerForm = document.getElementById('registerForm');
+        
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Жорстко зупиняємо перезавантаження сторінки
+            
+            // Записуємо токен після реєстрації
             localStorage.setItem('token', 'fake-jwt-token-123');
-            window.location.href = 'tasks.html';
+            
+            // Перекидаємо в кабінет
+            window.location.replace('tasks.html'); 
         });
     </script>
 </body>
