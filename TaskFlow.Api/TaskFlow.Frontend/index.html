@@ -60,11 +60,12 @@
         }
 
         .text-gradient {
-            background: linear-gradient(to right, #818cf8, #34d399);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
+    background: linear-gradient(to right, #818cf8, #34d399);
+    -webkit-background-clip: text;
+    background-clip: text; /* Додали стандартну властивість */
+    -webkit-text-fill-color: transparent;
+    color: transparent; /* Стандартний аналог для прозорого тексту */
+}
         .reveal {
             opacity: 0;
             transform: translateY(30px);
