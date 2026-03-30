@@ -13,6 +13,7 @@
             --text-muted: #94a3b8;
             --glass-bg: rgba(15, 23, 42, 0.6);
             --border: rgba(255, 255, 255, 0.05);
+<<<<<<< Updated upstream
             --blob-opacity: 0.4;
         }
 
@@ -23,17 +24,27 @@
             --glass-bg: rgba(255, 255, 255, 0.7);
             --border: rgba(0, 0, 0, 0.05);
             --blob-opacity: 0.15;
+=======
+        }
+
+        .light-theme {
+            --bg-color: #f4f4f2;
+            --text-main: #1c1c1e;
+            --text-muted: #636366;
+            --glass-bg: rgba(255, 255, 255, 0.4);
+            --border: rgba(0, 0, 0, 0.08);
+>>>>>>> Stashed changes
         }
 
         body { 
             font-family: 'Inter', sans-serif; 
-            scroll-behavior: smooth;
             background-color: var(--bg-color);
             color: var(--text-main);
             transition: background-color 0.5s ease, color 0.5s ease;
             overflow-x: hidden;
         }
 
+<<<<<<< Updated upstream
         .bg-blob {
             position: fixed;
             width: 600px;
@@ -49,12 +60,25 @@
         @keyframes move {
             0% { transform: translate(-20%, -20%) scale(1); }
             100% { transform: translate(80vw, 70vh) scale(1.2); }
+=======
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            opacity: 0.4;
+>>>>>>> Stashed changes
         }
 
         .glass {
             background: var(--glass-bg);
+<<<<<<< Updated upstream
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
+=======
+            backdrop-filter: blur(20px);
+>>>>>>> Stashed changes
             border: 1px solid var(--border);
             transition: background 0.5s ease, border 0.5s ease;
         }
@@ -87,16 +111,32 @@
             transition: all 0.3s ease;
         }
 
+<<<<<<< Updated upstream
         .btn-theme:hover {
             background: rgba(128, 128, 128, 0.1);
             transform: rotate(15deg);
+=======
+        .reveal-item {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .reveal-item.active {
+            opacity: 1;
+            transform: translateY(0);
+>>>>>>> Stashed changes
         }
     </style>
 </head>
 <body>
 
+<<<<<<< Updated upstream
     <div class="bg-blob" style="top: -100px; left: -100px; background: radial-gradient(circle, #4338ca 0%, transparent 70%);"></div>
     <div class="bg-blob" style="bottom: -100px; right: 10%; animation-duration: 30s; background: radial-gradient(circle, #065f46 0%, transparent 70%); animation-delay: -5s;"></div>
+=======
+    <div class="bg-grid"></div>
+>>>>>>> Stashed changes
 
     <nav class="fixed top-0 w-full z-50 glass border-b">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
@@ -135,6 +175,7 @@
         </div>
     </nav>
 
+<<<<<<< Updated upstream
     <section class="pt-48 pb-32 px-6 text-center reveal">
         <h1 class="text-6xl md:text-8xl font-extrabold mb-8 tracking-tighter">
             Керуй справами <br>
@@ -155,6 +196,54 @@
             <div class="w-16 h-16 bg-indigo-500/10 text-indigo-500 rounded-2xl flex items-center justify-center mb-8 text-3xl">🚀</div>
             <h3 class="text-2xl font-bold mb-4">Миттєва робота</h3>
             <p class="text-muted leading-relaxed">Блискавична реакція інтерфейсу на кожну твою дію завдяки C# .NET.</p>
+=======
+    <main class="relative z-10 max-w-5xl mx-auto px-6 pt-40 pb-20">
+        <div class="text-center mb-20 reveal-item active">
+            <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-8 bg-gradient-to-r from-indigo-500 via-emerald-500 to-indigo-600 bg-clip-text text-transparent">
+                TaskFlow
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto font-medium leading-relaxed">
+                Твій персональний простір для продуктивності. Створюй, плануй та досягай мети з комфортом.
+            </p>
+            <div id="heroActions" class="mt-12 flex justify-center min-h-[64px]"></div>
+        </div>
+
+        <div class="reveal-item glass p-12 rounded-[40px] border border-white/5 mb-24">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-3xl font-black mb-10 tracking-tight">Чому обирають TaskFlow?</h2>
+                <div class="grid md:grid-cols-2 gap-12 text-left">
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-indigo-600/20 rounded-lg flex items-center justify-center text-indigo-500 font-bold">01</div>
+                            <span class="font-bold text-lg">Структура</span>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed">Керуйте проектами будь-якої складності. Створюйте необмежену кількість списків та завдань.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-emerald-600/20 rounded-lg flex items-center justify-center text-emerald-500 font-bold">02</div>
+                            <span class="font-bold text-lg">Фокус</span>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed">Розумні пріоритети допомагають не загубитися в рутині та фокусуватися на головному.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="reveal-item glass p-8 rounded-[32px]">
+                <h3 class="text-xl font-bold mb-3 text-indigo-500">Швидкість</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Миттєве збереження та синхронізація ваших даних у реальному часі.</p>
+            </div>
+            <div class="reveal-item glass p-8 rounded-[32px]" style="transition-delay: 0.1s;">
+                <h3 class="text-xl font-bold mb-3 text-emerald-500">Безпека</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Ваші дані надійно захищені сучасними методами шифрування.</p>
+            </div>
+            <div class="reveal-item glass p-8 rounded-[32px]" style="transition-delay: 0.2s;">
+                <h3 class="text-xl font-bold mb-3 text-purple-500">Мінімалізм</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Нічого зайвого. Тільки ви та ваші завдання у чистому інтерфейсі.</p>
+            </div>
+>>>>>>> Stashed changes
         </div>
         <div class="glass p-10 rounded-[40px] hover:-translate-y-3 transition-all duration-500 reveal group" style="animation-delay: 0.4s;">
             <div class="w-16 h-16 bg-emerald-500/10 text-emerald-500 rounded-2xl flex items-center justify-center mb-8 text-3xl">🔒</div>
@@ -168,8 +257,13 @@
         </div>
     </section>
 
+<<<<<<< Updated upstream
     <footer class="text-center py-20 border-t border-white/5 mt-20">
         <p class="text-muted font-medium">© 2026 TaskFlow. Майбутнє продуктивності вже тут.</p>
+=======
+    <footer class="text-center py-16 opacity-30 text-[10px] font-black tracking-[0.3em] uppercase">
+        Designed for Growth 2026
+>>>>>>> Stashed changes
     </footer>
 
     <script>
@@ -178,6 +272,7 @@
         const moonIcon = document.getElementById('moonIcon');
         const body = document.body;
 
+<<<<<<< Updated upstream
         // Перевірка збереженої теми
         if (localStorage.getItem('theme') === 'light') {
             body.classList.add('light-theme');
@@ -200,6 +295,49 @@
                 moonIcon.classList.remove('hidden');
             }
         });
+=======
+        // Логіка теми
+        function setTheme(theme) {
+            if (theme === 'light') {
+                body.classList.add('light-theme');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                body.classList.remove('light-theme');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        setTheme(localStorage.getItem('theme') || 'dark');
+        toggleBtn.addEventListener('click', () => setTheme(body.classList.contains('light-theme') ? 'dark' : 'light'));
+
+        // Анімації появи
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
+
+        // Динамічні кнопки (Авторизація)
+        function updateUI() {
+            const token = localStorage.getItem('token');
+            const authButtons = document.getElementById('authButtons');
+            const heroActions = document.getElementById('heroActions');
+
+            if (token) {
+                authButtons.innerHTML = `<a href="tasks.html" class="px-5 py-2 font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition">Кабінет</a>`;
+                heroActions.innerHTML = `<a href="tasks.html" class="px-10 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-xl hover:scale-105 transition">Продовжити роботу</a>`;
+            } else {
+                authButtons.innerHTML = `
+                    <a href="login.html" class="px-5 py-2 font-bold hover:text-indigo-500 transition">Увійти</a>
+                    <a href="register.html" class="px-5 py-2 font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition">Реєстрація</a>
+                `;
+                heroActions.innerHTML = `<a href="register.html" class="px-10 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-xl hover:scale-105 transition">Почати безкоштовно</a>`;
+            }
+        }
+        updateUI();
+>>>>>>> Stashed changes
     </script>
 </body>
 </html>
