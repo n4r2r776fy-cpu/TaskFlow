@@ -62,13 +62,21 @@
     </div>
 
     <script>
-        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme');
+        // Перевірка теми
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-theme');
+        }
 
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            // Симуляція входу (ставимо фейковий токен)
+        const loginForm = document.getElementById('loginForm');
+        
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Жорстко зупиняємо перезавантаження сторінки
+            
+            // Записуємо фейковий токен (імітація успішного входу)
             localStorage.setItem('token', 'fake-jwt-token-123');
-            window.location.href = 'tasks.html'; // Перекидаємо в кабінет
+            
+            // Використовуємо replace, щоб історія браузера не глючила
+            window.location.replace('tasks.html'); 
         });
     </script>
 </body>
