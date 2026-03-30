@@ -113,9 +113,12 @@
 
     <script>
         // 1. ПЕРЕВІРКА ТОКЕНА ТА РОЛІ
-        const token = localStorage.getItem("jwtToken");
-        if (!token) window.location.href = "login.html";
+        const token = localStorage.getItem('token'); 
 
+if (!token) {
+    localStorage.removeItem("jwtToken");
+    window.location.href = '/login.html'; // Ось хто тебе перекидає назад!
+}
         // Перевіряємо роль одразу при завантаженні
         (function checkAdmin() {
             try {
@@ -130,7 +133,7 @@
         })();
 
         // 2. БАЗОВИЙ URL БЕКЕНДУ
-        const API_BASE = "http://localhost:5143/api";
+        const API_BASE = "/api";
         
         let currentProjectId = null;
         let allTasks = [];
@@ -457,9 +460,9 @@
         }
 
         function logout() {
-            localStorage.removeItem("jwtToken");
-            window.location.href = "login.html";
-        }
+    localStorage.removeItem("token"); 
+    window.location.replace("login.html"); // replace краще, щоб не можна було повернутися кнопкою "Назад" у браузері
+}
 
         loadProjects();
     </script>

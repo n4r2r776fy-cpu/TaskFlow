@@ -25,63 +25,97 @@
             font-family: 'Inter', sans-serif; 
             background-color: var(--bg-color);
             color: var(--text-main);
-            transition: all 0.5s ease;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        .bg-grid { 
+            position: fixed; inset: 0; 
+            background-image: radial-gradient(var(--border) 1px, transparent 1px); 
+            background-size: 40px 40px; 
+            z-index: -1; opacity: 0.5; 
         }
 
         .glass {
             background: var(--glass-bg);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border);
         }
+
+        .input-glass { 
+            background: rgba(0,0,0,0.2); 
+            border: 1px solid var(--border); 
+            color: inherit; 
+        }
+        
+        .light-theme .input-glass { 
+            background: rgba(255,255,255,0.6); 
+        }
+
+        /* Плавний перехід для перемикача */
+        .toggle-dot { transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); }
+        .light-theme .toggle-dot { transform: translateX(100%); }
+        .light-theme .toggle-bg { background-color: #4f46e5; }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen pb-12">
+    <div class="bg-grid"></div>
 
-    <nav class="glass border-b h-20 mb-12">
-        <div class="max-w-4xl mx-auto px-6 h-full flex items-center justify-between">
-            <a href="index.html" class="flex items-center gap-2 font-bold hover:text-indigo-500 transition">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
+    <nav class="glass sticky top-0 z-50 border-b border-white/5 h-20 mb-12 shadow-sm">
+        <div class="max-w-3xl mx-auto px-6 h-full flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 font-bold hover:text-indigo-500 transition opacity-70 hover:opacity-100">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
                 На головну
             </a>
-            <span class="text-xs font-black uppercase tracking-widest opacity-30">Settings</span>
+            <span class="text-xs font-black uppercase tracking-widest opacity-40">Налаштування</span>
         </div>
     </nav>
 
-    <main class="max-w-2xl mx-auto px-6">
+    <main class="max-w-3xl mx-auto px-6 space-y-6">
         
-        <section class="glass rounded-[32px] p-8 mb-6">
+        <section class="glass rounded-[32px] p-8 shadow-xl">
             <h2 class="text-xl font-black mb-6 flex items-center gap-3">
-                <div class="w-2 h-6 bg-indigo-600 rounded-full"></div>
+                <div class="w-2 h-6 bg-indigo-500 rounded-full shadow-[0_0_15px_rgba(99,102,241,0.5)]"></div>
                 Інтерфейс
             </h2>
-            <button id="themeToggle" class="flex items-center justify-between w-full p-4 rounded-2xl hover:bg-white/5 border border-white/5 transition">
-                <span class="text-sm font-medium">Змінити тему (Світла/Темна)</span>
-                <div class="w-10 h-6 bg-indigo-600/20 rounded-full relative">
-                    <div id="dot" class="w-4 h-4 bg-indigo-600 rounded-full absolute top-1 left-1 transition-all"></div>
+            <button id="themeToggle" class="group flex items-center justify-between w-full p-4 rounded-2xl hover:bg-white/5 border border-transparent hover:border-white/5 transition duration-300">
+                <div class="flex items-center gap-4">
+                    <div class="p-2 bg-indigo-500/10 text-indigo-500 rounded-xl group-hover:bg-indigo-500 group-hover:text-white transition">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    </div>
+                    <div class="text-left">
+                        <span class="block text-sm font-bold">Темна тема</span>
+                        <span class="block text-xs opacity-50 mt-0.5">Змінити вигляд додатку</span>
+                    </div>
+                </div>
+                <div class="toggle-bg w-12 h-6 bg-slate-700/50 rounded-full relative p-1 transition-colors duration-300">
+                    <div class="toggle-dot w-4 h-4 bg-white rounded-full shadow-md"></div>
                 </div>
             </button>
         </section>
 
-        <div id="profileSection">
-            </div>
+        <div id="profileSection"></div>
 
     </main>
 
     <script>
         const body = document.body;
         const themeBtn = document.getElementById('themeToggle');
-        const dot = document.getElementById('dot');
         const profileSection = document.getElementById('profileSection');
+        
+        // Для тестування дизайну тимчасово задаємо токен (видали або закоментуй в реальному проекті)
+        // localStorage.setItem('token', 'fake-token'); 
         const token = localStorage.getItem('token');
 
         // Логіка теми
         function updateThemeUI(theme) {
+            const themeLabel = themeBtn.querySelector('span.font-bold');
             if (theme === 'light') {
                 body.classList.add('light-theme');
-                dot.style.left = '22px';
+                themeLabel.innerText = 'Світла тема';
             } else {
                 body.classList.remove('light-theme');
-                dot.style.left = '4px';
+                themeLabel.innerText = 'Темна тема';
             }
         }
 
@@ -94,29 +128,72 @@
             updateThemeUI(theme);
         });
 
-        // Перевірка авторизації
+        // Перевірка авторизації та рендер профілю
         if (token) {
             profileSection.innerHTML = `
-                <section class="glass rounded-[32px] p-8 mb-6">
-                    <h2 class="text-xl font-black mb-6">Мій профіль</h2>
-                    <p class="text-sm text-slate-400 mb-6">Тут ви можете змінити свої дані.</p>
-                    <button class="w-full py-3 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition">Зберегти зміни</button>
+                <section class="glass rounded-[32px] p-8 mb-6 shadow-xl">
+                    <h2 class="text-xl font-black mb-8 flex items-center gap-3">
+                        <div class="w-2 h-6 bg-emerald-500 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
+                        Особисті дані
+                    </h2>
+                    
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <div class="flex flex-col items-center gap-4">
+                            <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-1 shadow-lg">
+                                <div class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center border-2 border-transparent">
+                                    <span class="text-2xl font-black text-white">A</span>
+                                </div>
+                            </div>
+                            <button class="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition">Змінити фото</button>
+                        </div>
+
+                        <div class="flex-1 space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase opacity-50 mb-2 ml-1">Ім'я користувача</label>
+                                <input type="text" value="Admin" class="w-full px-5 py-3 rounded-2xl input-glass focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase opacity-50 mb-2 ml-1">Email</label>
+                                <input type="email" value="admin@taskflow.com" class="w-full px-5 py-3 rounded-2xl input-glass focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition">
+                            </div>
+                            <div class="pt-4">
+                                <button class="px-6 py-3 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/20">
+                                    Зберегти зміни
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </section>
-                <button onclick="logout()" class="w-full py-3 border border-rose-500/30 text-rose-500 font-bold rounded-2xl hover:bg-rose-500 hover:text-white transition">Вийти</button>
+
+                <section class="glass rounded-[32px] p-8 shadow-xl border border-rose-500/10">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-bold text-rose-500 mb-1">Вихід з акаунта</h3>
+                            <p class="text-xs opacity-50">Завершити поточну сесію на цьому пристрої</p>
+                        </div>
+                        <button onclick="logout()" class="px-6 py-3 bg-rose-500/10 text-rose-500 font-bold rounded-2xl hover:bg-rose-500 hover:text-white transition">
+                            Вийти
+                        </button>
+                    </div>
+                </section>
             `;
         } else {
             profileSection.innerHTML = `
-                <div class="glass rounded-[32px] p-10 text-center border-dashed border-2 border-white/10 opacity-70">
-                    <h3 class="font-bold mb-4">Приватна зона</h3>
-                    <p class="text-sm text-slate-500 mb-6">Увійдіть, щоб отримати доступ до профілю</p>
-                    <a href="login.html" class="inline-block px-8 py-2 bg-indigo-600 text-white rounded-xl font-bold">Увійти</a>
+                <div class="glass rounded-[32px] p-12 text-center border-dashed border-2 border-white/10 opacity-80">
+                    <div class="w-16 h-16 mx-auto bg-white/5 rounded-full flex items-center justify-center mb-4">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" opacity="0.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    </div>
+                    <h3 class="font-black text-xl mb-2">Приватна зона</h3>
+                    <p class="text-sm opacity-50 mb-8 max-w-sm mx-auto">Увійдіть у свій акаунт TaskFlow, щоб отримати доступ до налаштувань профілю.</p>
+                    <a href="login.html" class="inline-block px-8 py-3 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 transition">Увійти в акаунт</a>
                 </div>
             `;
         }
 
         function logout() {
             localStorage.removeItem('token');
-            window.location.reload();
+            // Перенаправляємо на сторінку логіну після виходу
+            window.location.href = 'login.html';
         }
     </script>
 </body>

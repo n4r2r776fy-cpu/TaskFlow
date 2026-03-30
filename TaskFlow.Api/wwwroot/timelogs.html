@@ -27,7 +27,7 @@
             <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 px-2">Меню</h3>
             <ul class="space-y-1">
                 <li>
-                    <a href="index.html" class="px-3 py-2.5 rounded-lg transition-all flex items-center gap-3 font-medium text-sm text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer">
+                    <a href="tasks.html" class="px-3 py-2.5 rounded-lg transition-all flex items-center gap-3 font-medium text-sm text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                         Дашборд
                     </a>
@@ -113,7 +113,8 @@
         // ==========================================
         // 1. АВТОРИЗАЦІЯ ТА ПЕРЕВІРКА РОЛІ АДМІНА
         // ==========================================
-        const token = localStorage.getItem("jwtToken");
+        // ВИПРАВЛЕНО: Змінив "jwtToken" на "token", щоб співпадало з логіном!
+        const token = localStorage.getItem("token"); 
         
         if (!token) {
             window.location.href = "login.html";
@@ -140,11 +141,12 @@
             // Якщо користувач не Admin, блокуємо доступ
             if (userRole !== "Admin") {
                 alert("Доступ заборонено! Ця сторінка доступна лише для адміністраторів.");
-                window.location.href = "index.html"; // Повертаємо на головну
+                window.location.href = "tasks.html"; // Повертаємо на головну (змінив на tasks.html)
             }
         }
 
-        const API_BASE = "http://localhost:5143/api";
+        // ВИПРАВЛЕНО: Замінив localhost на відносний шлях!
+        const API_BASE = "/api"; 
         let allTasks = [];
 
         // ==========================================
@@ -274,11 +276,11 @@
                     method: "POST",
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                     body: JSON.stringify({ 
-    taskId: parseInt(taskId), 
-    timeSpent: parseFloat(hours), // Змінив hours на timeSpent
-    comment: desc,                // Змінив description на comment
-    loggedAt: new Date().toISOString() // Змінив date на loggedAt
-})
+                        taskId: parseInt(taskId), 
+                        timeSpent: parseFloat(hours), 
+                        comment: desc,                
+                        loggedAt: new Date().toISOString() 
+                    })
                 });
 
                 if (response.ok) {
@@ -308,7 +310,8 @@
         }
 
         function logout() {
-            localStorage.removeItem("jwtToken");
+            // ВИПРАВЛЕНО: Тепер видаляє правильний токен при виході
+            localStorage.removeItem("token"); 
             window.location.href = "login.html";
         }
 
