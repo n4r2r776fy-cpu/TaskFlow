@@ -84,7 +84,7 @@
             
             try {
                 // Відправляємо запит на логін (з твоїм портом 5143)
-                const response = await fetch('/api/Auth/login', {
+                const response = await fetch('http://localhost:5143/api/auth/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

@@ -88,7 +88,7 @@
 
             try {
                 // Звертаємося до нашого API. Перевір, чи порт 5000 збігається з твоїм!
-                const response = await fetch('/api/Auth/register', {
+                const response = await fetch('http://localhost:5143/api/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
