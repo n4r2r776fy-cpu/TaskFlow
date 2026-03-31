@@ -26,49 +26,98 @@
         .light-theme .input-glass { background: rgba(255,255,255,0.5); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-6">
+<body class="min-h-screen flex flex-col items-center justify-center p-6 relative">
     <div class="bg-grid"></div>
 
     <a href="index.html" class="absolute top-8 left-8 flex items-center gap-2 font-bold hover:text-indigo-500 transition opacity-50 hover:opacity-100">
-        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg> На головну
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg> На головну
     </a>
 
-    <div class="glass p-10 rounded-[32px] w-full max-w-md shadow-2xl reveal-item active">
+    <div class="glass p-10 rounded-[32px] w-full max-w-md shadow-2xl">
         <div class="text-center mb-8">
             <div class="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center text-white mx-auto mb-4 shadow-lg shadow-indigo-500/30">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
             </div>
             <h1 class="text-3xl font-black tracking-tight">З поверненням</h1>
-            <p class="text-sm text-slate-400 mt-2">Увійдіть у свій простір TaskFlow</p>
+            <p class="text-sm opacity-60 mt-2">Увійдіть у свій простір TaskFlow</p>
         </div>
 
-        <form id="loginForm" class="space-y-4">
+        <form id="loginForm" class="space-y-5">
             <div>
                 <label class="block text-xs font-bold uppercase opacity-50 mb-2 ml-1">Email</label>
-                <input type="email" required class="w-full px-5 py-4 rounded-2xl input-glass focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition" placeholder="name@example.com">
+                <input type="email" id="loginEmail" required class="w-full px-5 py-4 rounded-2xl input-glass focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition" placeholder="name@example.com">
             </div>
+            
             <div>
                 <label class="block text-xs font-bold uppercase opacity-50 mb-2 ml-1">Пароль</label>
-                <input type="password" required class="w-full px-5 py-4 rounded-2xl input-glass focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition" placeholder="••••••••">
+                <div class="relative">
+                    <input type="password" id="loginPass" required class="w-full pl-5 pr-12 py-4 rounded-2xl input-glass focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition" placeholder="••••••••">
+                    <button type="button" id="togglePassBtn" class="absolute right-4 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100 transition focus:outline-none">
+                        <svg id="eyeIcon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                        </svg>
+                    </button>
+                </div>
             </div>
-            <button type="submit" class="w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/20 mt-4">
-                Увійти
+
+            <button type="submit" id="submitBtn" class="w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/20 mt-6 flex items-center justify-center gap-2">
+                <span id="btnText">Увійти</span>
+                <svg id="btnSpinner" class="hidden animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
             </button>
         </form>
 
         <p class="text-center text-sm mt-8 opacity-60">
-            Немає акаунту? <a href="register.html" class="font-bold text-indigo-500 hover:text-indigo-400">Створити</a>
+            Немає акаунту? <a href="register.html" class="font-bold text-indigo-400 hover:text-indigo-300 transition hover:underline">Створити</a>
         </p>
     </div>
 
     <script>
+        // Перевірка теми
         if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-theme');
 
+        // Логіка показу/приховування пароля
+        const togglePassBtn = document.getElementById('togglePassBtn');
+        const loginPass = document.getElementById('loginPass');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        togglePassBtn.addEventListener('click', () => {
+            const type = loginPass.getAttribute('type') === 'password' ? 'text' : 'password';
+            loginPass.setAttribute('type', type);
+            
+            // Змінюємо іконку в залежності від стану
+            if (type === 'text') {
+                eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+            } else {
+                eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />`;
+            }
+        });
+
+        // Логіка відправки форми з ефектом завантаження
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            // Симуляція входу (ставимо фейковий токен)
-            localStorage.setItem('token', 'fake-jwt-token-123');
-            window.location.href = 'tasks.html'; // Перекидаємо в кабінет
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner');
+            const emailInput = document.getElementById('loginEmail').value;
+
+            // Вмикаємо стан завантаження
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
+            btnText.textContent = 'Завантаження...';
+            btnSpinner.classList.remove('hidden');
+
+            // Симулюємо затримку сервера (1 секунда)
+            setTimeout(() => {
+                localStorage.setItem('userEmail', emailInput);
+                localStorage.setItem('token', 'taskflow-auth-token-123');
+                
+                // Перекидаємо в кабінет
+                window.location.href = 'index.html'; 
+            }, 1000);
         });
     </script>
 </body>
