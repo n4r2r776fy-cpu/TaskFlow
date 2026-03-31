@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow - Організуй своє життя</title>
+    <title>TaskFlow - Твій космічний менеджер</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #020617;
@@ -13,192 +13,182 @@
             --text-muted: #94a3b8;
             --glass-bg: rgba(15, 23, 42, 0.6);
             --border: rgba(255, 255, 255, 0.05);
-            --blob-opacity: 0.4;
         }
 
         .light-theme {
-            --bg-color: #f8fafc;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --border: rgba(0, 0, 0, 0.05);
-            --blob-opacity: 0.15;
+            --bg-color: #f4f4f2;
+            --text-main: #1c1c1e;
+            --text-muted: #636366;
+            --glass-bg: rgba(255, 255, 255, 0.4);
+            --border: rgba(0, 0, 0, 0.08);
         }
 
         body { 
             font-family: 'Inter', sans-serif; 
-            scroll-behavior: smooth;
             background-color: var(--bg-color);
             color: var(--text-main);
-            transition: background-color 0.5s ease, color 0.5s ease;
+            transition: background-color 0.8s ease, color 0.5s ease;
             overflow-x: hidden;
         }
 
-        .bg-blob {
+        .bg-grid {
             position: fixed;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
+            inset: 0;
+            background-image: radial-gradient(var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
             z-index: -1;
-            filter: blur(80px);
-            opacity: var(--blob-opacity);
-            transition: opacity 0.5s ease;
-            animation: move 25s infinite alternate ease-in-out;
-        }
-
-        @keyframes move {
-            0% { transform: translate(-20%, -20%) scale(1); }
-            100% { transform: translate(80vw, 70vh) scale(1.2); }
+            opacity: 0.4;
         }
 
         .glass {
             background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--border);
-            transition: background 0.5s ease, border 0.5s ease;
-        }
-
-        .text-gradient {
-            background: linear-gradient(to right, #818cf8, #34d399);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeIn 1s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .btn-theme {
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .btn-theme:hover {
-            background: rgba(128, 128, 128, 0.1);
-            transform: rotate(15deg);
+        .reveal-item {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .reveal-item.active {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen">
 
-    <div class="bg-blob" style="top: -100px; left: -100px; background: radial-gradient(circle, #4338ca 0%, transparent 70%);"></div>
-    <div class="bg-blob" style="bottom: -100px; right: 10%; animation-duration: 30s; background: radial-gradient(circle, #065f46 0%, transparent 70%); animation-delay: -5s;"></div>
+    <div class="bg-grid"></div>
 
-    <nav class="fixed top-0 w-full z-50 glass border-b">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-<<<<<<< HEAD
-            <a href="index.html" class="text-2xl font-extrabold text-indigo-600 flex items-center gap-2">
-                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-sm">✓</div>
-                TaskFlow
-            </a>
-            <div class="flex items-center gap-4">
-                <a href="timelogs.html" id="adminBtn" class="hidden px-5 py-2.5 font-bold text-emerald-600 border border-emerald-600 rounded-xl hover:bg-emerald-50 transition flex items-center gap-2">
-                    <span>⏱</span> Логи
-                </a>
-                
-                <a href="login.html" id="loginBtn" class="px-6 py-2.5 font-bold text-indigo-600 border border-indigo-600 rounded-xl hover:bg-indigo-50 transition">Увійти</a>
-                <a href="register.html" id="regBtn" class="px-6 py-2.5 font-bold text-white bg-indigo-600 rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition">Реєстрація</a>
-=======
-            <a href="#" class="text-2xl font-extrabold flex items-center gap-2">
-                <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+    <nav class="fixed top-0 w-full z-50 glass border-b h-20">
+        <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+            <a href="index.html" class="text-2xl font-black flex items-center gap-3 tracking-tighter">
+                <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
                 </div>
                 TaskFlow
             </a>
             
-            <div class="flex items-center gap-4">
-                <button id="themeToggle" class="btn-theme text-current border border-white/10 glass">
+            <div class="flex items-center gap-3">
+                <a href="settings.html" class="w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 glass hover:bg-white/5 transition group">
+                    <svg class="w-5 h-5 text-slate-400 group-hover:rotate-90 transition-transform duration-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </a>
+
+                <button id="themeToggle" class="w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 glass hover:scale-110 transition">
                     <svg id="sunIcon" class="hidden" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
                     <svg id="moonIcon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
                 </button>
-
-                <div class="h-8 w-[1px] bg-white/10 mx-2 hidden sm:block"></div>
-                
-                <a href="login.html" class="px-5 py-2.5 font-bold hover:opacity-80 transition hidden sm:block">Увійти</a>
-                <a href="register.html" class="px-6 py-2.5 font-bold text-white bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 transition">Реєстрація</a>
->>>>>>> f9360d471fd5fa2e733c6a787dd18e9623068d6e
+                <div id="authButtons" class="flex gap-2"></div>
             </div>
         </div>
     </nav>
 
-    <section class="pt-48 pb-32 px-6 text-center reveal">
-        <h1 class="text-6xl md:text-8xl font-extrabold mb-8 tracking-tighter">
-            Керуй справами <br>
-            <span class="text-gradient font-black">космічно швидко</span>
-        </h1>
-        <p class="text-xl text-muted max-w-2xl mx-auto mb-12 leading-relaxed">
-            Залиш хаос у минулому. TaskFlow — це твій персональний командний центр для досягнення цілей у новому вимірі.
-        </p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-    <a href="register.html" class="px-8 py-3.5 bg-indigo-600 text-white font-extrabold rounded-xl shadow-xl shadow-indigo-500/30 hover:-translate-y-1 transition-all">
-        Почати безкоштовно
-    </a>
-</div>
-    </section>
+    <main class="relative z-10 max-w-5xl mx-auto px-6 pt-40 pb-20">
+        <div class="text-center mb-20 reveal-item active">
+            <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-8 bg-gradient-to-r from-indigo-500 via-emerald-500 to-indigo-600 bg-clip-text text-transparent">
+                TaskFlow
+            </h1>
+            <p class="text-xl text-slate-400 max-w-2xl mx-auto font-medium leading-relaxed">
+                Твій персональний простір для продуктивності. Створюй, плануй та досягай мети з комфортом.
+            </p>
+            <div id="heroActions" class="mt-12 flex justify-center min-h-[64px]"></div>
+        </div>
 
-    <section class="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-3 gap-8 relative z-10">
-        <div class="glass p-10 rounded-[40px] hover:-translate-y-3 transition-all duration-500 reveal group" style="animation-delay: 0.2s;">
-            <div class="w-16 h-16 bg-indigo-500/10 text-indigo-500 rounded-2xl flex items-center justify-center mb-8 text-3xl">🚀</div>
-            <h3 class="text-2xl font-bold mb-4">Миттєва робота</h3>
-            <p class="text-muted leading-relaxed">Блискавична реакція інтерфейсу на кожну твою дію завдяки C# .NET.</p>
+        <div class="reveal-item glass p-12 rounded-[40px] border border-white/5 mb-24">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-3xl font-black mb-10 tracking-tight">Чому обирають TaskFlow?</h2>
+                <div class="grid md:grid-cols-2 gap-12 text-left">
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-indigo-600/20 rounded-lg flex items-center justify-center text-indigo-500 font-bold">01</div>
+                            <span class="font-bold text-lg">Структура</span>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed">Керуйте проектами будь-якої складності. Створюйте необмежену кількість списків та завдань.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-emerald-600/20 rounded-lg flex items-center justify-center text-emerald-500 font-bold">02</div>
+                            <span class="font-bold text-lg">Фокус</span>
+                        </div>
+                        <p class="text-slate-400 text-sm leading-relaxed">Розумні пріоритети допомагають не загубитися в рутині та фокусуватися на головному.</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="glass p-10 rounded-[40px] hover:-translate-y-3 transition-all duration-500 reveal group" style="animation-delay: 0.4s;">
-            <div class="w-16 h-16 bg-emerald-500/10 text-emerald-500 rounded-2xl flex items-center justify-center mb-8 text-3xl">🔒</div>
-            <h3 class="text-2xl font-bold mb-4">Безпека даних</h3>
-            <p class="text-muted leading-relaxed">Твої завдання під надійним захистом сучасних протоколів шифрування.</p>
-        </div>
-        <div class="glass p-10 rounded-[40px] hover:-translate-y-3 transition-all duration-500 reveal group" style="animation-delay: 0.6s;">
-            <div class="w-16 h-16 bg-purple-500/10 text-purple-500 rounded-2xl flex items-center justify-center mb-8 text-3xl">💎</div>
-            <h3 class="text-2xl font-bold mb-4">Преміум дизайн</h3>
-            <p class="text-muted leading-relaxed">Інтерфейс, який надихає на роботу, а не відволікає від неї.</p>
-        </div>
-    </section>
 
-    <footer class="text-center py-20 border-t border-white/5 mt-20">
-        <p class="text-muted font-medium">© 2026 TaskFlow. Майбутнє продуктивності вже тут.</p>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="reveal-item glass p-8 rounded-[32px]">
+                <h3 class="text-xl font-bold mb-3 text-indigo-500">Швидкість</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Миттєве збереження та синхронізація ваших даних у реальному часі.</p>
+            </div>
+            <div class="reveal-item glass p-8 rounded-[32px]" style="transition-delay: 0.1s;">
+                <h3 class="text-xl font-bold mb-3 text-emerald-500">Безпека</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Ваші дані надійно захищені сучасними методами шифрування.</p>
+            </div>
+            <div class="reveal-item glass p-8 rounded-[32px]" style="transition-delay: 0.2s;">
+                <h3 class="text-xl font-bold mb-3 text-purple-500">Мінімалізм</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Нічого зайвого. Тільки ви та ваші завдання у чистому інтерфейсі.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-16 opacity-30 text-[10px] font-black tracking-[0.3em] uppercase">
+        Designed for Growth 2026
     </footer>
 
     <script>
+        const body = document.body;
         const toggleBtn = document.getElementById('themeToggle');
         const sunIcon = document.getElementById('sunIcon');
         const moonIcon = document.getElementById('moonIcon');
-        const body = document.body;
 
-        // Перевірка збереженої теми
-        if (localStorage.getItem('theme') === 'light') {
-            body.classList.add('light-theme');
-            sunIcon.classList.remove('hidden');
-            moonIcon.classList.add('hidden');
-        }
-
-        toggleBtn.addEventListener('click', () => {
-            body.classList.toggle('light-theme');
-            
-            const isLight = body.classList.contains('light-theme');
-            localStorage.setItem('theme', isLight ? 'light' : 'dark');
-
-            // Зміна іконок
-            if (isLight) {
+        // Логіка теми
+        function setTheme(theme) {
+            if (theme === 'light') {
+                body.classList.add('light-theme');
                 sunIcon.classList.remove('hidden');
                 moonIcon.classList.add('hidden');
             } else {
+                body.classList.remove('light-theme');
                 sunIcon.classList.add('hidden');
                 moonIcon.classList.remove('hidden');
             }
-        });
+            localStorage.setItem('theme', theme);
+        }
+
+        setTheme(localStorage.getItem('theme') || 'dark');
+        toggleBtn.addEventListener('click', () => setTheme(body.classList.contains('light-theme') ? 'dark' : 'light'));
+
+        // Анімації появи
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
+
+        // Динамічні кнопки (Авторизація)
+        function updateUI() {
+            const token = localStorage.getItem('token');
+            const authButtons = document.getElementById('authButtons');
+            const heroActions = document.getElementById('heroActions');
+
+            if (token) {
+                authButtons.innerHTML = `<a href="tasks.html" class="px-5 py-2 font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition">Кабінет</a>`;
+                heroActions.innerHTML = `<a href="tasks.html" class="px-10 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-xl hover:scale-105 transition">Продовжити роботу</a>`;
+            } else {
+                authButtons.innerHTML = `
+                    <a href="login.html" class="px-5 py-2 font-bold hover:text-indigo-500 transition">Увійти</a>
+                    <a href="register.html" class="px-5 py-2 font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition">Реєстрація</a>
+                `;
+                heroActions.innerHTML = `<a href="register.html" class="px-10 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-xl hover:scale-105 transition">Почати безкоштовно</a>`;
+            }
+        }
+        updateUI();
     </script>
 </body>
 </html>

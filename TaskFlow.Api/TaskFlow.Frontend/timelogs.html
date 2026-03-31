@@ -67,11 +67,7 @@
 
                     <div class="w-full md:w-32">
                         <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 px-1">Годин</label>
-<<<<<<< HEAD
-                        <input type="number" id="timeHours" placeholder="0.5" min="0.1" step="0.1" required
-=======
                         <input type="number" id="timeHours" placeholder="0" min="0" step="0.5" required
->>>>>>> c585a7edc57e705aac940c474d48dd6dd51d1240
                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all font-medium text-center">
                     </div>
 
@@ -113,23 +109,6 @@
         </div>
     </main>
 
-<<<<<<< HEAD
-    <script src="app.js"></script>
-<script>
-    Auth.requireAuth();
-
-    function saveTime(taskId) {
-        const timeInMinutes = 120; // наприклад, користувач ввів 2 години
-        const comment = "Налаштовував базу даних";
-        
-        TimeTracker.addLog(taskId, timeInMinutes, comment);
-        
-        // Як показати загальний час:
-        const totalMinutes = TimeTracker.getTaskTotalTime(taskId);
-        console.log(`Витрачено загалом: ${totalMinutes} хвилин`);
-    }
-</script>
-=======
     <script>
         // ==========================================
         // 1. АВТОРИЗАЦІЯ ТА ПЕРЕВІРКА РОЛІ АДМІНА
@@ -336,6 +315,5 @@
         // Запуск
         loadTasksForSelect().then(loadTimeLogs);
     </script>
->>>>>>> c585a7edc57e705aac940c474d48dd6dd51d1240
 </body>
 </html>

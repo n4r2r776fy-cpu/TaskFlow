@@ -8,16 +8,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #05050f;
-            --card-bg: #0d1126;
+            --bg-color: #020617;
             --text-main: #f8fafc;
+            --glass-bg: rgba(15, 23, 42, 0.6);
             --border: rgba(255, 255, 255, 0.05);
         }
 
         .light-theme {
             --bg-color: #f4f4f2;
-            --card-bg: #ffffff;
             --text-main: #1c1c1e;
+            --glass-bg: rgba(255, 255, 255, 0.5);
             --border: rgba(0, 0, 0, 0.08);
         }
 
@@ -25,296 +25,98 @@
             font-family: 'Inter', sans-serif; 
             background-color: var(--bg-color);
             color: var(--text-main);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: all 0.5s ease;
         }
 
-        .bg-grid { 
-            position: fixed; inset: 0; 
-            background-image: radial-gradient(var(--border) 1px, transparent 1px); 
-            background-size: 40px 40px; 
-            z-index: -1; opacity: 0.5; 
-        }
-
-        .setting-card {
-            background: var(--card-bg);
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--border);
-            transition: background 0.3s ease, border 0.3s ease;
-        }
-
-        .input-dark { 
-            background: rgba(0,0,0,0.3); 
-            border: 1px solid var(--border); 
-            color: inherit; 
-        }
-        
-        .light-theme .input-dark { 
-            background: rgba(0,0,0,0.05); 
-        }
-
-        /* Стилі для перемикачів (Toggle) */
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: #6366f1;
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #6366f1;
-        }
-        .toggle-checkbox:checked + .toggle-label:after {
-            transform: translateX(100%);
-            border-color: white;
-        }
-        
-        .toggle-label {
-            width: 44px;
-            height: 24px;
-            background-color: #334155;
-            border-radius: 9999px;
-            position: relative;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        
-        .toggle-label:after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
-            background-color: white;
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .avatar-hover-overlay {
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .group:hover .avatar-hover-overlay {
-            opacity: 1;
         }
     </style>
 </head>
-<body class="min-h-screen pb-12">
-    <div class="bg-grid"></div>
+<body class="min-h-screen">
 
-    <nav class="setting-card sticky top-0 z-50 border-b border-white/5 h-20 mb-12 shadow-sm">
-        <div class="max-w-3xl mx-auto px-6 h-full flex items-center justify-between">
-            <a href="index.html" class="flex items-center gap-2 font-bold hover:text-indigo-500 transition opacity-70 hover:opacity-100">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    <nav class="glass border-b h-20 mb-12">
+        <div class="max-w-4xl mx-auto px-6 h-full flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 font-bold hover:text-indigo-500 transition">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
                 На головну
             </a>
-            <span class="text-xs font-black uppercase tracking-widest opacity-40">Налаштування</span>
+            <span class="text-xs font-black uppercase tracking-widest opacity-30">Settings</span>
         </div>
     </nav>
 
-    <main class="max-w-3xl mx-auto px-6 space-y-6">
+    <main class="max-w-2xl mx-auto px-6">
         
-        <section class="setting-card rounded-[32px] p-8 shadow-xl">
+        <section class="glass rounded-[32px] p-8 mb-6">
             <h2 class="text-xl font-black mb-6 flex items-center gap-3">
-                <div class="w-2 h-6 bg-indigo-500 rounded-full"></div>
+                <div class="w-2 h-6 bg-indigo-600 rounded-full"></div>
                 Інтерфейс
             </h2>
-            <div class="flex items-center justify-between p-2">
-                <div class="flex items-center gap-4">
-                    <div class="p-3 bg-indigo-500/10 text-indigo-400 rounded-2xl">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-                    </div>
-                    <div class="text-left">
-                        <span class="block text-sm font-bold theme-text">Темна тема</span>
-                        <span class="block text-xs opacity-50 mt-0.5">Змінити вигляд додатку</span>
-                    </div>
+            <button id="themeToggle" class="flex items-center justify-between w-full p-4 rounded-2xl hover:bg-white/5 border border-white/5 transition">
+                <span class="text-sm font-medium">Змінити тему (Світла/Темна)</span>
+                <div class="w-10 h-6 bg-indigo-600/20 rounded-full relative">
+                    <div id="dot" class="w-4 h-4 bg-indigo-600 rounded-full absolute top-1 left-1 transition-all"></div>
                 </div>
-                <div class="relative inline-block w-11 mr-2 align-middle select-none transition duration-200 ease-in">
-                    <input type="checkbox" name="toggle" id="themeToggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer opacity-0 z-10"/>
-                    <label for="themeToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-                </div>
-            </div>
+            </button>
         </section>
 
-        <div id="profileSection"></div>
+        <div id="profileSection">
+            </div>
 
     </main>
 
     <script>
         const body = document.body;
-        const themeToggleInput = document.getElementById('themeToggle');
+        const themeBtn = document.getElementById('themeToggle');
+        const dot = document.getElementById('dot');
         const profileSection = document.getElementById('profileSection');
-        
-        // ======================
-        // АВТОРИЗАЦІЯ ТА ТОКЕН
-        // ======================
         const token = localStorage.getItem('token');
-        
-        // Якщо токена немає - викидаємо на логін
-        if (!token) {
-            window.location.replace('login.html');
-        }
 
-        // Функція для читання даних з JWT токена
-        function parseJwt(token) {
-            try {
-                const base64Url = token.split('.')[1];
-                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-                }).join(''));
-                return JSON.parse(jsonPayload);
-            } catch (e) {
-                return null;
-            }
-        }
-
-        // Дістаємо дані профілю з токена або локального сховища (якщо ім'я змінили вручну)
-        const tokenData = parseJwt(token) || {};
-        
-        // Шукаємо ім'я у стандартних полях токена ASP.NET
-        const tokenName = tokenData['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || tokenData.unique_name || tokenData.name;
-        const tokenEmail = tokenData['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || tokenData.email;
-
-        // Пріоритет: 1) збережене ім'я в налаштуваннях, 2) ім'я з токена, 3) заглушка
-        const currentUserName = localStorage.getItem('userName') || tokenName || 'Користувач';
-        const currentUserEmail = tokenEmail || 'Немає пошти';
-        const userInitial = currentUserName.charAt(0).toUpperCase();
-
-        // ======================
-        // ЛОГІКА ТЕМИ
-        // ======================
+        // Логіка теми
         function updateThemeUI(theme) {
-            const themeLabel = document.querySelector('.theme-text');
             if (theme === 'light') {
                 body.classList.add('light-theme');
-                themeLabel.innerText = 'Світла тема';
-                themeToggleInput.checked = true; 
+                dot.style.left = '22px';
             } else {
                 body.classList.remove('light-theme');
-                themeLabel.innerText = 'Темна тема';
-                themeToggleInput.checked = false; 
+                dot.style.left = '4px';
             }
         }
 
         updateThemeUI(localStorage.getItem('theme') || 'dark');
 
-        themeToggleInput.addEventListener('change', (e) => {
-            const theme = e.target.checked ? 'light' : 'dark';
+        themeBtn.addEventListener('click', () => {
+            const isLight = body.classList.toggle('light-theme');
+            const theme = isLight ? 'light' : 'dark';
             localStorage.setItem('theme', theme);
             updateThemeUI(theme);
         });
 
-        // ======================
-        // РЕНДЕР ПРОФІЛЮ
-        // ======================
-        profileSection.innerHTML = `
-            <section class="setting-card rounded-[32px] p-8 mb-6 shadow-xl">
-                <h2 class="text-xl font-black mb-8 flex items-center gap-3">
-                    <div class="w-2 h-6 bg-emerald-500 rounded-full"></div>
-                    Особисті дані
-                </h2>
-                
-                <div class="flex flex-col md:flex-row gap-10 items-start">
-                    <div class="flex flex-col items-center gap-4">
-                        <input type="file" id="avatarInput" accept="image/*" class="hidden">
-                        
-                        <button id="avatarUploadBtn" class="group relative w-28 h-28 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-1 shadow-lg hover:scale-105 transition-transform duration-300">
-                            <div id="avatarPreview" class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center overflow-hidden bg-cover bg-center relative border-[3px] border-[#0d1126]">
-                                <span id="avatarInitials" class="text-4xl font-black text-white z-10">${userInitial}</span>
-                                <div class="avatar-hover-overlay absolute inset-0 bg-black/60 flex items-center justify-center z-20">
-                                    <svg width="24" height="24" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="4"/></svg>
-                                </div>
-                            </div>
-                        </button>
-                        <button onclick="document.getElementById('avatarInput').click()" class="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition">Змінити фото</button>
-                    </div>
-
-                    <div class="flex-1 w-full space-y-5">
-                        <div>
-                            <label class="block text-xs font-bold uppercase opacity-50 mb-2 ml-1">Ім'я користувача</label>
-                            <input type="text" id="nameInput" value="${currentUserName}" class="w-full px-5 py-3 rounded-xl input-dark focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase opacity-50 mb-2 ml-1">Email</label>
-                            <input type="email" id="emailInput" value="${currentUserEmail}" disabled class="w-full px-5 py-3 rounded-xl input-dark opacity-50 cursor-not-allowed" title="Пошту не можна змінити">
-                        </div>
-                        <div class="pt-2">
-                            <button onclick="saveProfile()" class="px-6 py-3 bg-indigo-500 text-white font-bold rounded-xl hover:bg-indigo-600 transition shadow-lg shadow-indigo-500/20">
-                                Зберегти зміни
-                            </button>
-                            <span id="saveMessage" class="ml-4 text-sm text-emerald-400 opacity-0 transition-opacity">Збережено локально!</span>
-                        </div>
-                    </div>
+        // Перевірка авторизації
+        if (token) {
+            profileSection.innerHTML = `
+                <section class="glass rounded-[32px] p-8 mb-6">
+                    <h2 class="text-xl font-black mb-6">Мій профіль</h2>
+                    <p class="text-sm text-slate-400 mb-6">Тут ви можете змінити свої дані.</p>
+                    <button class="w-full py-3 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition">Зберегти зміни</button>
+                </section>
+                <button onclick="logout()" class="w-full py-3 border border-rose-500/30 text-rose-500 font-bold rounded-2xl hover:bg-rose-500 hover:text-white transition">Вийти</button>
+            `;
+        } else {
+            profileSection.innerHTML = `
+                <div class="glass rounded-[32px] p-10 text-center border-dashed border-2 border-white/10 opacity-70">
+                    <h3 class="font-bold mb-4">Приватна зона</h3>
+                    <p class="text-sm text-slate-500 mb-6">Увійдіть, щоб отримати доступ до профілю</p>
+                    <a href="login.html" class="inline-block px-8 py-2 bg-indigo-600 text-white rounded-xl font-bold">Увійти</a>
                 </div>
-            </section>
-
-            <section class="setting-card rounded-[32px] p-8 shadow-xl border border-rose-500/10">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div>
-                        <h3 class="font-bold text-rose-500 mb-1">Вихід з акаунта</h3>
-                        <p class="text-xs opacity-50">Завершити поточну сесію на цьому пристрої</p>
-                    </div>
-                    <button onclick="logout()" class="px-8 py-3 bg-rose-500/10 text-rose-500 font-bold rounded-xl hover:bg-rose-500 hover:text-white transition shadow-lg shadow-rose-500/5">
-                        Вийти
-                    </button>
-                </div>
-            </section>
-        `;
-
-        // Логіка для фото профілю (залишається у браузері користувача)
-        const avatarInput = document.getElementById('avatarInput');
-        const avatarPreview = document.getElementById('avatarPreview');
-        const avatarInitials = document.getElementById('avatarInitials');
-        const savedAvatar = localStorage.getItem('userAvatar');
-
-        if (savedAvatar) {
-            avatarPreview.style.backgroundImage = `url(${savedAvatar})`;
-            avatarInitials.style.display = 'none';
+            `;
         }
 
-        document.getElementById('avatarUploadBtn').addEventListener('click', () => avatarInput.click());
-
-        avatarInput.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const base64Image = e.target.result;
-                    avatarPreview.style.backgroundImage = `url(${base64Image})`;
-                    avatarInitials.style.display = 'none';
-                    localStorage.setItem('userAvatar', base64Image);
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Збереження нових даних
-        function saveProfile() {
-            const newName = document.getElementById('nameInput').value.trim();
-            
-            if (newName) {
-                // Зберігаємо нове ім'я локально
-                localStorage.setItem('userName', newName);
-                
-                // Якщо захочеш, щоб ім'я мінялося і в Базі Даних, тут потрібно буде додати:
-                // fetch('https://твій-api/users/update', { method: 'PUT', body: JSON.stringify({ name: newName }) ... })
-                
-                // Оновлюємо літеру, якщо фото не завантажено
-                if(!localStorage.getItem('userAvatar')) {
-                    document.getElementById('avatarInitials').innerText = newName.charAt(0).toUpperCase();
-                }
-
-                // Показуємо повідомлення "Збережено!"
-                const msg = document.getElementById('saveMessage');
-                msg.style.opacity = '1';
-                setTimeout(() => { msg.style.opacity = '0'; }, 2000);
-            }
-        }
-
-        // Логіка виходу
         function logout() {
             localStorage.removeItem('token');
-            localStorage.removeItem('userName'); 
-            // localStorage.removeItem('userAvatar'); // Розбери коментар, якщо хочеш скидати аватар при виході
-            window.location.replace('login.html');
+            window.location.reload();
         }
     </script>
 </body>

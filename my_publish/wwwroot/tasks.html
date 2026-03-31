@@ -3,266 +3,465 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow - Завдання</title>
+    <title>TaskFlow - Дашборд</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: white; }
-        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); }
-        .priority-low { color: #34d399; background: rgba(52, 211, 153, 0.1); }
-        .priority-medium { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
-        .priority-high { color: #f87171; background: rgba(248, 113, 113, 0.1); }
+        body { font-family: 'Inter', sans-serif; }
+        /* Кастомний скроллбар для бокового меню */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden">
+<body class="bg-slate-50 h-screen flex overflow-hidden text-slate-800">
 
-    <script src="app.js"></script>
-
-    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col hidden md:flex">
-        <div class="p-5 border-b border-slate-800 flex items-center justify-between">
-            <h1 class="text-xl font-bold flex items-center gap-2">
-                <span class="bg-indigo-600 p-1.5 rounded-lg">📋</span> TaskFlow
-            </h1>
-        </div>
-        
-        <div class="p-4 flex-1 overflow-y-auto">
-            <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Твої проєкти</h2>
-            <ul id="projectList" class="space-y-1">
-                </ul>
-        </div>
-
-        <div class="p-4 border-t border-slate-800">
-            <form id="projectForm" class="flex gap-2 mb-4">
-                <input type="text" id="newProjectName" placeholder="Новий проєкт..." class="w-full bg-slate-800 text-sm rounded-lg px-3 py-2 border border-slate-700 focus:border-indigo-500 outline-none" required>
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 rounded-lg px-3 py-2 text-white font-bold">+</button>
-            </form>
-
-            <div class="flex items-center justify-between text-sm text-slate-400">
-                <span id="userNameDisplay">User</span>
-                <button onclick="Auth.logout()" class="hover:text-rose-400 transition">Вийти</button>
+    <aside class="w-72 bg-slate-900 text-white flex flex-col shadow-2xl z-20">
+        <div class="h-20 flex items-center px-6 border-b border-slate-800">
+            <div class="flex items-center gap-3 text-indigo-400">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                <span class="text-xl font-extrabold tracking-wide text-white">TaskFlow</span>
             </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-4">
+            <div id="adminSection" class="hidden mb-6">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 px-2">Адміністрування</h3>
+                <a href="timelogs.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all font-medium text-sm text-emerald-400 hover:bg-slate-800 hover:text-emerald-300">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Історія часу (Логи)
+                </a>
+            </div>
+
+            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 px-2">Мої проєкти</h3>
+            <ul id="projectsList" class="space-y-1">
+                <li class="px-3 py-2 text-slate-400 text-sm animate-pulse">Завантаження проєктів...</li>
+            </ul>
+        </div>
+
+        <div class="p-4 border-t border-slate-800 bg-slate-900/50">
+            <form id="createProjectForm" class="flex gap-2">
+                <input type="text" id="projectName" placeholder="Новий проєкт..." required
+                       class="w-full bg-slate-800 text-white placeholder-slate-400 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all border border-slate-700">
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg font-bold transition-all shadow-lg shadow-indigo-500/30">
+                    +
+                </button>
+            </form>
         </div>
     </aside>
 
-    <main class="flex-1 flex flex-col h-screen overflow-y-auto p-6 lg:p-10 relative">
-        <header class="flex justify-between items-end mb-8">
-            <div>
-                <h2 id="currentProjectTitle" class="text-3xl font-bold mb-2">Оберіть проєкт</h2>
-                <p class="text-slate-400 text-sm">Керуй своїми завданнями та досягай цілей швидше.</p>
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between shadow-sm shrink-0 min-h-[5rem]">
+            <div class="flex-1">
+                <h2 id="currentProjectTitle" class="text-2xl font-bold text-slate-800 flex items-center gap-3">
+                    <span class="text-slate-400">👋</span> Виберіть проєкт
+                </h2>
+                <div id="projectProgressContainer" class="hidden mt-2 max-w-md">
+                    <div class="flex justify-between text-xs font-semibold text-slate-500 mb-1">
+                        <span>Прогрес виконання:</span>
+                        <span id="projectProgressText">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div id="projectProgressBar" class="bg-indigo-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
             </div>
-            <button id="deleteProjectBtn" onclick="deleteCurrentProject()" class="text-rose-500 hover:text-rose-400 text-sm font-medium hidden flex items-center gap-2">
-                🗑 Видалити проєкт
-            </button>
+            
+            <div class="flex items-center gap-4">
+                <button onclick="deleteCurrentProject()" id="deleteProjectBtn" class="hidden flex items-center gap-2 px-4 py-2 text-sm text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors font-bold">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    Видалити проєкт
+                </button>
+                <button onclick="logout()" class="text-sm font-bold text-slate-500 hover:text-red-500 bg-slate-100 hover:bg-red-50 px-4 py-2 rounded-lg transition-all">
+                    Вийти
+                </button>
+            </div>
         </header>
 
-        <div id="taskFormContainer" class="glass-panel border border-slate-700 rounded-2xl p-4 mb-8 hidden">
-            <form id="taskForm" class="flex flex-wrap gap-3 items-center">
-                <input type="text" id="taskTitle" placeholder="Що потрібно зробити?" class="flex-1 bg-transparent border-none outline-none text-white placeholder-slate-500 min-w-[200px]" required>
-                
-                <input type="text" id="taskDesc" placeholder="Деталі (необов'язково)..." class="flex-1 bg-slate-800/50 rounded-lg px-3 py-2 text-sm border border-slate-700 outline-none min-w-[150px]">
-                
-                <select id="taskPriority" class="bg-slate-800 text-sm rounded-lg px-3 py-2 border border-slate-700 outline-none">
-                    <option value="low">Низький пріоритет</option>
-                    <option value="medium" selected>Середній пріоритет</option>
-                    <option value="high">Високий пріоритет</option>
-                </select>
-
-                <input type="date" id="taskDate" class="bg-slate-800 text-sm rounded-lg px-3 py-2 border border-slate-700 outline-none cursor-pointer">
-                
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg px-6 py-2 transition shadow-lg">Додати</button>
-            </form>
-        </div>
-
-        <div id="tasksContainer" class="space-y-3">
-            <div id="emptyState" class="text-center py-20 text-slate-500 hidden">
-                <p>Тут поки порожньо. Створіть проєкт або додайте завдання.</p>
+        <div class="flex-1 overflow-y-auto p-8 relative">
+            
+            <div id="emptyState" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-slate-50 z-10">
+                <div class="w-24 h-24 bg-indigo-100 text-indigo-500 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Немає активного проєкту</h3>
+                <p class="text-slate-500 max-w-sm">Створіть новий проєкт у меню зліва або виберіть існуючий, щоб почати керувати своїми завданнями.</p>
             </div>
+
+            <div id="taskCreationBox" class="hidden mb-8 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <form id="createTaskForm" class="flex flex-col md:flex-row gap-4">
+                    <input type="text" id="taskTitle" placeholder="Що потрібно зробити?" required
+                           class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all font-medium placeholder-slate-400">
+                    
+                    <input type="text" id="taskDesc" placeholder="Деталі (необов'язково)..."
+                           class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-sm placeholder-slate-400">
+                    
+                    <input type="date" id="taskDueDate" 
+                           class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-sm text-slate-500 cursor-pointer">
+
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95 whitespace-nowrap">
+                        Додати завдання
+                    </button>
+                </form>
+            </div>
+
+            <div id="tasksContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 relative z-0">
+            </div>
+
         </div>
     </main>
 
     <script>
-        // 1. Перевірка авторизації
-        Auth.requireAuth();
-        const currentUser = Auth.getCurrentUser();
-        document.getElementById('userNameDisplay').innerText = currentUser.username;
+        // 1. ПЕРЕВІРКА ТОКЕНА ТА РОЛІ
+        const token = localStorage.getItem("jwtToken");
+        if (!token) window.location.href = "login.html";
 
-        // Стан сторінки
-        let activeProjectId = null;
-
-        // Елементи DOM
-        const projectListEl = document.getElementById('projectList');
-        const projectFormEl = document.getElementById('projectForm');
-        const tasksContainerEl = document.getElementById('tasksContainer');
-        const taskFormContainer = document.getElementById('taskFormContainer');
-        const taskFormEl = document.getElementById('taskForm');
-        const currentProjectTitleEl = document.getElementById('currentProjectTitle');
-        const emptyStateEl = document.getElementById('emptyState');
-        const deleteProjectBtn = document.getElementById('deleteProjectBtn');
-
-        // 2. РЕНДЕР ПРОЄКТІВ
-        function renderProjects() {
-            const projects = Projects.getAll();
-            projectListEl.innerHTML = '';
-            
-            if(projects.length > 0 && !activeProjectId) {
-                activeProjectId = projects[0].id; // Обираємо перший за замовчуванням
+        // Перевіряємо роль одразу при завантаженні
+        (function checkAdmin() {
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                const role = payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || payload.role;
+                if (role === "Admin") {
+                    document.getElementById("adminSection").classList.remove("hidden");
+                }
+            } catch (e) {
+                console.error("Помилка парсингу токена:", e);
             }
+        })();
 
-            projects.forEach(p => {
-                const isActive = p.id === activeProjectId;
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <button onclick="selectProject('${p.id}')" class="w-full text-left px-3 py-2 rounded-lg text-sm transition font-medium ${isActive ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}">
-                        ${p.name}
-                    </button>
-                `;
-                projectListEl.appendChild(li);
-            });
+        // 2. БАЗОВИЙ URL БЕКЕНДУ
+        const API_BASE = "http://localhost:5143/api";
+        
+        let currentProjectId = null;
+        let allTasks = [];
 
-            updateMainView();
-        }
+        // --- ЛОГІКА ПРОЄКТІВ ---
 
-        // 3. ВИБІР ПРОЄКТУ
-        window.selectProject = function(id) {
-            activeProjectId = id;
-            renderProjects();
-        }
-
-        // 4. ДОДАВАННЯ ПРОЄКТУ
-        projectFormEl.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const nameInput = document.getElementById('newProjectName');
-            const name = nameInput.value.trim();
-            if(name) {
-                const newProject = Projects.create(name);
-                activeProjectId = newProject.id;
-                nameInput.value = '';
-                renderProjects();
-            }
-        });
-
-        // ВИДАЛЕННЯ ПРОЄКТУ
-        window.deleteCurrentProject = function() {
-            if(confirm('Видалити цей проєкт з усіма завданнями?')) {
-                Projects.delete(activeProjectId);
-                activeProjectId = null;
-                renderProjects();
+        async function loadProjects() {
+            try {
+                const response = await fetch(`${API_BASE}/Projects`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const projects = await response.json();
+                    renderProjects(projects);
+                } else if (response.status === 401) {
+                    alert("Сесія закінчилась. Увійдіть знову.");
+                    logout();
+                } else {
+                    document.getElementById("projectsList").innerHTML = `<li class="px-3 py-2 text-red-400 text-sm">Помилка завантаження</li>`;
+                }
+            } catch (error) { 
+                document.getElementById("projectsList").innerHTML = `<li class="px-3 py-2 text-red-400 text-sm">Немає зв'язку</li>`;
             }
         }
 
-        // 5. РЕНДЕР ЗАВДАНЬ
-        function updateMainView() {
-            if (!activeProjectId) {
-                currentProjectTitleEl.innerText = "Створіть або оберіть проєкт";
-                taskFormContainer.classList.add('hidden');
-                deleteProjectBtn.classList.add('hidden');
-                tasksContainerEl.innerHTML = '';
-                emptyStateEl.classList.remove('hidden');
-                tasksContainerEl.appendChild(emptyStateEl);
+        function renderProjects(projects) {
+            const list = document.getElementById("projectsList");
+            list.innerHTML = "";
+
+            const projectsArray = Array.isArray(projects) ? projects : (projects.$values || projects.data || []);
+
+            if (projectsArray.length === 0) {
+                list.innerHTML = `<li class="px-3 py-2 text-slate-500 text-sm italic">Проєктів ще немає</li>`;
                 return;
             }
 
-            const projects = Projects.getAll();
-            const currentProject = projects.find(p => p.id === activeProjectId);
-            
-            if(currentProject) {
-                currentProjectTitleEl.innerText = currentProject.name;
-                taskFormContainer.classList.remove('hidden');
-                deleteProjectBtn.classList.remove('hidden');
-            }
-
-            const tasks = Tasks.getAll(activeProjectId);
-            tasksContainerEl.innerHTML = '';
-
-            if (tasks.length === 0) {
-                emptyStateEl.classList.remove('hidden');
-                tasksContainerEl.appendChild(emptyStateEl);
-            } else {
-                emptyStateEl.classList.add('hidden');
+            projectsArray.forEach(proj => {
+                const li = document.createElement("li");
                 
-                tasks.forEach(task => {
-                    const isDone = task.status === 'done';
-                    const isInProgress = task.status === 'in_progress';
-                    
-                    // Переклад пріоритетів
-                    const priorityLabels = { 'low': 'Низький', 'medium': 'Середній', 'high': 'Високий' };
-                    
-                    // Відображення дедлайну
-                    let dateHtml = '';
-                    if(task.due_date) {
-                        dateHtml = `<span class="text-xs font-mono bg-slate-800 px-2 py-1 rounded text-slate-300 border border-slate-700">🗓 ${task.due_date}</span>`;
-                    }
+                const projId = proj.id || proj.Id;
+                const projName = proj.title || proj.Title || proj.name || proj.Name || "Проєкт без назви";
+                
+                const baseClasses = "px-3 py-2.5 rounded-lg cursor-pointer transition-all flex items-center gap-3 font-medium text-sm ";
+                const activeClasses = projId === currentProjectId 
+                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-900/20" 
+                    : "text-slate-300 hover:bg-slate-800 hover:text-white";
+                
+                li.className = baseClasses + activeClasses;
+                li.innerHTML = `
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                    <span class="truncate">${projName}</span>
+                `;
+                
+                li.onclick = () => selectProject(projId, projName);
+                list.appendChild(li);
+            });
 
-                    const taskEl = document.createElement('div');
-                    taskEl.className = `glass-panel p-4 rounded-xl border border-slate-700 flex flex-col sm:flex-row gap-4 items-start sm:items-center transition ${isDone ? 'opacity-50' : ''}`;
-                    
-                    taskEl.innerHTML = `
-                        <div class="flex items-center gap-3 flex-1 min-w-0 w-full">
-                            <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTaskDone('${task.id}', this.checked)" class="w-5 h-5 rounded border-slate-600 bg-slate-800 focus:ring-indigo-500 cursor-pointer flex-shrink-0">
-                            
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <h4 class="font-semibold text-sm truncate ${isDone ? 'line-through text-slate-400' : 'text-white'}">${task.title}</h4>
-                                    <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full priority-${task.priority}">
-                                        ${priorityLabels[task.priority]}
-                                    </span>
-                                </div>
-                                ${task.description ? `<p class="text-xs text-slate-400 truncate">${task.description}</p>` : ''}
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 border-slate-700 pt-3 sm:pt-0 mt-2 sm:mt-0">
-                            ${dateHtml}
-                            
-                            <select onchange="changeTaskStatus('${task.id}', this.value)" class="text-xs bg-slate-800 border border-slate-600 rounded px-2 py-1 outline-none cursor-pointer" ${isDone ? 'disabled' : ''}>
-                                <option value="todo" ${task.status === 'todo' ? 'selected' : ''}>До виконання</option>
-                                <option value="in_progress" ${task.status === 'in_progress' ? 'selected' : ''}>⏳ У процесі</option>
-                            </select>
-
-                            <button onclick="window.location.href='timelogs.html?taskId=${task.id}'" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded flex items-center gap-1 transition">
-                                ⏱ Трекінг часу
-                            </button>
-                        </div>
-                    `;
-                    tasksContainerEl.appendChild(taskEl);
-                });
+            if (!currentProjectId && projectsArray.length > 0) {
+                const firstProj = projectsArray[0];
+                selectProject(firstProj.id || firstProj.Id, firstProj.title || firstProj.Title || firstProj.name || firstProj.Name);
             }
         }
 
-        // 6. СТВОРЕННЯ ЗАВДАННЯ
-        taskFormEl.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const title = document.getElementById('taskTitle').value.trim();
-            const desc = document.getElementById('taskDesc').value.trim();
-            const priority = document.getElementById('taskPriority').value;
-            const dueDate = document.getElementById('taskDate').value;
+        async function selectProject(id, name) {
+            currentProjectId = id;
+            document.getElementById("currentProjectTitle").innerHTML = `📁 ${name}`;
+            
+            document.getElementById("emptyState").classList.add("hidden");
+            document.getElementById("taskCreationBox").classList.remove("hidden");
+            
+            document.getElementById("deleteProjectBtn").classList.remove("hidden");
+            document.getElementById("projectProgressContainer").classList.remove("hidden");
+            
+            await loadProjects(); 
+            await loadTasks();    
+        }
 
-            if (title && activeProjectId) {
-                Tasks.create(activeProjectId, title, desc, priority, dueDate);
-                
-                // Очистка форми
-                document.getElementById('taskTitle').value = '';
-                document.getElementById('taskDesc').value = '';
-                document.getElementById('taskDate').value = '';
-                
-                renderProjects(); // Оновлюємо UI
+        document.getElementById("createProjectForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById("projectName");
+            if(!nameInput.value.trim()) return;
+            
+            try {
+                const payload = { 
+                    name: nameInput.value, 
+                    title: nameInput.value,
+                    description: "" 
+                };
+
+                const response = await fetch(`${API_BASE}/Projects`, {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json", 
+                        "Authorization": `Bearer ${token}` 
+                    },
+                    body: JSON.stringify(payload) 
+                });
+
+                if (response.ok) {
+                    nameInput.value = "";
+                    loadProjects(); 
+                } else {
+                    alert(`Помилка створення проєкту.`);
+                }
+            } catch (error) { 
+                alert("Не вдалося відправити запит.");
             }
         });
 
-        // 7. ЗМІНА СТАТУСУ (Чекбокс "Виконано" або селект "У процесі")
-        window.changeTaskStatus = function(taskId, status) {
-            Tasks.changeStatus(taskId, status);
-            renderProjects();
+        async function deleteCurrentProject() {
+            if (!currentProjectId) return;
+            
+            const isConfirmed = confirm("Ти дійсно хочеш назавжди видалити цей проєкт і всі його завдання?");
+            if (!isConfirmed) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/Projects/${currentProjectId}`, {
+                    method: 'DELETE',
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    currentProjectId = null;
+                    document.getElementById("currentProjectTitle").innerHTML = `<span class="text-slate-400">👋</span> Виберіть проєкт`;
+                    document.getElementById("deleteProjectBtn").classList.add("hidden");
+                    document.getElementById("projectProgressContainer").classList.add("hidden");
+                    document.getElementById("tasksContainer").innerHTML = ""; 
+                    document.getElementById("emptyState").classList.remove("hidden");
+                    document.getElementById("taskCreationBox").classList.add("hidden");
+                    
+                    loadProjects(); 
+                } else {
+                    alert("Не вдалося видалити проєкт. Переконайся, що сервер перезапущено і метод DELETE існує.");
+                }
+            } catch (error) {
+                console.error("Помилка видалення:", error);
+            }
         }
 
-        window.toggleTaskDone = function(taskId, isChecked) {
-            const newStatus = isChecked ? 'done' : 'todo';
-            Tasks.changeStatus(taskId, newStatus);
-            renderProjects();
+        // --- ЛОГІКА ЗАВДАНЬ ---
+
+        async function loadTasks() {
+            if (!currentProjectId) return;
+            const container = document.getElementById("tasksContainer");
+            container.innerHTML = `<div class="col-span-full text-center py-10 text-slate-400">Завантаження завдань...</div>`;
+
+            try {
+                const response = await fetch(`${API_BASE}/Tasks`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    allTasks = await response.json();
+                    renderTasks();
+                } else {
+                    container.innerHTML = `<div class="col-span-full text-center py-10 text-red-400">Помилка завантаження завдань</div>`;
+                }
+            } catch (error) { 
+                container.innerHTML = `<div class="col-span-full text-center py-10 text-red-400">Немає зв'язку з сервером</div>`;
+            }
         }
 
-        // Ініціалізація
-        renderProjects();
+        function renderTasks() {
+            const container = document.getElementById("tasksContainer");
+            container.innerHTML = "";
+            
+            const projectTasks = allTasks.filter(t => t.projectId === currentProjectId || t.ProjectId === currentProjectId);
+
+            const progressBar = document.getElementById("projectProgressBar");
+            const progressText = document.getElementById("projectProgressText");
+
+            if (projectTasks.length === 0) {
+                progressBar.style.width = "0%";
+                progressText.innerText = "0%";
+                progressBar.className = "bg-indigo-600 h-2 rounded-full transition-all duration-500";
+
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300">
+                        <p class="text-slate-500 font-medium text-lg">У цьому проєкті ще немає завдань.</p>
+                        <p class="text-slate-400 text-sm mt-1">Створіть перше завдання за допомогою форми вище ☝️</p>
+                    </div>`;
+                return;
+            }
+
+            const doneTasksCount = projectTasks.filter(t => t.status === "done" || t.Status === "done").length;
+            const progressPercent = Math.round((doneTasksCount / projectTasks.length) * 100);
+            
+            progressBar.style.width = `${progressPercent}%`;
+            progressText.innerText = `${progressPercent}%`;
+            
+            if (progressPercent === 100) {
+                progressBar.className = "bg-green-500 h-2 rounded-full transition-all duration-500";
+            } else {
+                progressBar.className = "bg-indigo-600 h-2 rounded-full transition-all duration-500";
+            }
+
+            projectTasks.forEach(task => {
+                const taskId = task.id || task.Id;
+                const taskTitle = task.title || task.Title;
+                const taskDesc = task.description || task.Description;
+                const taskStatus = task.status || task.Status;
+                const taskDueDate = task.dueDate || task.DueDate;
+                
+                const isDone = taskStatus === "done";
+                
+                const safeTitle = taskTitle.replace(/'/g, "\\'");
+                const safeDesc = (taskDesc || '').replace(/'/g, "\\'");
+                const safeDate = taskDueDate ? taskDueDate : '';
+
+                container.innerHTML += `
+                    <div class="bg-white rounded-2xl p-6 border ${isDone ? 'border-green-200 bg-green-50/30' : 'border-slate-200'} shadow-sm hover:shadow-md transition-shadow flex flex-col h-full group">
+                        
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg mb-2 ${isDone ? 'line-through text-slate-400' : 'text-slate-800'}">
+                                ${taskTitle}
+                            </h3>
+                            ${taskDesc ? `<p class="text-sm text-slate-500 leading-relaxed mb-4">${taskDesc}</p>` : ''}
+                            
+                            ${taskDueDate ? `
+                                <div class="mt-1 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-orange-50 text-orange-600 text-xs font-bold border border-orange-100">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <polyline points="12 6 12 12 16 14"></polyline>
+                                    </svg>
+                                    До: ${new Date(taskDueDate).toLocaleDateString('uk-UA')}
+                                </div>
+                            ` : ''}
+                        </div>
+                        
+                        <div class="flex items-center gap-2 mt-4 pt-4 border-t border-slate-100">
+                            ${!isDone ? `
+                                <button onclick="completeTask(${taskId}, '${safeTitle}', '${safeDesc}', '${safeDate}')" 
+                                        class="flex-1 bg-green-50 text-green-600 hover:bg-green-100 font-semibold py-2 rounded-xl text-sm transition-colors flex items-center justify-center gap-2">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    Виконано
+                                </button>
+                            ` : `
+                                <span class="flex-1 text-center text-green-500 font-bold text-sm flex items-center justify-center gap-1">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    Завершено
+                                </span>
+                            `}
+                            
+                            <button onclick="deleteTask(${taskId})" 
+                                    class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors shrink-0" title="Видалити">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        document.getElementById("createTaskForm").addEventListener("submit", async (e) => {
+            e.preventDefault(); 
+            if (!currentProjectId) return;
+
+            const titleInput = document.getElementById("taskTitle");
+            const descInput = document.getElementById("taskDesc");
+            const dueDateInput = document.getElementById("taskDueDate");
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+
+            btn.innerText = "Додаю...";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_BASE}/Tasks`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                    body: JSON.stringify({ 
+                        title: titleInput.value, 
+                        description: descInput.value, 
+                        priority: "medium", 
+                        status: "todo", 
+                        projectId: currentProjectId,
+                        dueDate: dueDateInput.value ? dueDateInput.value : null
+                    })
+                });
+
+                if (response.ok) {
+                    titleInput.value = "";
+                    descInput.value = "";
+                    dueDateInput.value = "";
+                    loadTasks(); 
+                } else {
+                    alert("Помилка при створенні завдання");
+                }
+            } catch (error) { 
+                console.error(error); 
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        async function completeTask(id, title, desc, dueDate) {
+            try {
+                const response = await fetch(`${API_BASE}/Tasks/${id}?newStatus=done`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                    body: JSON.stringify({ 
+                        id: id, 
+                        title: title, 
+                        description: desc, 
+                        status: "done", 
+                        projectId: currentProjectId,
+                        dueDate: dueDate ? dueDate : null
+                    })
+                });
+                if (response.ok) loadTasks();
+            } catch (error) { console.error(error); }
+        }
+
+        async function deleteTask(id) {
+            if (!confirm("Ви впевнені, що хочете видалити це завдання? Дія незворотня.")) return;
+            try {
+                const response = await fetch(`${API_BASE}/Tasks/${id}`, {
+                    method: "DELETE",
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (response.ok) loadTasks();
+            } catch (error) { console.error(error); }
+        }
+
+        function logout() {
+            localStorage.removeItem("jwtToken");
+            window.location.href = "login.html";
+        }
+
+        loadProjects();
     </script>
 </body>
 </html>
