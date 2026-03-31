@@ -3,109 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Дашборд - TaskFlow</title>
+    <title>Мої проєкти - TaskFlow</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow: hidden; }
-        /* Кастомний скролбар для списку завдань */
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        :root {
+            --bg-color: #020617;
+            --text-main: #f8fafc;
+            --glass-bg: rgba(15, 23, 42, 0.7);
+            --glass-panel: rgba(30, 41, 59, 0.5);
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        .light-theme {
+            --bg-color: #f4f4f2;
+            --text-main: #1c1c1e;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-panel: rgba(255, 255, 255, 0.9);
+            --border: rgba(0, 0, 0, 0.08);
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            overflow: hidden; 
+            transition: all 0.3s ease;
+        }
+
+        .bg-grid { 
+            position: fixed; inset: 0; 
+            background-image: radial-gradient(var(--border) 1px, transparent 1px); 
+            background-size: 40px 40px; 
+            z-index: -1; opacity: 0.5; 
+        }
+
+        .glass { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-right: 1px solid var(--border); }
+        .glass-panel { background: var(--glass-panel); backdrop-filter: blur(12px); border: 1px solid var(--border); }
+        .glass-input { background: rgba(0,0,0,0.1); border: 1px solid var(--border); color: inherit; }
+        .light-theme .glass-input { background: rgba(255,255,255,0.6); }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
     </style>
 </head>
 <body class="flex h-screen">
 
+    <div class="bg-grid"></div>
+
     <script>
-        if (!localStorage.getItem('token')) {
-            window.location.replace('login.html');
-        }
+        // Перевірка теми з інших сторінок
+        if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-theme'); }
+        // Перевірка авторизації
+        if (!localStorage.getItem('token')) { window.location.replace('login.html'); }
     </script>
 
-    <aside class="w-64 bg-[#0f172a] text-white flex flex-col h-full shadow-xl z-20">
-        <div class="h-20 flex items-center px-6 border-b border-white/10">
-            <a href="index.html" class="text-xl font-bold flex items-center gap-3">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="text-indigo-500">
-                    <path d="M2 12L12 17L22 12M2 7L12 12L22 7M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+    <aside class="w-72 glass flex flex-col h-full shadow-2xl z-20 relative">
+        <div class="h-20 flex items-center px-6 border-b border-white/5">
+            <a href="index.html" class="text-xl font-black flex items-center gap-3 tracking-tight hover:opacity-80 transition">
+                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                    <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                </div>
                 TaskFlow
             </a>
         </div>
 
         <div class="flex-1 overflow-y-auto py-6 flex flex-col custom-scrollbar">
-            <span class="px-6 text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Мої проєкти</span>
-            <ul id="projectList" class="space-y-1 px-3">
+            <div class="px-6 flex items-center justify-between mb-4">
+                <span class="text-xs font-bold uppercase tracking-widest opacity-40">Проєкти</span>
+            </div>
+            
+            <ul id="projectList" class="space-y-1 px-4 mb-6">
                 </ul>
+
+            <form id="projectForm" class="px-4 mt-auto">
+                <div class="flex gap-2">
+                    <input type="text" id="newProjectInput" required placeholder="Назва нового проєкту..." class="flex-1 glass-input rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition">
+                    <button type="submit" class="w-10 h-10 bg-indigo-600 hover:bg-indigo-700 rounded-xl flex items-center justify-center text-white transition shadow-lg shrink-0">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                    </button>
+                </div>
+            </form>
         </div>
 
-        <form id="projectForm" class="p-4 border-t border-white/10 flex gap-2">
-            <input type="text" id="newProjectInput" required placeholder="Новий проєкт..." class="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
-            <button type="submit" class="w-10 h-10 bg-indigo-600 hover:bg-indigo-700 rounded-lg flex items-center justify-center text-white transition shadow-lg">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+        <div class="p-4 border-t border-white/5 space-y-2">
+            <a href="admin-login.html" class="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-bold text-rose-500 bg-rose-500/10 hover:bg-rose-500/20 transition border border-rose-500/20">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                Адмін-панель
+            </a>
+            
+            <a href="settings.html" class="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-bold opacity-70 hover:opacity-100 hover:bg-white/5 transition">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                Налаштування
+            </a>
+            
+            <button onclick="logout()" class="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-bold opacity-70 hover:opacity-100 hover:bg-white/5 transition">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                Вийти з акаунта
             </button>
-        </form>
+        </div>
     </aside>
 
-    <main class="flex-1 flex flex-col h-full bg-white relative">
+    <main class="flex-1 flex flex-col h-full relative z-10">
         
-        <header class="h-20 border-b border-slate-200 px-8 flex items-center justify-between bg-white z-10">
+        <header class="h-20 border-b border-white/5 px-8 flex items-center justify-between backdrop-blur-md bg-transparent">
             <div class="flex-1">
-                <div class="flex items-center gap-3 mb-1">
-                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" class="text-amber-400"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" fill="currentColor"/></svg>
-                    <h1 id="currentProjectTitle" class="text-2xl font-bold text-slate-800">Оберіть проєкт</h1>
+                <div class="flex items-center gap-3">
+                    <h1 id="currentProjectTitle" class="text-2xl font-black tracking-tight">Оберіть проєкт</h1>
                 </div>
-                <div class="flex items-center gap-4 max-w-md">
-                    <span class="text-xs font-semibold text-slate-500 w-32">Прогрес виконання:</span>
-                    <div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                        <div id="progressBar" class="h-full bg-indigo-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                <div class="flex items-center gap-3 mt-1 w-full max-w-md">
+                    <span class="text-xs font-bold opacity-50 w-24">Прогрес:</span>
+                    <div class="flex-1 h-1.5 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden">
+                        <div id="progressBar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]" style="width: 0%"></div>
                     </div>
-                    <span id="progressText" class="text-xs font-bold text-slate-700 w-8">0%</span>
+                    <span id="progressText" class="text-xs font-bold w-8 text-right">0%</span>
                 </div>
             </div>
 
-            <div class="flex items-center gap-4">
-                <button onclick="deleteCurrentProject()" class="text-rose-500 hover:text-rose-600 font-semibold text-sm flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-rose-50 transition">
-                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                    Видалити проєкт
-                </button>
-                <button onclick="logout()" class="text-slate-600 hover:text-slate-900 font-semibold text-sm bg-slate-100 hover:bg-slate-200 px-6 py-2 rounded-lg transition">
-                    Вийти
-                </button>
-            </div>
+            <button onclick="deleteCurrentProject()" class="text-xs font-bold px-4 py-2 rounded-xl text-rose-500 hover:bg-rose-500/10 transition border border-transparent hover:border-rose-500/20 flex items-center gap-2">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Видалити проєкт
+            </button>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-8 bg-[#f8fafc]">
+        <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
             
-            <form id="taskForm" class="bg-white p-2 rounded-xl border border-slate-200 shadow-sm flex gap-2 mb-8 items-center">
-                <input type="text" id="taskTitle" required placeholder="Що потрібно зробити?" class="flex-1 px-4 py-3 bg-transparent text-slate-800 focus:outline-none text-sm font-medium">
+            <form id="taskForm" class="glass-panel p-2 rounded-2xl shadow-xl flex flex-col md:flex-row gap-2 mb-8 items-center border border-white/10">
+                <input type="text" id="taskTitle" required placeholder="Що потрібно зробити?" class="flex-1 px-4 py-3 bg-transparent focus:outline-none text-sm font-bold w-full">
                 
-                <div class="w-[1px] h-8 bg-slate-200"></div>
+                <div class="hidden md:block w-px h-8 bg-white/10"></div>
                 
-                <input type="text" id="taskDesc" placeholder="Деталі (необов'язково)..." class="w-1/3 px-4 py-3 bg-transparent text-slate-600 focus:outline-none text-sm">
+                <input type="text" id="taskDesc" placeholder="Деталі (необов'язково)..." class="w-full md:w-1/3 px-4 py-3 bg-transparent opacity-70 focus:opacity-100 focus:outline-none text-sm">
                 
-                <div class="w-[1px] h-8 bg-slate-200"></div>
+                <div class="hidden md:block w-px h-8 bg-white/10"></div>
                 
-                <input type="date" id="taskDate" class="px-4 py-3 bg-transparent text-slate-600 focus:outline-none text-sm cursor-pointer">
+                <input type="date" id="taskDate" class="w-full md:w-auto px-4 py-3 bg-transparent opacity-70 focus:opacity-100 focus:outline-none text-sm cursor-pointer">
                 
-                <button type="submit" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-lg transition shadow-md shadow-indigo-200 whitespace-nowrap">
-                    Додати завдання
+                <button type="submit" class="w-full md:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-indigo-500/20 whitespace-nowrap">
+                    Додати
                 </button>
             </form>
 
-            <div id="tasksContainer" class="space-y-3">
+            <div id="tasksContainer" class="space-y-3 max-w-5xl">
                 </div>
 
-            <div id="emptyState" class="hidden border-2 border-dashed border-slate-200 rounded-2xl py-20 flex flex-col items-center justify-center bg-white/50 text-center">
-                <h3 class="text-lg font-bold text-slate-700 mb-2">У цьому проєкті ще немає завдань.</h3>
-                <p class="text-slate-500 text-sm">Створіть перше завдання за допомогою форми вище ☝️</p>
+            <div id="emptyState" class="hidden border-2 border-dashed border-white/10 rounded-[32px] py-24 flex flex-col items-center justify-center text-center opacity-70">
+                <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                    <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                </div>
+                <h3 class="text-xl font-black mb-2">Завдань ще немає</h3>
+                <p class="text-sm opacity-60 max-w-xs">Створіть перше завдання за допомогою форми вище, щоб розпочати роботу над проєктом.</p>
             </div>
 
         </div>
     </main>
 
     <script>
-        // База даних в LocalStorage (структура згідно ТЗ)
-        let projects = JSON.parse(localStorage.getItem('projects')) || [{ id: 1, title: 'gb' }];
+        // База даних в LocalStorage
+        let projects = JSON.parse(localStorage.getItem('projects')) || [{ id: 1, title: 'Мій перший проєкт' }];
         let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
         let activeProjectId = projects.length > 0 ? projects[0].id : null;
 
@@ -133,8 +189,8 @@
                 const isActive = p.id === activeProjectId;
                 const li = document.createElement('li');
                 li.innerHTML = `
-                    <button onclick="selectProject(${p.id})" class="w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 transition font-medium text-sm ${isActive ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:bg-white/5 hover:text-white'}">
-                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" class="${isActive ? 'text-white' : 'text-slate-500'}"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" fill="currentColor"/></svg>
+                    <button onclick="selectProject(${p.id})" class="w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 transition font-bold text-sm ${isActive ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'opacity-60 hover:opacity-100 hover:bg-white/5'}">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
                         <span class="truncate">${p.title}</span>
                     </button>
                 `;
@@ -166,7 +222,7 @@
         // Видалення проєкту
         window.deleteCurrentProject = function() {
             if(!activeProjectId) return;
-            if(confirm('Видалити цей проєкт і всі його завдання?')) {
+            if(confirm('Ви точно хочете видалити цей проєкт і всі його завдання?')) {
                 projects = projects.filter(p => p.id !== activeProjectId);
                 tasks = tasks.filter(t => t.project_id !== activeProjectId);
                 activeProjectId = projects.length > 0 ? projects[0].id : null;
@@ -178,7 +234,7 @@
         // Рендер завдань поточного проєкту
         function updateMainView() {
             if (!activeProjectId) {
-                currentProjectTitle.innerText = "Створіть проєкт";
+                currentProjectTitle.innerText = "Створіть проєкт у меню зліва";
                 taskForm.style.display = 'none';
                 tasksContainer.innerHTML = '';
                 emptyState.style.display = 'none';
@@ -208,18 +264,20 @@
                 projectTasks.forEach(t => {
                     const isDone = t.status === 'done';
                     const taskEl = document.createElement('div');
-                    taskEl.className = `bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-start gap-4 transition hover:border-indigo-300 ${isDone ? 'opacity-60' : ''}`;
+                    // Новий дизайн карточки завдання
+                    taskEl.className = `glass-panel p-4 rounded-2xl flex items-center gap-4 transition duration-300 hover:-translate-y-0.5 border border-white/5 ${isDone ? 'opacity-50' : 'shadow-lg'}`;
                     
-                    // Згідно ТЗ: Статус todo або done (in_progress додамо пізніше в деталях)
                     taskEl.innerHTML = `
-                        <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTaskStatus(${t.id})" class="mt-1 w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer">
-                        <div class="flex-1">
-                            <h4 class="font-bold text-slate-800 text-sm ${isDone ? 'line-through text-slate-500' : ''}">${t.title}</h4>
-                            ${t.description ? `<p class="text-xs text-slate-500 mt-1">${t.description}</p>` : ''}
+                        <div class="flex-shrink-0">
+                            <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTaskStatus(${t.id})" class="w-6 h-6 rounded-md border-white/20 text-indigo-600 focus:ring-indigo-500 cursor-pointer accent-indigo-500 bg-transparent">
                         </div>
-                        ${t.due_date ? `<div class="text-xs font-medium px-3 py-1 bg-slate-100 text-slate-600 rounded-lg flex items-center gap-1"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg> ${t.due_date}</div>` : ''}
-                        <button onclick="deleteTask(${t.id})" class="text-slate-400 hover:text-rose-500 transition p-1">
-                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold text-sm truncate ${isDone ? 'line-through' : ''}">${t.title}</h4>
+                            ${t.description ? `<p class="text-xs opacity-60 mt-1 truncate">${t.description}</p>` : ''}
+                        </div>
+                        ${t.due_date ? `<div class="hidden sm:flex text-xs font-bold px-3 py-1 bg-white/5 rounded-lg items-center gap-1.5 opacity-80"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg> ${t.due_date}</div>` : ''}
+                        <button onclick="deleteTask(${t.id})" class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg text-rose-500 hover:bg-rose-500/20 transition opacity-0 group-hover:opacity-100 sm:opacity-100">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                         </button>
                     `;
                     tasksContainer.appendChild(taskEl);
@@ -227,7 +285,7 @@
             }
         }
 
-        // Створення завдання (По ТЗ)
+        // Створення завдання
         taskForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const title = document.getElementById('taskTitle').value.trim();
@@ -241,8 +299,7 @@
                     title: title,
                     description: desc,
                     due_date: date,
-                    status: 'todo', // Згідно ТЗ
-                    priority: 'medium'
+                    status: 'todo'
                 });
                 
                 document.getElementById('taskTitle').value = '';
@@ -258,11 +315,7 @@
         window.toggleTaskStatus = function(taskId) {
             const task = tasks.find(t => t.id === taskId);
             if (task) {
-                // Міняємо статус згідно ТЗ: todo <-> done
                 task.status = task.status === 'done' ? 'todo' : 'done';
-                if(task.status === 'done') {
-                    task.completed_at = new Date().toISOString(); // Фіксуємо дату по ТЗ
-                }
                 saveDb();
                 updateMainView();
             }
@@ -279,12 +332,7 @@
             window.location.replace('login.html');
         }
 
-        // Перший запуск
-        if(projects.length === 0) {
-            projects.push({ id: Date.now(), title: 'Мій перший проєкт' });
-            activeProjectId = projects[0].id;
-            saveDb();
-        }
+        // Ініціалізація
         renderProjects();
     </script>
 </body>
