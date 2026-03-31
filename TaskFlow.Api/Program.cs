@@ -85,6 +85,7 @@ using (var scope = app.Services.CreateScope())
 
     if (adminUser == null)
     {
+        // Якщо адміна взагалі немає - створюємо
         adminUser = new User
         {
             Username = "Admin", 
@@ -95,9 +96,19 @@ using (var scope = app.Services.CreateScope())
             UpdatedAt = DateTime.UtcNow
         };
         db.Users.Add(adminUser);
-        db.SaveChanges();
         Console.WriteLine("--> Admin account created with BCrypt hash!");
     }
+    else
+    {
+        // Якщо адмін є, але щось зламалося - ПРИМУСОВО ВІДНОВЛЮЄМО
+        adminUser.Role = "Admin";
+        adminUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!");
+        adminUser.UpdatedAt = DateTime.UtcNow;
+        db.Users.Update(adminUser);
+        Console.WriteLine("--> Admin account restored/updated to default password and role!");
+    }
+    
+    db.SaveChanges(); // Зберігаємо зміни в будь-якому випадку
 }
 // ----------------------------------------
 
@@ -108,7 +119,20 @@ app.UseHttpsRedirection();
 
 // 1. Статичні файли (фронтенд) мають бути на початку
 app.UseDefaultFiles(); // Дозволяє відкривати index.html за замовчуванням
-app.UseStaticFiles();  // Дозволяє завантажувати CSS, JS, картинки
+// Вимикаємо кешування для HTML файлів щоб браузер завжди отримував свіжу версію
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        var path = ctx.File.Name;
+        if (path.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+        {
+            ctx.Context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+            ctx.Context.Response.Headers["Pragma"] = "no-cache";
+            ctx.Context.Response.Headers["Expires"] = "0";
+        }
+    }
+});
 
 app.UseCors("AllowAll");
 
