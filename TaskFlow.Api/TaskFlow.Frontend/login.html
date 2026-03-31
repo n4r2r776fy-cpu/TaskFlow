@@ -87,7 +87,6 @@
             const type = loginPass.getAttribute('type') === 'password' ? 'text' : 'password';
             loginPass.setAttribute('type', type);
             
-            // Змінюємо іконку в залежності від стану
             if (type === 'text') {
                 eyeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
             } else {
@@ -95,29 +94,65 @@
             }
         });
 
-        // Логіка відправки форми з ефектом завантаження
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
+        // БАЗОВИЙ URL БЕКЕНДУ (Зміни, якщо твій AuthController має інший шлях)
+        const API_BASE = "http://localhost:5143/api";
+
+        // РЕАЛЬНА ЛОГІКА ВХОДУ НА БЕКЕНД
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const submitBtn = document.getElementById('submitBtn');
             const btnText = document.getElementById('btnText');
             const btnSpinner = document.getElementById('btnSpinner');
             const emailInput = document.getElementById('loginEmail').value;
+            const passInput = document.getElementById('loginPass').value;
 
             // Вмикаємо стан завантаження
             submitBtn.disabled = true;
             submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
-            btnText.textContent = 'Завантаження...';
+            btnText.textContent = 'Вхід...';
             btnSpinner.classList.remove('hidden');
 
-            // Симулюємо затримку сервера (1 секунда)
-            setTimeout(() => {
-                localStorage.setItem('userEmail', emailInput);
-                localStorage.setItem('token', 'taskflow-auth-token-123');
-                
-                // Перекидаємо в кабінет
-                window.location.href = 'index.html'; 
-            }, 1000);
+            try {
+                // Відправляємо запит на ASP.NET бекенд
+                const response = await fetch(`${API_BASE}/Auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: emailInput, password: passInput })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Забираємо справжній JWT токен (перевір, як саме він називається в твоєму JSON)
+                    const realToken = data.token || data.jwt || data; 
+                    
+                    // Зберігаємо справжні дані
+                    localStorage.setItem('userEmail', emailInput);
+                    localStorage.setItem('token', realToken);
+                    
+                    // ПЕРЕКИДАЄМО В КАБІНЕТ (tasks.html)
+                    window.location.replace('tasks.html'); 
+                } else {
+                    // Якщо бекенд повернув помилку 401 (Неправильний пароль)
+                    alert("Помилка входу! Неправильний email або пароль.");
+                    resetButton();
+                }
+            } catch (error) {
+                console.error("Помилка з'єднання з сервером:", error);
+                alert("Помилка з'єднання з сервером. Перевірте, чи запущений бекенд ASP.NET (порт 5143).");
+                resetButton();
+            }
+
+            // Функція для скидання кнопки в початковий стан при помилці
+            function resetButton() {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+                btnText.textContent = 'Увійти';
+                btnSpinner.classList.add('hidden');
+            }
         });
     </script>
 </body>
