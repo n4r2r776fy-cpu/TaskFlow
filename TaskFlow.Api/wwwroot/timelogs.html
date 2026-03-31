@@ -27,7 +27,7 @@
             <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 px-2">Меню</h3>
             <ul class="space-y-1">
                 <li>
-                    <a href="index.html" class="px-3 py-2.5 rounded-lg transition-all flex items-center gap-3 font-medium text-sm text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer">
+                    <a href="tasks.html" class="px-3 py-2.5 rounded-lg transition-all flex items-center gap-3 font-medium text-sm text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                         Дашборд
                     </a>
@@ -52,7 +52,7 @@
             </button>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-8 relative">
+        <div class="flex-1 overflow-y-auto p-8 relative custom-scrollbar">
             
             <div class="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                 <h3 class="text-lg font-bold text-slate-800 mb-4">Додати запис часу</h3>
@@ -67,7 +67,7 @@
 
                     <div class="w-full md:w-32">
                         <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 px-1">Годин</label>
-                        <input type="number" id="timeHours" placeholder="0" min="0" step="0.5" required
+                        <input type="number" id="timeHours" placeholder="0" min="0.1" step="0.1" required
                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all font-medium text-center">
                     </div>
 
@@ -111,9 +111,11 @@
 
     <script>
         // ==========================================
-        // 1. АВТОРИЗАЦІЯ ТА ПЕРЕВІРКА РОЛІ АДМІНА
+        // 1. НАЛАШТУВАННЯ API ТА ТОКЕНА
         // ==========================================
-        const token = localStorage.getItem("jwtToken");
+        // УВАГА: Змініть порт 7196 на той, який використовує ваш бекенд!
+        const API_BASE = "https://localhost:7196/api"; 
+        const token = localStorage.getItem("token"); 
         
         if (!token) {
             window.location.href = "login.html";
@@ -133,18 +135,19 @@
             }
 
             const tokenData = parseJwt(token);
-            // У C# ролі часто записуються під цим довгим ключем
             const roleClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-            const userRole = tokenData ? (tokenData[roleClaim] || tokenData.role) : null;
+            
+            // Шукаємо роль у різних можливих ключах
+            const userRole = tokenData ? (tokenData[roleClaim] || tokenData.role || tokenData.Role) : null;
+            console.log("Отримана роль з токена:", userRole);
 
-            // Якщо користувач не Admin, блокуємо доступ
-            if (userRole !== "Admin") {
+            // Якщо вас все ще викидає на tasks.html, закоментуйте ці 4 рядки нижче (додайте // перед кожним)
+            if (userRole !== "Admin" && userRole !== "admin") {
                 alert("Доступ заборонено! Ця сторінка доступна лише для адміністраторів.");
-                window.location.href = "index.html"; // Повертаємо на головну
+                window.location.href = "tasks.html"; 
             }
         }
 
-        const API_BASE = "http://localhost:5143/api";
         let allTasks = [];
 
         // ==========================================
@@ -158,15 +161,19 @@
                 });
                 if (response.ok) {
                     allTasks = await response.json();
+                    
+                    // Обробка $values якщо повертається OData/ReferenceHandler.Preserve
+                    const tasksArray = allTasks.$values ? allTasks.$values : allTasks;
+                    
                     const select = document.getElementById("taskSelect");
                     select.innerHTML = `<option value="" disabled selected>Оберіть завдання...</option>`;
                     
-                    if(allTasks.length === 0) {
+                    if(!tasksArray || tasksArray.length === 0) {
                         select.innerHTML = `<option value="" disabled selected>Немає доступних завдань</option>`;
                         return;
                     }
 
-                    allTasks.forEach(task => {
+                    tasksArray.forEach(task => {
                         const id = task.id || task.Id;
                         const title = task.title || task.Title;
                         const status = task.status || task.Status;
@@ -190,10 +197,11 @@
                     const logs = await response.json();
                     renderTimeLogs(logs);
                 } else {
-                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Помилка завантаження. Перевір TimeLogsController на бекенді.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Помилка завантаження. Перевірте CORS або TimeLogsController.</td></tr>`;
                 }
             } catch (error) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Немає зв'язку з сервером.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Немає зв'язку з сервером. Перевірте API_BASE.</td></tr>`;
+                console.error("Fetch error:", error);
             }
         }
 
@@ -216,20 +224,24 @@
                 return;
             }
 
-            logsArray.sort((a, b) => new Date(b.date || b.Date || b.createdAt || 0) - new Date(a.date || a.Date || a.createdAt || 0));
+            logsArray.sort((a, b) => new Date(b.date || b.Date || b.createdAt || b.loggedAt || 0) - new Date(a.date || a.Date || a.createdAt || a.loggedAt || 0));
+
+            const tasksArray = allTasks.$values ? allTasks.$values : allTasks;
 
             logsArray.forEach(log => {
                 const id = log.id || log.Id;
-                const hours = log.hours || log.Hours || 0;
-                const desc = log.description || log.Description || "Без коментаря";
-                const dateRaw = log.date || log.Date || log.createdAt || new Date().toISOString();
+                
+                // ВИПРАВЛЕННЯ КЛЮЧІВ: Беремо timeSpent або hours (залежить від бекенду)
+                const hours = log.timeSpent || log.TimeSpent || log.hours || log.Hours || 0;
+                const desc = log.comment || log.Comment || log.description || log.Description || "Без коментаря";
+                const dateRaw = log.loggedAt || log.LoggedAt || log.date || log.Date || log.createdAt || new Date().toISOString();
                 const taskId = log.taskId || log.TaskId;
 
                 let taskName = "Невідоме завдання";
-                if (log.task && log.task.title) {
-                    taskName = log.task.title;
-                } else {
-                    const foundTask = allTasks.find(t => (t.id || t.Id) == taskId);
+                if (log.task && (log.task.title || log.task.Title)) {
+                    taskName = log.task.title || log.task.Title;
+                } else if (tasksArray && tasksArray.length > 0) {
+                    const foundTask = tasksArray.find(t => (t.id || t.Id) == taskId);
                     if (foundTask) taskName = foundTask.title || foundTask.Title;
                 }
 
@@ -270,15 +282,18 @@
             btn.disabled = true;
 
             try {
+                // Використовуємо саме ті ключі, які є на бекенді (виходячи з вашого попереднього коду)
+                const payload = { 
+                    taskId: parseInt(taskId), 
+                    timeSpent: parseFloat(hours), 
+                    comment: desc,                
+                    loggedAt: new Date().toISOString() 
+                };
+
                 const response = await fetch(`${API_BASE}/TimeLogs`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                    body: JSON.stringify({ 
-    taskId: parseInt(taskId), 
-    timeSpent: parseFloat(hours), // Змінив hours на timeSpent
-    comment: desc,                // Змінив description на comment
-    loggedAt: new Date().toISOString() // Змінив date на loggedAt
-})
+                    body: JSON.stringify(payload)
                 });
 
                 if (response.ok) {
@@ -286,10 +301,12 @@
                     document.getElementById("timeDesc").value = "";
                     loadTimeLogs(); 
                 } else {
-                    alert("Помилка при збереженні.");
+                    alert("Помилка при збереженні. Перевірте консоль (F12) для деталей.");
+                    console.error(await response.text());
                 }
             } catch (error) { 
-                console.error(error); 
+                console.error("Помилка мережі при збереженні:", error); 
+                alert("Немає зв'язку з сервером.");
             } finally {
                 btn.innerText = originalText;
                 btn.disabled = false;
@@ -304,11 +321,12 @@
                     headers: { "Authorization": `Bearer ${token}` }
                 });
                 if (response.ok) loadTimeLogs();
+                else alert("Не вдалося видалити запис.");
             } catch (error) { console.error(error); }
         }
 
         function logout() {
-            localStorage.removeItem("jwtToken");
+            localStorage.removeItem("token"); 
             window.location.href = "login.html";
         }
 
