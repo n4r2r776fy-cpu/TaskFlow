@@ -141,17 +141,28 @@
         const body = document.body;
         const themeToggleInput = document.getElementById('themeToggle');
         const profileSection = document.getElementById('profileSection');
-        
-        // --- ІМІТАЦІЯ БАЗИ ДАНИХ ---
-        if (!localStorage.getItem('token')) {
-            localStorage.setItem('token', 'fake-token-123');
-            localStorage.setItem('userName', 'Олександр'); 
-            localStorage.setItem('userEmail', 'alex@example.com');
+
+        // --- ПЕРЕВІРКА АВТОРИЗАЦІЇ ---
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.replace('login.html');
         }
 
-        const token = localStorage.getItem('token');
-        const currentUserName = localStorage.getItem('userName') || 'Користувач';
-        const currentUserEmail = localStorage.getItem('userEmail') || 'email@taskflow.com';
+        // Витягуємо дані з JWT токену
+        function parseJwt(t) {
+            try {
+                const base64 = t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
+                    '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (e) { return null; }
+        }
+
+        const tokenData = token ? parseJwt(token) : null;
+        const nameClaim = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name";
+        const emailClaim = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
+        const currentUserName = (tokenData && (tokenData[nameClaim] || tokenData.name)) || localStorage.getItem('userName') || 'Користувач';
+        const currentUserEmail = (tokenData && (tokenData[emailClaim] || tokenData.email)) || localStorage.getItem('userEmail') || '';
         const userInitial = currentUserName.charAt(0).toUpperCase();
 
         // ======================
@@ -289,7 +300,10 @@
         // Логіка виходу
         function logout() {
             localStorage.removeItem('token');
-            window.location.href = 'login.html'; // Повернення на сторінку логіну
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userAvatar');
+            window.location.replace('login.html');
         }
     </script>
 </body>
