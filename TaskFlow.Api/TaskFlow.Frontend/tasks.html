@@ -3,592 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мої проєкти - TaskFlow</title>
+    <title>TaskFlow - Завдання</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #020617;
-            --text-main: #f8fafc;
-            --glass-bg: rgba(15, 23, 42, 0.7);
-            --glass-panel: rgba(30, 41, 59, 0.5);
-            --border: rgba(255, 255, 255, 0.08);
-        }
-
-        .light-theme {
-            --bg-color: #f4f4f2;
-            --text-main: #1c1c1e;
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-panel: rgba(255, 255, 255, 0.9);
-            --border: rgba(0, 0, 0, 0.08);
-        }
-
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-main);
-            overflow: hidden; 
-            transition: all 0.3s ease;
-        }
-
-        .bg-grid { 
-            position: fixed; inset: 0; 
-            background-image: radial-gradient(var(--border) 1px, transparent 1px); 
-            background-size: 40px 40px; 
-            z-index: -1; opacity: 0.5; 
-        }
-
-        .glass { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-right: 1px solid var(--border); }
-        .glass-panel { background: var(--glass-panel); backdrop-filter: blur(12px); border: 1px solid var(--border); }
-        .glass-input { background: rgba(0,0,0,0.1); border: 1px solid var(--border); color: inherit; }
-        .light-theme .glass-input { background: rgba(255,255,255,0.6); }
-
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-
-        /* КАСТОМНІ ЧЕКБОКСИ (Щоб не були білими квадратами) */
-        .task-checkbox {
-            appearance: none;
-            -webkit-appearance: none;
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .light-theme .task-checkbox {
-            background-color: rgba(0, 0, 0, 0.05);
-            border: 2px solid rgba(0, 0, 0, 0.2);
-        }
-        .task-checkbox:checked {
-            background-color: #4f46e5; /* indigo-600 */
-            border-color: #4f46e5;
-        }
-        .task-checkbox:checked::after {
-            content: '';
-            position: absolute;
-            left: 32%;
-            top: 15%;
-            width: 30%;
-            height: 60%;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-        }
-        
-        /* Зміна кольору іконки календарика в input */
-        ::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-            opacity: 0.6;
-            cursor: pointer;
-        }
-        .light-theme ::-webkit-calendar-picker-indicator {
-            filter: invert(0);
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: white; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); }
+        .priority-low { color: #34d399; background: rgba(52, 211, 153, 0.1); }
+        .priority-medium { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
+        .priority-high { color: #f87171; background: rgba(248, 113, 113, 0.1); }
     </style>
 </head>
-<body class="flex h-screen">
+<body class="flex h-screen overflow-hidden">
 
-    <div class="bg-grid"></div>
+    <script src="app.js"></script>
 
-    <script>
-        // Перевірка теми та авторизації
-        if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-theme'); }
-        if (!localStorage.getItem('token')) { window.location.replace('login.html'); }
-    </script>
-
-    <aside class="w-72 glass flex flex-col h-full shadow-2xl z-20 relative">
-        <div class="h-20 flex items-center px-6 border-b border-white/5">
-            <a href="index.html" class="text-xl font-black flex items-center gap-3 tracking-tight hover:opacity-80 transition">
-                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                    <svg width="18" height="18" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                </div>
-                TaskFlow
-            </a>
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col hidden md:flex">
+        <div class="p-5 border-b border-slate-800 flex items-center justify-between">
+            <h1 class="text-xl font-bold flex items-center gap-2">
+                <span class="bg-indigo-600 p-1.5 rounded-lg">📋</span> TaskFlow
+            </h1>
         </div>
-
-        <div class="flex-1 overflow-y-auto py-6 flex flex-col custom-scrollbar">
-            <div class="px-6 flex items-center justify-between mb-4">
-                <span class="text-xs font-bold uppercase tracking-widest opacity-40">Твої проєкти</span>
-            </div>
-            
-            <ul id="projectList" class="space-y-1 px-4 mb-6">
+        
+        <div class="p-4 flex-1 overflow-y-auto">
+            <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Твої проєкти</h2>
+            <ul id="projectList" class="space-y-1">
                 </ul>
-
-            <form id="projectForm" class="px-4 mt-auto">
-                <div class="flex gap-2">
-                    <input type="text" id="newProjectInput" required placeholder="Новий проєкт..." class="flex-1 glass-input rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition">
-                    <button type="submit" class="w-10 h-10 bg-indigo-600 hover:bg-indigo-700 rounded-xl flex items-center justify-center text-white transition shadow-lg shrink-0">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                    </button>
-                </div>
-            </form>
         </div>
 
-        <div class="p-4 border-t border-white/5 space-y-2">
-            <a href="timelogs.html" id="adminPanelBtn" class="hidden flex items-center gap-3 px-4 py-3 text-sm font-medium text-orange-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors mb-2">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-        <line x1="3" y1="9" x2="21" y2="9"></line>
-        <line x1="9" y1="21" x2="9" y2="9"></line>
-    </svg>
-    Панель Адміністратора
-</a>
+        <div class="p-4 border-t border-slate-800">
+            <form id="projectForm" class="flex gap-2 mb-4">
+                <input type="text" id="newProjectName" placeholder="Новий проєкт..." class="w-full bg-slate-800 text-sm rounded-lg px-3 py-2 border border-slate-700 focus:border-indigo-500 outline-none" required>
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 rounded-lg px-3 py-2 text-white font-bold">+</button>
+            </form>
 
-            <a href="settings.html" class="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-bold opacity-70 hover:opacity-100 hover:bg-white/5 transition">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                Налаштування
-            </a>
-            
-            <button onclick="logout()" class="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-bold opacity-70 hover:opacity-100 hover:bg-white/5 transition">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                Вийти з акаунта
-            </button>
+            <div class="flex items-center justify-between text-sm text-slate-400">
+                <span id="userNameDisplay">User</span>
+                <button onclick="Auth.logout()" class="hover:text-rose-400 transition">Вийти</button>
+            </div>
         </div>
     </aside>
 
-    <main class="flex-1 flex flex-col h-full relative z-10">
-        
-        <header class="border-b border-white/5 px-8 py-6 flex flex-col gap-4 backdrop-blur-md bg-transparent shrink-0">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 id="currentProjectTitle" class="text-3xl font-black tracking-tight mb-1">Оберіть проєкт</h1>
-                    <p class="text-sm opacity-60">Керуй своїми завданнями та досягай цілей швидше.</p>
-                </div>
-                <button onclick="deleteCurrentProject()" class="text-xs font-bold px-4 py-2 rounded-xl text-rose-500 hover:bg-rose-500/10 transition border border-transparent hover:border-rose-500/20 flex items-center gap-2">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                    Видалити проєкт
-                </button>
+    <main class="flex-1 flex flex-col h-screen overflow-y-auto p-6 lg:p-10 relative">
+        <header class="flex justify-between items-end mb-8">
+            <div>
+                <h2 id="currentProjectTitle" class="text-3xl font-bold mb-2">Оберіть проєкт</h2>
+                <p class="text-slate-400 text-sm">Керуй своїми завданнями та досягай цілей швидше.</p>
             </div>
-
-            <div class="grid grid-cols-3 gap-4 mt-2 max-w-2xl">
-                <div class="glass-panel rounded-xl p-4 border border-white/5">
-                    <p class="text-xs font-bold uppercase tracking-wider opacity-50 mb-1">Загальний прогрес</p>
-                    <div class="flex items-center gap-3">
-                        <span id="progressText" class="text-2xl font-black">0%</span>
-                        <div class="flex-1 h-2 bg-black/20 rounded-full overflow-hidden">
-                            <div id="progressBar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]" style="width: 0%"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="glass-panel rounded-xl p-4 border border-white/5">
-                    <p class="text-xs font-bold uppercase tracking-wider opacity-50 mb-1">Всього завдань</p>
-                    <p id="statTotal" class="text-2xl font-black">0</p>
-                </div>
-                <div class="glass-panel rounded-xl p-4 border border-white/5">
-                    <p class="text-xs font-bold uppercase tracking-wider opacity-50 mb-1">Виконано</p>
-                    <p id="statDone" class="text-2xl font-black text-indigo-400">0</p>
-                </div>
-            </div>
+            <button id="deleteProjectBtn" onclick="deleteCurrentProject()" class="text-rose-500 hover:text-rose-400 text-sm font-medium hidden flex items-center gap-2">
+                🗑 Видалити проєкт
+            </button>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
-            
-            <form id="taskForm" class="glass-panel p-2 rounded-2xl shadow-xl flex flex-col md:flex-row gap-2 mb-8 items-center border border-white/10 max-w-5xl">
-                <input type="text" id="taskTitle" required placeholder="Що потрібно зробити?" class="flex-1 px-4 py-3 bg-transparent focus:outline-none text-sm font-bold w-full">
-                <div class="hidden md:block w-px h-8 bg-white/10"></div>
-                <input type="text" id="taskDesc" placeholder="Деталі (необов'язково)..." class="w-full md:w-1/3 px-4 py-3 bg-transparent opacity-70 focus:opacity-100 focus:outline-none text-sm">
-                <div class="hidden md:block w-px h-8 bg-white/10"></div>
-                <input type="datetime-local" id="taskDate" class="w-full md:w-auto px-4 py-3 bg-transparent opacity-70 focus:opacity-100 focus:outline-none text-sm cursor-pointer">
-                <button type="submit" class="w-full md:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-indigo-500/20 whitespace-nowrap">
-                    Додати
-                </button>
+        <div id="taskFormContainer" class="glass-panel border border-slate-700 rounded-2xl p-4 mb-8 hidden">
+            <form id="taskForm" class="flex flex-wrap gap-3 items-center">
+                <input type="text" id="taskTitle" placeholder="Що потрібно зробити?" class="flex-1 bg-transparent border-none outline-none text-white placeholder-slate-500 min-w-[200px]" required>
+                
+                <input type="text" id="taskDesc" placeholder="Деталі (необов'язково)..." class="flex-1 bg-slate-800/50 rounded-lg px-3 py-2 text-sm border border-slate-700 outline-none min-w-[150px]">
+                
+                <select id="taskPriority" class="bg-slate-800 text-sm rounded-lg px-3 py-2 border border-slate-700 outline-none">
+                    <option value="low">Низький пріоритет</option>
+                    <option value="medium" selected>Середній пріоритет</option>
+                    <option value="high">Високий пріоритет</option>
+                </select>
+
+                <input type="date" id="taskDate" class="bg-slate-800 text-sm rounded-lg px-3 py-2 border border-slate-700 outline-none cursor-pointer">
+                
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg px-6 py-2 transition shadow-lg">Додати</button>
             </form>
+        </div>
 
-            <div id="tasksContainer" class="space-y-4 max-w-5xl">
-                </div>
-
-            <div id="emptyState" class="hidden border-2 border-dashed border-white/10 rounded-[32px] py-24 flex flex-col items-center justify-center text-center opacity-70 max-w-5xl">
-                <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4 text-indigo-400">
-                    <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                </div>
-                <h3 class="text-xl font-black mb-2">Цей проєкт поки порожній</h3>
-                <p class="text-sm opacity-60 max-w-sm">Створіть перше завдання за допомогою форми вище. Розбивайте великі задачі на дрібні підзавдання для кращого результату.</p>
+        <div id="tasksContainer" class="space-y-3">
+            <div id="emptyState" class="text-center py-20 text-slate-500 hidden">
+                <p>Тут поки порожньо. Створіть проєкт або додайте завдання.</p>
             </div>
         </div>
     </main>
 
     <script>
-        // --- ПЕРЕВІРКА НА АДМІНА ---
-        function parseJwt(token) {
-            try {
-                const base64Url = token.split('.')[1];
-                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-                }).join(''));
-                return JSON.parse(jsonPayload);
-            } catch (e) {
-                return null;
-            }
-        }
-        // Перевірка чи є користувач Адміном для показу кнопки
-const currentToken = localStorage.getItem("token");
+        // 1. Перевірка авторизації
+        Auth.requireAuth();
+        const currentUser = Auth.getCurrentUser();
+        document.getElementById('userNameDisplay').innerText = currentUser.username;
 
-if (currentToken) {
-    function parseJwt(t) {
-        try {
-            const base64Url = t.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonPayload);
-        } catch (e) {
-            return null;
-        }
-    }
+        // Стан сторінки
+        let activeProjectId = null;
 
-    const tokenData = parseJwt(currentToken);
-    const roleClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-    const userRole = tokenData ? (tokenData[roleClaim] || tokenData.role) : null;
+        // Елементи DOM
+        const projectListEl = document.getElementById('projectList');
+        const projectFormEl = document.getElementById('projectForm');
+        const tasksContainerEl = document.getElementById('tasksContainer');
+        const taskFormContainer = document.getElementById('taskFormContainer');
+        const taskFormEl = document.getElementById('taskForm');
+        const currentProjectTitleEl = document.getElementById('currentProjectTitle');
+        const emptyStateEl = document.getElementById('emptyState');
+        const deleteProjectBtn = document.getElementById('deleteProjectBtn');
 
-    // Якщо роль Адмін - прибираємо клас 'hidden' з кнопки
-    if (userRole === "Admin") {
-        const adminBtn = document.getElementById("adminPanelBtn");
-        if (adminBtn) {
-            adminBtn.classList.remove("hidden");
-        }
-    }
-}
-
-        const token = localStorage.getItem('token');
-        if (token) {
-            const decoded = parseJwt(token);
-            const role = decoded?.role || decoded?.['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-            if (role === 'Admin') {
-                const adminBtn = document.getElementById('adminLink');
-                adminBtn.classList.remove('hidden');
-                adminBtn.classList.add('flex');
-            }
-        }
-
-        // --- БАЗА ДАНИХ ТА СТАН ---
-        let projects = JSON.parse(localStorage.getItem('projects')) || [{ id: 1, title: 'Мій перший проєкт' }];
-        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-        let activeProjectId = projects.length > 0 ? projects[0].id : null;
-
-        const projectList = document.getElementById('projectList');
-        const projectForm = document.getElementById('projectForm');
-        const newProjectInput = document.getElementById('newProjectInput');
-        
-        const currentProjectTitle = document.getElementById('currentProjectTitle');
-        const progressBar = document.getElementById('progressBar');
-        const progressText = document.getElementById('progressText');
-        const statTotal = document.getElementById('statTotal');
-        const statDone = document.getElementById('statDone');
-        
-        const taskForm = document.getElementById('taskForm');
-        const tasksContainer = document.getElementById('tasksContainer');
-        const emptyState = document.getElementById('emptyState');
-
-        function saveDb() {
-            localStorage.setItem('projects', JSON.stringify(projects));
-            localStorage.setItem('tasks', JSON.stringify(tasks));
-        }
-
+        // 2. РЕНДЕР ПРОЄКТІВ
         function renderProjects() {
-            projectList.innerHTML = '';
+            const projects = Projects.getAll();
+            projectListEl.innerHTML = '';
+            
+            if(projects.length > 0 && !activeProjectId) {
+                activeProjectId = projects[0].id; // Обираємо перший за замовчуванням
+            }
+
             projects.forEach(p => {
                 const isActive = p.id === activeProjectId;
                 const li = document.createElement('li');
                 li.innerHTML = `
-                    <button onclick="selectProject(${p.id})" class="w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 transition font-bold text-sm ${isActive ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'opacity-60 hover:opacity-100 hover:bg-white/5'}">
-                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
-                        <span class="truncate">${p.title}</span>
+                    <button onclick="selectProject('${p.id}')" class="w-full text-left px-3 py-2 rounded-lg text-sm transition font-medium ${isActive ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}">
+                        ${p.name}
                     </button>
                 `;
-                projectList.appendChild(li);
+                projectListEl.appendChild(li);
             });
+
             updateMainView();
         }
 
+        // 3. ВИБІР ПРОЄКТУ
         window.selectProject = function(id) {
             activeProjectId = id;
             renderProjects();
         }
 
-        projectForm.addEventListener('submit', (e) => {
+        // 4. ДОДАВАННЯ ПРОЄКТУ
+        projectFormEl.addEventListener('submit', (e) => {
             e.preventDefault();
-            const title = newProjectInput.value.trim();
-            if (title) {
-                const newId = Date.now();
-                projects.push({ id: newId, title: title });
-                activeProjectId = newId;
-                newProjectInput.value = '';
-                saveDb();
+            const nameInput = document.getElementById('newProjectName');
+            const name = nameInput.value.trim();
+            if(name) {
+                const newProject = Projects.create(name);
+                activeProjectId = newProject.id;
+                nameInput.value = '';
                 renderProjects();
             }
         });
 
+        // ВИДАЛЕННЯ ПРОЄКТУ
         window.deleteCurrentProject = function() {
-            if(!activeProjectId) return;
-            if(confirm('Ви точно хочете видалити цей проєкт і всі його завдання?')) {
-                projects = projects.filter(p => p.id !== activeProjectId);
-                tasks = tasks.filter(t => t.project_id !== activeProjectId);
-                activeProjectId = projects.length > 0 ? projects[0].id : null;
-                saveDb();
+            if(confirm('Видалити цей проєкт з усіма завданнями?')) {
+                Projects.delete(activeProjectId);
+                activeProjectId = null;
                 renderProjects();
             }
         }
 
+        // 5. РЕНДЕР ЗАВДАНЬ
         function updateMainView() {
             if (!activeProjectId) {
-                currentProjectTitle.innerText = "Створіть проєкт зліва";
-                taskForm.style.display = 'none';
-                tasksContainer.innerHTML = '';
-                emptyState.style.display = 'none';
-                progressBar.style.width = '0%';
-                progressText.innerText = '0%';
-                statTotal.innerText = '0';
-                statDone.innerText = '0';
+                currentProjectTitleEl.innerText = "Створіть або оберіть проєкт";
+                taskFormContainer.classList.add('hidden');
+                deleteProjectBtn.classList.add('hidden');
+                tasksContainerEl.innerHTML = '';
+                emptyStateEl.classList.remove('hidden');
+                tasksContainerEl.appendChild(emptyStateEl);
                 return;
             }
 
-            taskForm.style.display = 'flex';
-            const activeProject = projects.find(p => p.id === activeProjectId);
-            currentProjectTitle.innerText = activeProject.title;
-
-            const projectTasks = tasks.filter(t => t.project_id === activeProjectId);
+            const projects = Projects.getAll();
+            const currentProject = projects.find(p => p.id === activeProjectId);
             
-            // РОЗРАХУНОК ПРОГРЕСУ (Головні завдання + Підзавдання)
-            let totalItemsCount = 0;
-            let completedItemsCount = 0;
+            if(currentProject) {
+                currentProjectTitleEl.innerText = currentProject.name;
+                taskFormContainer.classList.remove('hidden');
+                deleteProjectBtn.classList.remove('hidden');
+            }
 
-            projectTasks.forEach(t => {
-                totalItemsCount++; // Рахуємо головне завдання
-                if (t.status === 'done') completedItemsCount++;
-                
-                if (t.subtasks && t.subtasks.length > 0) {
-                    t.subtasks.forEach(st => {
-                        totalItemsCount++; // Рахуємо кожне підзавдання
-                        if (st.status === 'done') completedItemsCount++;
-                    });
-                }
-            });
+            const tasks = Tasks.getAll(activeProjectId);
+            tasksContainerEl.innerHTML = '';
 
-            const progress = totalItemsCount === 0 ? 0 : Math.round((completedItemsCount / totalItemsCount) * 100);
-            
-            progressBar.style.width = `${progress}%`;
-            progressText.innerText = `${progress}%`;
-            statTotal.innerText = totalItemsCount;
-            statDone.innerText = completedItemsCount;
-
-            tasksContainer.innerHTML = '';
-            
-            if (projectTasks.length === 0) {
-                emptyState.style.display = 'flex';
+            if (tasks.length === 0) {
+                emptyStateEl.classList.remove('hidden');
+                tasksContainerEl.appendChild(emptyStateEl);
             } else {
-                emptyState.style.display = 'none';
+                emptyStateEl.classList.add('hidden');
                 
-                projectTasks.forEach(t => {
-                    const isDone = t.status === 'done';
+                tasks.forEach(task => {
+                    const isDone = task.status === 'done';
+                    const isInProgress = task.status === 'in_progress';
                     
-                    let subtasksHtml = '';
-                    if (t.subtasks && t.subtasks.length > 0) {
-                        subtasksHtml = t.subtasks.map(st => `
-                            <div class="flex items-center gap-3 mt-2 pl-4 border-l-2 border-white/10 group/sub">
-                                <input type="checkbox" ${st.status === 'done' ? 'checked' : ''} onchange="toggleSubtask(${t.id}, ${st.id})" class="task-checkbox w-5 h-5 rounded flex-shrink-0">
-                                <span class="flex-1 text-xs font-medium ${st.status === 'done' ? 'line-through opacity-50' : 'opacity-80'}">${st.title}</span>
-                                <button onclick="deleteSubtask(${t.id}, ${st.id})" class="text-rose-500 opacity-0 group-hover/sub:opacity-100 transition p-1.5 hover:bg-rose-500/20 rounded-lg">
-                                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                </button>
-                            </div>
-                        `).join('');
-                    }
-
-                    const addSubtaskHtml = `
-                        <div class="mt-3 ml-12">
-                            <div id="subform-${t.id}" class="hidden flex gap-2 items-center mb-2">
-                                <input type="text" id="subinput-${t.id}" placeholder="Назва підзавдання..." class="text-xs bg-black/20 dark:bg-white/10 px-3 py-2 rounded-xl border border-white/10 w-full focus:outline-none focus:border-indigo-500/50">
-                                <button onclick="saveSubtask(${t.id})" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-lg shrink-0">Зберегти</button>
-                                <button onclick="toggleSubtaskForm(${t.id})" class="text-xs px-2 py-2 opacity-50 hover:opacity-100 hover:text-rose-400">✕</button>
-                            </div>
-                            <button id="subbtn-${t.id}" onclick="toggleSubtaskForm(${t.id})" class="text-[11px] uppercase font-bold text-indigo-400 hover:text-indigo-300 transition flex items-center gap-1 opacity-70 hover:opacity-100 tracking-wider">
-                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg> Додати підзавдання
-                            </button>
-                        </div>
-                    `;
-
-                    // Генерація таймера або статусу
-                    let timerHtml = '';
-                    if (isDone) {
-                        timerHtml = `<span class="text-emerald-400 text-xs font-bold flex items-center gap-1"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> Виконано</span>`;
-                    } else if (t.due_date) {
-                        timerHtml = `<span class="countdown-timer text-amber-400 text-xs font-bold font-mono bg-amber-400/10 px-3 py-1.5 rounded-xl border border-amber-400/20 flex items-center gap-1.5" data-due="${t.due_date}">⏳ Рахуємо...</span>`;
+                    // Переклад пріоритетів
+                    const priorityLabels = { 'low': 'Низький', 'medium': 'Середній', 'high': 'Високий' };
+                    
+                    // Відображення дедлайну
+                    let dateHtml = '';
+                    if(task.due_date) {
+                        dateHtml = `<span class="text-xs font-mono bg-slate-800 px-2 py-1 rounded text-slate-300 border border-slate-700">🗓 ${task.due_date}</span>`;
                     }
 
                     const taskEl = document.createElement('div');
-                    taskEl.className = `glass-panel p-5 rounded-2xl flex flex-col gap-1 transition duration-300 border border-white/5 group ${isDone ? 'opacity-60 bg-black/20' : 'shadow-lg'}`;
+                    taskEl.className = `glass-panel p-4 rounded-xl border border-slate-700 flex flex-col sm:flex-row gap-4 items-start sm:items-center transition ${isDone ? 'opacity-50' : ''}`;
                     
                     taskEl.innerHTML = `
-                        <div class="flex items-center gap-4">
-                            <div class="flex-shrink-0">
-                                <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTaskStatus(${t.id})" class="task-checkbox w-6 h-6 rounded-md flex-shrink-0">
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <h4 class="font-bold text-sm truncate ${isDone ? 'line-through opacity-70' : ''}">${t.title}</h4>
-                                ${t.description ? `<p class="text-xs opacity-60 mt-1 truncate ${isDone ? 'line-through' : ''}">${t.description}</p>` : ''}
-                            </div>
+                        <div class="flex items-center gap-3 flex-1 min-w-0 w-full">
+                            <input type="checkbox" ${isDone ? 'checked' : ''} onchange="toggleTaskDone('${task.id}', this.checked)" class="w-5 h-5 rounded border-slate-600 bg-slate-800 focus:ring-indigo-500 cursor-pointer flex-shrink-0">
                             
-                            <div class="hidden sm:flex flex-col items-end gap-1">
-                                ${timerHtml}
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <h4 class="font-semibold text-sm truncate ${isDone ? 'line-through text-slate-400' : 'text-white'}">${task.title}</h4>
+                                    <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full priority-${task.priority}">
+                                        ${priorityLabels[task.priority]}
+                                    </span>
+                                </div>
+                                ${task.description ? `<p class="text-xs text-slate-400 truncate">${task.description}</p>` : ''}
                             </div>
-
-                            <button onclick="deleteTask(${t.id})" class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-xl text-rose-500 hover:bg-rose-500/20 transition opacity-0 group-hover:opacity-100 sm:opacity-100">
-                                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            </button>
                         </div>
                         
-                        <div class="w-full mt-1 ml-8 max-w-[90%]">
-                            ${subtasksHtml}
-                            ${!isDone ? addSubtaskHtml : ''}
+                        <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 border-slate-700 pt-3 sm:pt-0 mt-2 sm:mt-0">
+                            ${dateHtml}
+                            
+                            <select onchange="changeTaskStatus('${task.id}', this.value)" class="text-xs bg-slate-800 border border-slate-600 rounded px-2 py-1 outline-none cursor-pointer" ${isDone ? 'disabled' : ''}>
+                                <option value="todo" ${task.status === 'todo' ? 'selected' : ''}>До виконання</option>
+                                <option value="in_progress" ${task.status === 'in_progress' ? 'selected' : ''}>⏳ У процесі</option>
+                            </select>
+
+                            <button onclick="window.location.href='timelogs.html?taskId=${task.id}'" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded flex items-center gap-1 transition">
+                                ⏱ Трекінг часу
+                            </button>
                         </div>
                     `;
-                    tasksContainer.appendChild(taskEl);
+                    tasksContainerEl.appendChild(taskEl);
                 });
-                
-                // Оновлюємо таймери одразу після рендеру
-                updateCountdowns();
             }
         }
 
-        taskForm.addEventListener('submit', (e) => {
+        // 6. СТВОРЕННЯ ЗАВДАННЯ
+        taskFormEl.addEventListener('submit', (e) => {
             e.preventDefault();
             const title = document.getElementById('taskTitle').value.trim();
             const desc = document.getElementById('taskDesc').value.trim();
-            const date = document.getElementById('taskDate').value;
+            const priority = document.getElementById('taskPriority').value;
+            const dueDate = document.getElementById('taskDate').value;
 
             if (title && activeProjectId) {
-                tasks.unshift({
-                    id: Date.now(),
-                    project_id: activeProjectId,
-                    title: title,
-                    description: desc,
-                    due_date: date,
-                    status: 'todo',
-                    subtasks: [] 
-                });
+                Tasks.create(activeProjectId, title, desc, priority, dueDate);
                 
+                // Очистка форми
                 document.getElementById('taskTitle').value = '';
                 document.getElementById('taskDesc').value = '';
                 document.getElementById('taskDate').value = '';
                 
-                saveDb();
-                updateMainView();
+                renderProjects(); // Оновлюємо UI
             }
         });
 
-        window.toggleTaskStatus = function(taskId) {
-            const task = tasks.find(t => t.id === taskId);
-            if (task) {
-                task.status = task.status === 'done' ? 'todo' : 'done';
-                saveDb();
-                updateMainView();
-            }
+        // 7. ЗМІНА СТАТУСУ (Чекбокс "Виконано" або селект "У процесі")
+        window.changeTaskStatus = function(taskId, status) {
+            Tasks.changeStatus(taskId, status);
+            renderProjects();
         }
 
-        window.deleteTask = function(taskId) {
-            tasks = tasks.filter(t => t.id !== taskId);
-            saveDb();
-            updateMainView();
+        window.toggleTaskDone = function(taskId, isChecked) {
+            const newStatus = isChecked ? 'done' : 'todo';
+            Tasks.changeStatus(taskId, newStatus);
+            renderProjects();
         }
-
-        window.toggleSubtaskForm = function(taskId) {
-            const form = document.getElementById(`subform-${taskId}`);
-            const btn = document.getElementById(`subbtn-${taskId}`);
-            if (form.classList.contains('hidden')) {
-                form.classList.remove('hidden');
-                btn.classList.add('hidden');
-                document.getElementById(`subinput-${taskId}`).focus();
-            } else {
-                form.classList.add('hidden');
-                btn.classList.remove('hidden');
-            }
-        }
-
-        window.saveSubtask = function(taskId) {
-            const input = document.getElementById(`subinput-${taskId}`);
-            const title = input.value.trim();
-            if (!title) return;
-
-            const task = tasks.find(t => t.id === taskId);
-            if (task) {
-                if (!task.subtasks) task.subtasks = [];
-                task.subtasks.push({
-                    id: Date.now(),
-                    title: title,
-                    status: 'todo'
-                });
-                saveDb();
-                updateMainView();
-            }
-        }
-
-        window.toggleSubtask = function(taskId, subtaskId) {
-            const task = tasks.find(t => t.id === taskId);
-            if (task && task.subtasks) {
-                const subtask = task.subtasks.find(st => st.id === subtaskId);
-                if (subtask) {
-                    subtask.status = subtask.status === 'done' ? 'todo' : 'done';
-                    saveDb();
-                    updateMainView();
-                }
-            }
-        }
-
-        window.deleteSubtask = function(taskId, subtaskId) {
-            const task = tasks.find(t => t.id === taskId);
-            if (task && task.subtasks) {
-                task.subtasks = task.subtasks.filter(st => st.id !== subtaskId);
-                saveDb();
-                updateMainView();
-            }
-        }
-
-        window.logout = function() {
-            localStorage.removeItem('token');
-            window.location.replace('login.html');
-        }
-
-        // --- ЛОГІКА ТАЙМЕРА ---
-        function updateCountdowns() {
-            const elements = document.querySelectorAll('.countdown-timer');
-            const now = new Date().getTime();
-
-            elements.forEach(el => {
-                const dueString = el.getAttribute('data-due');
-                if (!dueString) return;
-                
-                const dueDate = new Date(dueString).getTime();
-                if (isNaN(dueDate)) return;
-
-                const diff = dueDate - now;
-
-                if (diff < 0) {
-                    el.innerHTML = `⚠️ Протерміновано`;
-                    el.classList.remove('text-amber-400', 'bg-amber-400/10', 'border-amber-400/20');
-                    el.classList.add('text-rose-500', 'bg-rose-500/10', 'border-rose-500/20');
-                    return;
-                }
-
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-                let timeStr = '⏳ ';
-                if (days > 0) timeStr += `${days}д `;
-                if (hours > 0 || days > 0) timeStr += `${hours}г `;
-                timeStr += `${minutes}хв ${seconds}с`;
-
-                el.innerHTML = timeStr;
-            });
-        }
-
-        // Запускаємо таймер кожну секунду
-        setInterval(updateCountdowns, 1000);
 
         // Ініціалізація
         renderProjects();

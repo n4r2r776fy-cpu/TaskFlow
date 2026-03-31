@@ -67,7 +67,7 @@
 
                     <div class="w-full md:w-32">
                         <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 px-1">Годин</label>
-                        <input type="number" id="timeHours" placeholder="0" min="0.1" step="0.1" required
+                        <input type="number" id="timeHours" placeholder="0.5" min="0.1" step="0.1" required
                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all font-medium text-center">
                     </div>
 
@@ -109,229 +109,20 @@
         </div>
     </main>
 
-    <script>
-        // ==========================================
-        // 1. НАЛАШТУВАННЯ API ТА ТОКЕНА
-        // ==========================================
-        // УВАГА: Змініть порт 7196 на той, який використовує ваш бекенд!
-        const API_BASE = "https://localhost:7196/api"; 
-        const token = localStorage.getItem("token"); 
+    <script src="app.js"></script>
+<script>
+    Auth.requireAuth();
+
+    function saveTime(taskId) {
+        const timeInMinutes = 120; // наприклад, користувач ввів 2 години
+        const comment = "Налаштовував базу даних";
         
-        if (!token) {
-            window.location.href = "login.html";
-        } else {
-            // Розшифровуємо JWT токен
-            function parseJwt(t) {
-                try {
-                    const base64Url = t.split('.')[1];
-                    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-                        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-                    }).join(''));
-                    return JSON.parse(jsonPayload);
-                } catch (e) {
-                    return null;
-                }
-            }
-
-            const tokenData = parseJwt(token);
-            const roleClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-            
-            // Шукаємо роль у різних можливих ключах
-            const userRole = tokenData ? (tokenData[roleClaim] || tokenData.role || tokenData.Role) : null;
-            console.log("Отримана роль з токена:", userRole);
-
-            // Якщо вас все ще викидає на tasks.html, закоментуйте ці 4 рядки нижче (додайте // перед кожним)
-            if (userRole !== "Admin" && userRole !== "admin") {
-                alert("Доступ заборонено! Ця сторінка доступна лише для адміністраторів.");
-                window.location.href = "tasks.html"; 
-            }
-        }
-
-        let allTasks = [];
-
-        // ==========================================
-        // 2. ЗАВАНТАЖЕННЯ ДАНИХ ТА ЛОГІКА СТОРІНКИ
-        // ==========================================
-
-        async function loadTasksForSelect() {
-            try {
-                const response = await fetch(`${API_BASE}/Tasks`, {
-                    headers: { "Authorization": `Bearer ${token}` }
-                });
-                if (response.ok) {
-                    allTasks = await response.json();
-                    
-                    // Обробка $values якщо повертається OData/ReferenceHandler.Preserve
-                    const tasksArray = allTasks.$values ? allTasks.$values : allTasks;
-                    
-                    const select = document.getElementById("taskSelect");
-                    select.innerHTML = `<option value="" disabled selected>Оберіть завдання...</option>`;
-                    
-                    if(!tasksArray || tasksArray.length === 0) {
-                        select.innerHTML = `<option value="" disabled selected>Немає доступних завдань</option>`;
-                        return;
-                    }
-
-                    tasksArray.forEach(task => {
-                        const id = task.id || task.Id;
-                        const title = task.title || task.Title;
-                        const status = task.status || task.Status;
-                        const prefix = status === "done" ? "✅ " : "⏳ ";
-                        select.innerHTML += `<option value="${id}">${prefix}${title}</option>`;
-                    });
-                }
-            } catch (error) {
-                console.error("Помилка завантаження завдань:", error);
-            }
-        }
-
-        async function loadTimeLogs() {
-            const tbody = document.getElementById("timeLogsTableBody");
-            try {
-                const response = await fetch(`${API_BASE}/TimeLogs`, {
-                    headers: { "Authorization": `Bearer ${token}` }
-                });
-                
-                if (response.ok) {
-                    const logs = await response.json();
-                    renderTimeLogs(logs);
-                } else {
-                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Помилка завантаження. Перевірте CORS або TimeLogsController.</td></tr>`;
-                }
-            } catch (error) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Немає зв'язку з сервером. Перевірте API_BASE.</td></tr>`;
-                console.error("Fetch error:", error);
-            }
-        }
-
-        function renderTimeLogs(logs) {
-            const tbody = document.getElementById("timeLogsTableBody");
-            tbody.innerHTML = "";
-
-            const logsArray = Array.isArray(logs) ? logs : (logs.$values || logs.data || []);
-
-            if (logsArray.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="px-6 py-12 text-center text-slate-500">
-                            <div class="flex justify-center mb-3 text-slate-300">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                            </div>
-                            Жодного запису часу не знайдено.
-                        </td>
-                    </tr>`;
-                return;
-            }
-
-            logsArray.sort((a, b) => new Date(b.date || b.Date || b.createdAt || b.loggedAt || 0) - new Date(a.date || a.Date || a.createdAt || a.loggedAt || 0));
-
-            const tasksArray = allTasks.$values ? allTasks.$values : allTasks;
-
-            logsArray.forEach(log => {
-                const id = log.id || log.Id;
-                
-                // ВИПРАВЛЕННЯ КЛЮЧІВ: Беремо timeSpent або hours (залежить від бекенду)
-                const hours = log.timeSpent || log.TimeSpent || log.hours || log.Hours || 0;
-                const desc = log.comment || log.Comment || log.description || log.Description || "Без коментаря";
-                const dateRaw = log.loggedAt || log.LoggedAt || log.date || log.Date || log.createdAt || new Date().toISOString();
-                const taskId = log.taskId || log.TaskId;
-
-                let taskName = "Невідоме завдання";
-                if (log.task && (log.task.title || log.task.Title)) {
-                    taskName = log.task.title || log.task.Title;
-                } else if (tasksArray && tasksArray.length > 0) {
-                    const foundTask = tasksArray.find(t => (t.id || t.Id) == taskId);
-                    if (foundTask) taskName = foundTask.title || foundTask.Title;
-                }
-
-                const formattedDate = new Date(dateRaw).toLocaleDateString('uk-UA', { 
-                    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit' 
-                });
-
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition-colors group">
-                        <td class="px-6 py-4 text-sm text-slate-500 whitespace-nowrap">${formattedDate}</td>
-                        <td class="px-6 py-4 font-medium text-slate-800">${taskName}</td>
-                        <td class="px-6 py-4 text-sm text-slate-600">${desc}</td>
-                        <td class="px-6 py-4 text-center">
-                            <span class="inline-block px-3 py-1 bg-indigo-50 text-indigo-700 font-bold text-xs rounded-full border border-indigo-100">
-                                ${hours} год
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <button onclick="deleteTimeLog(${id})" class="text-slate-400 hover:text-red-500 transition-colors p-1 opacity-0 group-hover:opacity-100 focus:opacity-100" title="Видалити запис">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        document.getElementById("createTimeLogForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            
-            const taskId = document.getElementById("taskSelect").value;
-            const hours = document.getElementById("timeHours").value;
-            const desc = document.getElementById("timeDesc").value;
-            
-            const btn = e.target.querySelector('button');
-            const originalText = btn.innerText;
-            btn.innerText = "Зберігаю...";
-            btn.disabled = true;
-
-            try {
-                // Використовуємо саме ті ключі, які є на бекенді (виходячи з вашого попереднього коду)
-                const payload = { 
-                    taskId: parseInt(taskId), 
-                    timeSpent: parseFloat(hours), 
-                    comment: desc,                
-                    loggedAt: new Date().toISOString() 
-                };
-
-                const response = await fetch(`${API_BASE}/TimeLogs`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok) {
-                    document.getElementById("timeHours").value = "";
-                    document.getElementById("timeDesc").value = "";
-                    loadTimeLogs(); 
-                } else {
-                    alert("Помилка при збереженні. Перевірте консоль (F12) для деталей.");
-                    console.error(await response.text());
-                }
-            } catch (error) { 
-                console.error("Помилка мережі при збереженні:", error); 
-                alert("Немає зв'язку з сервером.");
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        });
-
-        async function deleteTimeLog(id) {
-            if (!confirm("Видалити цей запис часу?")) return;
-            try {
-                const response = await fetch(`${API_BASE}/TimeLogs/${id}`, {
-                    method: "DELETE",
-                    headers: { "Authorization": `Bearer ${token}` }
-                });
-                if (response.ok) loadTimeLogs();
-                else alert("Не вдалося видалити запис.");
-            } catch (error) { console.error(error); }
-        }
-
-        function logout() {
-            localStorage.removeItem("token"); 
-            window.location.href = "login.html";
-        }
-
-        // Запуск
-        loadTasksForSelect().then(loadTimeLogs);
-    </script>
+        TimeTracker.addLog(taskId, timeInMinutes, comment);
+        
+        // Як показати загальний час:
+        const totalMinutes = TimeTracker.getTaskTotalTime(taskId);
+        console.log(`Витрачено загалом: ${totalMinutes} хвилин`);
+    }
+</script>
 </body>
 </html>

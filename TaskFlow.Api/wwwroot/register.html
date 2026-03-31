@@ -3,175 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Реєстрація - TaskFlow</title>
+    <title>TaskFlow - Реєстрація</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #05050f;
-            --card-bg: #0d1126;
-            --text-main: #f8fafc;
-            --border: rgba(255, 255, 255, 0.05);
-        }
-
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .bg-grid { 
-            position: fixed; inset: 0; 
-            background-image: radial-gradient(var(--border) 1px, transparent 1px); 
-            background-size: 40px 40px; 
-            z-index: -1; opacity: 0.5; 
-        }
-
-        .auth-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        .input-dark { 
-            background: rgba(0,0,0,0.3); 
-            border: 1px solid var(--border); 
-            color: inherit; 
-            transition: all 0.3s ease;
-        }
-        
-        .input-dark:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-            outline: none;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: white; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); }
     </style>
 </head>
-<body class="relative">
-    <div class="bg-grid"></div>
+<body class="flex items-center justify-center min-h-screen p-4">
 
-    <nav class="absolute top-0 w-full h-20 px-8 flex items-center z-50">
-        <a href="index.html" class="flex items-center gap-2 text-sm font-bold hover:text-indigo-400 transition opacity-70 hover:opacity-100">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-            На головну
-        </a>
-    </nav>
+    <script src="app.js"></script>
 
-    <main class="flex-1 flex items-center justify-center p-6">
-        <div class="auth-card w-full max-w-md rounded-[32px] p-8 sm:p-10">
-            
-            <div class="text-center mb-8">
-                <h1 class="text-3xl font-black mb-2">Новий акаунт</h1>
-                <p class="text-sm opacity-50">Приєднуйся до TaskFlow</p>
-            </div>
-
-            <form id="registerForm" class="space-y-5">
-                
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wide opacity-50 mb-2 ml-1">Ім'я</label>
-                    <input type="text" id="regName" required placeholder="Як до вас звертатися?" class="w-full px-5 py-3 rounded-xl input-dark">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wide opacity-50 mb-2 ml-1">Email</label>
-                    <input type="email" id="regEmail" required placeholder="name@example.com" class="w-full px-5 py-3 rounded-xl input-dark">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wide opacity-50 mb-2 ml-1">Пароль</label>
-                    <div class="relative">
-                        <input type="password" id="regPass" required minlength="8" placeholder="Мінімум 8 символів" class="w-full pl-5 pr-12 py-3 rounded-xl input-dark">
-                        <button type="button" id="togglePassBtn1" class="absolute right-4 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100 transition focus:outline-none">
-                            <svg id="eyeIcon1" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wide opacity-50 mb-2 ml-1">Підтвердіть пароль</label>
-                    <div class="relative">
-                        <input type="password" id="regConfirmPass" required minlength="8" placeholder="Повторіть пароль" class="w-full pl-5 pr-12 py-3 rounded-xl input-dark">
-                        <button type="button" id="togglePassBtn2" class="absolute right-4 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100 transition focus:outline-none">
-                            <svg id="eyeIcon2" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <p id="errorMsg" class="text-rose-500 text-sm font-medium text-center hidden"></p>
-
-                <div class="pt-4">
-                    <button type="submit" class="w-full py-4 bg-indigo-500 text-white font-bold rounded-xl hover:bg-indigo-600 transition-colors shadow-lg shadow-indigo-500/25">
-                        Зареєструватися
-                    </button>
-                </div>
-            </form>
-
-            <div class="mt-8 text-center">
-                <p class="text-sm opacity-60">
-                    Вже є акаунт? 
-                    <a href="login.html" class="text-indigo-400 font-bold hover:text-indigo-300 hover:underline transition">Увійти</a>
-                </p>
-            </div>
-
+    <div class="glass-panel w-full max-w-md p-8 rounded-2xl border border-slate-700 shadow-2xl">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold flex items-center justify-center gap-2 mb-2">
+                <span class="bg-indigo-600 p-2 rounded-xl text-white">📋</span> TaskFlow
+            </h1>
+            <p class="text-slate-400">Створіть новий акаунт для початку роботи.</p>
         </div>
-    </main>
+
+        <div id="errorMsg" class="hidden bg-rose-500/10 border border-rose-500/50 text-rose-500 text-sm p-3 rounded-lg mb-4 text-center">
+            Помилка реєстрації
+        </div>
+
+        <div id="successMsg" class="hidden bg-emerald-500/10 border border-emerald-500/50 text-emerald-500 text-sm p-3 rounded-lg mb-4 text-center">
+            Реєстрація успішна! Перенаправлення...
+        </div>
+
+        <form id="registerForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1">Ім'я користувача (Username)</label>
+                <input type="text" id="username" required 
+                    class="w-full bg-slate-800/50 border border-slate-600 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition" 
+                    placeholder="Ваше ім'я">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1">Email</label>
+                <input type="email" id="email" required 
+                    class="w-full bg-slate-800/50 border border-slate-600 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition" 
+                    placeholder="name@example.com">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1">Пароль</label>
+                <input type="password" id="password" required 
+                    class="w-full bg-slate-800/50 border border-slate-600 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition" 
+                    placeholder="••••••••">
+            </div>
+
+            <button type="submit" 
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition shadow-lg shadow-indigo-500/20 mt-4">
+                Зареєструватися
+            </button>
+        </form>
+
+        <p class="text-center text-sm text-slate-400 mt-6">
+            Вже маєте акаунт? <a href="login.html" class="text-indigo-400 hover:text-indigo-300 font-medium transition">Увійти</a>
+        </p>
+    </div>
 
     <script>
-        // --- Логіка показати/приховати пароль ---
-        function setupPasswordToggle(inputId, btnId, iconId) {
-            const btn = document.getElementById(btnId);
-            const input = document.getElementById(inputId);
-            const icon = document.getElementById(iconId);
-
-            btn.addEventListener('click', () => {
-                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-                input.setAttribute('type', type);
-                
-                if (type === 'text') {
-                    // Відкрите око
-                    icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
-                } else {
-                    // Закрите око (перекреслене)
-                    icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />`;
-                }
-            });
+        // Якщо користувач вже авторизований, одразу кидаємо його на завдання
+        if (Auth.getCurrentUser()) {
+            window.location.href = 'tasks.html';
         }
 
-        // Запускаємо функцію для обох полів
-        setupPasswordToggle('regPass', 'togglePassBtn1', 'eyeIcon1');
-        setupPasswordToggle('regConfirmPass', 'togglePassBtn2', 'eyeIcon2');
+        const registerForm = document.getElementById('registerForm');
+        const errorMsg = document.getElementById('errorMsg');
+        const successMsg = document.getElementById('successMsg');
 
-
-        // --- Логіка відправки форми реєстрації ---
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault(); 
             
-            const name = document.getElementById('regName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const pass = document.getElementById('regPass').value;
-            const confirmPass = document.getElementById('regConfirmPass').value;
-            const errorMsg = document.getElementById('errorMsg');
-
-            if (pass !== confirmPass) {
-                errorMsg.textContent = "Паролі не співпадають. Спробуйте ще раз.";
-                errorMsg.classList.remove('hidden');
-                return; 
-            }
-
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            
+            // Скидаємо повідомлення
             errorMsg.classList.add('hidden');
+            successMsg.classList.add('hidden');
 
-            localStorage.setItem('token', 'taskflow-token-' + Date.now());
-            localStorage.setItem('userName', name);
-            localStorage.setItem('userEmail', email);
-
-            window.location.href = 'index.html'; 
+            // Викликаємо реєстрацію з app.js
+            const result = Auth.register(username, email, password);
+            
+            if (result.success) {
+                // Показуємо зелену плашку
+                successMsg.classList.remove('hidden');
+                
+                // Чекаємо 1.5 секунди і перекидаємо на сторінку логіну
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+            } else {
+                // Показуємо червону плашку з текстом помилки (наприклад, "Email вже існує")
+                errorMsg.innerText = result.msg;
+                errorMsg.classList.remove('hidden');
+            }
         });
     </script>
 </body>

@@ -142,16 +142,40 @@
         const themeToggleInput = document.getElementById('themeToggle');
         const profileSection = document.getElementById('profileSection');
         
-        // --- ІМІТАЦІЯ БАЗИ ДАНИХ ---
-        if (!localStorage.getItem('token')) {
-            localStorage.setItem('token', 'fake-token-123');
-            localStorage.setItem('userName', 'Олександр'); 
-            localStorage.setItem('userEmail', 'alex@example.com');
+        // ======================
+        // АВТОРИЗАЦІЯ ТА ТОКЕН
+        // ======================
+        const token = localStorage.getItem('token');
+        
+        // Якщо токена немає - викидаємо на логін
+        if (!token) {
+            window.location.replace('login.html');
         }
 
-        const token = localStorage.getItem('token');
-        const currentUserName = localStorage.getItem('userName') || 'Користувач';
-        const currentUserEmail = localStorage.getItem('userEmail') || 'email@taskflow.com';
+        // Функція для читання даних з JWT токена
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // Дістаємо дані профілю з токена або локального сховища (якщо ім'я змінили вручну)
+        const tokenData = parseJwt(token) || {};
+        
+        // Шукаємо ім'я у стандартних полях токена ASP.NET
+        const tokenName = tokenData['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || tokenData.unique_name || tokenData.name;
+        const tokenEmail = tokenData['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] || tokenData.email;
+
+        // Пріоритет: 1) збережене ім'я в налаштуваннях, 2) ім'я з токена, 3) заглушка
+        const currentUserName = localStorage.getItem('userName') || tokenName || 'Користувач';
+        const currentUserEmail = tokenEmail || 'Немає пошти';
         const userInitial = currentUserName.charAt(0).toUpperCase();
 
         // ======================
@@ -181,115 +205,116 @@
         // ======================
         // РЕНДЕР ПРОФІЛЮ
         // ======================
-        if (token) {
-            profileSection.innerHTML = `
-                <section class="setting-card rounded-[32px] p-8 mb-6 shadow-xl">
-                    <h2 class="text-xl font-black mb-8 flex items-center gap-3">
-                        <div class="w-2 h-6 bg-emerald-500 rounded-full"></div>
-                        Особисті дані
-                    </h2>
-                    
-                    <div class="flex flex-col md:flex-row gap-10 items-start">
-                        <div class="flex flex-col items-center gap-4">
-                            <input type="file" id="avatarInput" accept="image/*" class="hidden">
-                            
-                            <button id="avatarUploadBtn" class="group relative w-28 h-28 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-1 shadow-lg hover:scale-105 transition-transform duration-300">
-                                <div id="avatarPreview" class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center overflow-hidden bg-cover bg-center relative border-[3px] border-[#0d1126]">
-                                    <span id="avatarInitials" class="text-4xl font-black text-white z-10">${userInitial}</span>
-                                    <div class="avatar-hover-overlay absolute inset-0 bg-black/60 flex items-center justify-center z-20">
-                                        <svg width="24" height="24" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="4"/></svg>
-                                    </div>
+        profileSection.innerHTML = `
+            <section class="setting-card rounded-[32px] p-8 mb-6 shadow-xl">
+                <h2 class="text-xl font-black mb-8 flex items-center gap-3">
+                    <div class="w-2 h-6 bg-emerald-500 rounded-full"></div>
+                    Особисті дані
+                </h2>
+                
+                <div class="flex flex-col md:flex-row gap-10 items-start">
+                    <div class="flex flex-col items-center gap-4">
+                        <input type="file" id="avatarInput" accept="image/*" class="hidden">
+                        
+                        <button id="avatarUploadBtn" class="group relative w-28 h-28 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-1 shadow-lg hover:scale-105 transition-transform duration-300">
+                            <div id="avatarPreview" class="w-full h-full bg-slate-900 rounded-full flex items-center justify-center overflow-hidden bg-cover bg-center relative border-[3px] border-[#0d1126]">
+                                <span id="avatarInitials" class="text-4xl font-black text-white z-10">${userInitial}</span>
+                                <div class="avatar-hover-overlay absolute inset-0 bg-black/60 flex items-center justify-center z-20">
+                                    <svg width="24" height="24" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="4"/></svg>
                                 </div>
-                            </button>
-                            <button onclick="document.getElementById('avatarInput').click()" class="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition">Змінити фото</button>
-                        </div>
-
-                        <div class="flex-1 w-full space-y-5">
-                            <div>
-                                <label class="block text-xs font-bold uppercase opacity-50 mb-2 ml-1">Ім'я користувача</label>
-                                <input type="text" id="nameInput" value="${currentUserName}" class="w-full px-5 py-3 rounded-xl input-dark focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition">
                             </div>
-                            <div>
-                                <label class="block text-xs font-bold uppercase opacity-50 mb-2 ml-1">Email</label>
-                                <input type="email" id="emailInput" value="${currentUserEmail}" class="w-full px-5 py-3 rounded-xl input-dark focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition">
-                            </div>
-                            <div class="pt-2">
-                                <button onclick="saveProfile()" class="px-6 py-3 bg-indigo-500 text-white font-bold rounded-xl hover:bg-indigo-600 transition shadow-lg shadow-indigo-500/20">
-                                    Зберегти зміни
-                                </button>
-                                <span id="saveMessage" class="ml-4 text-sm text-emerald-400 opacity-0 transition-opacity">Збережено!</span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="setting-card rounded-[32px] p-8 shadow-xl border border-rose-500/10">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <div>
-                            <h3 class="font-bold text-rose-500 mb-1">Вихід з акаунта</h3>
-                            <p class="text-xs opacity-50">Завершити поточну сесію на цьому пристрої</p>
-                        </div>
-                        <button onclick="logout()" class="px-8 py-3 bg-rose-500/10 text-rose-500 font-bold rounded-xl hover:bg-rose-500 hover:text-white transition shadow-lg shadow-rose-500/5">
-                            Вийти
                         </button>
+                        <button onclick="document.getElementById('avatarInput').click()" class="text-xs font-bold text-indigo-400 hover:text-indigo-300 transition">Змінити фото</button>
                     </div>
-                </section>
-            `;
 
-            // Логіка для фото профілю
-            const avatarInput = document.getElementById('avatarInput');
-            const avatarPreview = document.getElementById('avatarPreview');
-            const avatarInitials = document.getElementById('avatarInitials');
-            const savedAvatar = localStorage.getItem('userAvatar');
+                    <div class="flex-1 w-full space-y-5">
+                        <div>
+                            <label class="block text-xs font-bold uppercase opacity-50 mb-2 ml-1">Ім'я користувача</label>
+                            <input type="text" id="nameInput" value="${currentUserName}" class="w-full px-5 py-3 rounded-xl input-dark focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase opacity-50 mb-2 ml-1">Email</label>
+                            <input type="email" id="emailInput" value="${currentUserEmail}" disabled class="w-full px-5 py-3 rounded-xl input-dark opacity-50 cursor-not-allowed" title="Пошту не можна змінити">
+                        </div>
+                        <div class="pt-2">
+                            <button onclick="saveProfile()" class="px-6 py-3 bg-indigo-500 text-white font-bold rounded-xl hover:bg-indigo-600 transition shadow-lg shadow-indigo-500/20">
+                                Зберегти зміни
+                            </button>
+                            <span id="saveMessage" class="ml-4 text-sm text-emerald-400 opacity-0 transition-opacity">Збережено локально!</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-            if (savedAvatar) {
-                avatarPreview.style.backgroundImage = `url(${savedAvatar})`;
-                avatarInitials.style.display = 'none';
-            }
+            <section class="setting-card rounded-[32px] p-8 shadow-xl border border-rose-500/10">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="font-bold text-rose-500 mb-1">Вихід з акаунта</h3>
+                        <p class="text-xs opacity-50">Завершити поточну сесію на цьому пристрої</p>
+                    </div>
+                    <button onclick="logout()" class="px-8 py-3 bg-rose-500/10 text-rose-500 font-bold rounded-xl hover:bg-rose-500 hover:text-white transition shadow-lg shadow-rose-500/5">
+                        Вийти
+                    </button>
+                </div>
+            </section>
+        `;
 
-            document.getElementById('avatarUploadBtn').addEventListener('click', () => avatarInput.click());
+        // Логіка для фото профілю (залишається у браузері користувача)
+        const avatarInput = document.getElementById('avatarInput');
+        const avatarPreview = document.getElementById('avatarPreview');
+        const avatarInitials = document.getElementById('avatarInitials');
+        const savedAvatar = localStorage.getItem('userAvatar');
 
-            avatarInput.addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const base64Image = e.target.result;
-                        avatarPreview.style.backgroundImage = `url(${base64Image})`;
-                        avatarInitials.style.display = 'none';
-                        localStorage.setItem('userAvatar', base64Image);
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
-
-        } else {
-            profileSection.innerHTML = `<p class="text-center opacity-50 mt-10">Будь ласка, увійдіть в акаунт.</p>`;
+        if (savedAvatar) {
+            avatarPreview.style.backgroundImage = `url(${savedAvatar})`;
+            avatarInitials.style.display = 'none';
         }
+
+        document.getElementById('avatarUploadBtn').addEventListener('click', () => avatarInput.click());
+
+        avatarInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result;
+                    avatarPreview.style.backgroundImage = `url(${base64Image})`;
+                    avatarInitials.style.display = 'none';
+                    localStorage.setItem('userAvatar', base64Image);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
 
         // Збереження нових даних
         function saveProfile() {
-            const newName = document.getElementById('nameInput').value;
-            const newEmail = document.getElementById('emailInput').value;
+            const newName = document.getElementById('nameInput').value.trim();
             
-            localStorage.setItem('userName', newName);
-            localStorage.setItem('userEmail', newEmail);
-            
-            // Оновлюємо літеру, якщо фото не завантажено
-            if(!localStorage.getItem('userAvatar')) {
-                document.getElementById('avatarInitials').innerText = newName.charAt(0).toUpperCase();
-            }
+            if (newName) {
+                // Зберігаємо нове ім'я локально
+                localStorage.setItem('userName', newName);
+                
+                // Якщо захочеш, щоб ім'я мінялося і в Базі Даних, тут потрібно буде додати:
+                // fetch('https://твій-api/users/update', { method: 'PUT', body: JSON.stringify({ name: newName }) ... })
+                
+                // Оновлюємо літеру, якщо фото не завантажено
+                if(!localStorage.getItem('userAvatar')) {
+                    document.getElementById('avatarInitials').innerText = newName.charAt(0).toUpperCase();
+                }
 
-            // Показуємо повідомлення "Збережено!"
-            const msg = document.getElementById('saveMessage');
-            msg.style.opacity = '1';
-            setTimeout(() => { msg.style.opacity = '0'; }, 2000);
+                // Показуємо повідомлення "Збережено!"
+                const msg = document.getElementById('saveMessage');
+                msg.style.opacity = '1';
+                setTimeout(() => { msg.style.opacity = '0'; }, 2000);
+            }
         }
 
         // Логіка виходу
         function logout() {
             localStorage.removeItem('token');
-            window.location.href = 'login.html'; // Повернення на сторінку логіну
+            localStorage.removeItem('userName'); 
+            // localStorage.removeItem('userAvatar'); // Розбери коментар, якщо хочеш скидати аватар при виході
+            window.location.replace('login.html');
         }
     </script>
 </body>
