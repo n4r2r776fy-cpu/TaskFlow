@@ -1,0 +1,9 @@
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net10.0\TaskFlow.Api.csproj.AssemblyReference.cache
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net10.0\rpswa.dswa.cache.json
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net10.0\TaskFlow.Api.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net10.0\TaskFlow.Api.AssemblyInfoInputs.cache
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net10.0\TaskFlow.Api.AssemblyInfo.cs
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net10.0\TaskFlow.Api.csproj.CoreCompileInputs.cache
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net10.0\TaskFlow.Api.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net10.0\TaskFlow.Api.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net10.0\TaskFlow.Api.sourcelink.json

@@ -4,17 +4,13 @@ using Microsoft.IdentityModel.Tokens;
 using OpenApiModels = Microsoft.OpenApi.Models;
 using System.Text;
 using TaskFlow.Api.Data;
-using TaskFlow.Api.Models;
+using TaskFlow.Api.Models; // Додав для доступу до моделі User
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. ПІДКЛЮЧЕННЯ ДО БД (Змінено на MySQL)
-// Замість старого блоку з AutoDetect
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-var serverVersion = new MySqlServerVersion(new Version(8, 0, 31)); // Версія 8.0 як на хостингу
-
+// 1. Підключення до БД (PostgreSQL)
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, serverVersion));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 2. Налаштування JWT
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "SuperSecretKeyForTaskFlowApp_1234567890_MakeItVeryLong_1234567890"; 
@@ -73,11 +69,10 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // --- БЛОК БАЗИ ДАНИХ ТА АДМІНІСТРАТОРА ---
+// --- БЛОК БАЗИ ДАНИХ ТА АДМІНІСТРАТОРА ---
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    
-    // Автоматичне застосування міграцій при старті
     db.Database.Migrate();
 
     var adminEmail = "admin@taskflow.com";
@@ -85,11 +80,12 @@ using (var scope = app.Services.CreateScope())
 
     if (adminUser == null)
     {
+        // Якщо адміна немає — створюємо з хешованим паролем
         adminUser = new User
         {
             Username = "Admin", 
             Email = adminEmail,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"), // ШИФРУЄМО ТУТ
             Role = "Admin",
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
@@ -98,6 +94,14 @@ using (var scope = app.Services.CreateScope())
         db.SaveChanges();
         Console.WriteLine("--> Admin account created with BCrypt hash!");
     }
+    else if (adminUser.PasswordHash == "Admin123!")
+    {
+        // Якщо адмін є, але пароль там звичайним текстом (після минулої спроби)
+        // оновлюємо його на хеш
+        adminUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!");
+        db.SaveChanges();
+        Console.WriteLine("--> Admin password updated to BCrypt hash!");
+    }
 }
 // ----------------------------------------
 
@@ -105,18 +109,11 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-
-// 1. Статичні файли (фронтенд) мають бути на початку
-app.UseDefaultFiles(); // Дозволяє відкривати index.html за замовчуванням
-app.UseStaticFiles();  // Дозволяє завантажувати CSS, JS, картинки
-
 app.UseCors("AllowAll");
 
-// 2. Потім безпека
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 3. І в самому кінці — маршрутизація API
 app.MapControllers();
 
 app.Run();
