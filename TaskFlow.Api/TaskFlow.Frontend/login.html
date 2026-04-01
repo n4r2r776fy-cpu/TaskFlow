@@ -40,6 +40,8 @@
             </div>
             <h1 class="text-3xl font-black tracking-tight">З поверненням</h1>
             <p class="text-sm opacity-60 mt-2">Увійдіть у свій простір TaskFlow</p>
+            <p class="text-xs font-medium text-indigo-400 mt-2 bg-indigo-500/10 py-1 px-2 rounded-lg inline-block border border-indigo-500/20">
+            </p>
         </div>
 
         <form id="loginForm" class="space-y-5">
@@ -94,17 +96,25 @@
             }
         });
 
-        // БАЗОВИЙ URL БЕКЕНДУ (Зміни, якщо твій AuthController має інший шлях)
+        // --- ДОДАНО: Функція для створення фейкового токена ---
+        function createMockJWT(payload) {
+            const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+            const encodedPayload = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+            const signature = "fake-signature-for-frontend-testing";
+            return `${header}.${encodedPayload}.${signature}`;
+        }
+
+        // БАЗОВИЙ URL БЕКЕНДУ
         const API_BASE = "http://localhost:5143/api";
 
-        // РЕАЛЬНА ЛОГІКА ВХОДУ НА БЕКЕНД
+        // РЕАЛЬНА ЛОГІКА ВХОДУ НА БЕКЕНД ТА ПЕРЕХОПЛЕННЯ ТЕСТОВОГО АДМІНА
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const submitBtn = document.getElementById('submitBtn');
             const btnText = document.getElementById('btnText');
             const btnSpinner = document.getElementById('btnSpinner');
-            const emailInput = document.getElementById('loginEmail').value;
+            const emailInput = document.getElementById('loginEmail').value.trim();
             const passInput = document.getElementById('loginPass').value;
 
             // Вмикаємо стан завантаження
@@ -112,6 +122,25 @@
             submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
             btnText.textContent = 'Вхід...';
             btnSpinner.classList.remove('hidden');
+
+            // --- ПЕРЕХОПЛЕННЯ ТЕСТОВОГО АКАУНТА ---
+            if (emailInput.toLowerCase() === 'admin@taskflow.com' && passInput === '123456') {
+                // Імітуємо затримку сервера для реалістичності (0.5 сек)
+                setTimeout(() => {
+                    const adminToken = createMockJWT({
+                        sub: "test_admin_001",
+                        name: "Тестовий Адмін",
+                        email: emailInput,
+                        role: "admin" // Задаємо роль адміна
+                    });
+                    
+                    localStorage.setItem('userEmail', emailInput);
+                    localStorage.setItem('token', adminToken);
+                    window.location.replace('tasks.html');
+                }, 500);
+                return; // Зупиняємо функцію тут, щоб запит на localhost:5143 НЕ пішов
+            }
+            // --- КІНЕЦЬ ПЕРЕХОПЛЕННЯ ---
 
             try {
                 // Відправляємо запит на ASP.NET бекенд
@@ -126,7 +155,7 @@
                 if (response.ok) {
                     const data = await response.json();
                     
-                    // Забираємо справжній JWT токен (перевір, як саме він називається в твоєму JSON)
+                    // Забираємо справжній JWT токен
                     const realToken = data.token || data.jwt || data; 
                     
                     // Зберігаємо справжні дані

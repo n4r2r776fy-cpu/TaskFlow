@@ -9,7 +9,7 @@ namespace TaskFlow.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")] // ТІЛЬКИ ДЛЯ АДМІНІВ
+    [Authorize] // Тепер доступно всім авторизованим юзерам, не тільки адмінам
     public class TimeLogsController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -23,39 +23,47 @@ namespace TaskFlow.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTimeLog([FromBody] TimeLogCreateDto dto)
         {
-            // Дістаємо ID адміністратора з токена
-            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!long.TryParse(userIdString, out long userId)) 
-                return Unauthorized();
+            var userId = GetUserId();
+            if (userId == -1) return Unauthorized();
 
-            // Оскільки це Адмін, він може додавати час до БУДЬ-ЯКОГО завдання
-            var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == dto.TaskId);
+            // ПЕРЕВІРКА ЗА ТЗ: Чи належить завдання цьому юзеру?
+            var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == dto.TaskId && t.UserId == userId);
 
             if (task == null) 
-                return BadRequest("Завдання не знайдено.");
+                return BadRequest("Завдання не знайдено або у вас немає прав доступу до нього.");
+
+            // ВАЛІДАЦІЯ ЗА ТЗ: Час має бути додатним
+            if (dto.TimeSpent <= 0)
+                return BadRequest("Час має бути більшим за 0.");
 
             var newLog = new TimeLog
             {
                 TaskId = dto.TaskId,
-                UserId = userId, // Записуємо, що саме цей адмін додав час
-                TimeSpent = dto.TimeSpent, 
+                UserId = userId, 
+                TimeSpent = dto.TimeSpent, // У хвилинах (INT)
                 Comment = dto.Comment,
                 LoggedAt = DateTime.UtcNow
             };
 
             _context.TimeLogs.Add(newLog);
-            await _context.SaveChangesAsync();
+            
+            // Оновлюємо дату зміни завдання
+            task.UpdatedAt = DateTime.UtcNow;
 
+            await _context.SaveChangesAsync();
             return Ok(newLog);
         }
 
-        // 2. ОТРИМАННЯ ВСІХ ЛОГІВ (ДЛЯ ТАБЛИЦІ АДМІНА)
+        // 2. ОТРИМАННЯ ЛОГІВ (ДЛЯ ТРЕКІНГУ В ДЕТАЛЯХ ЗАВДАННЯ)
         [HttpGet]
-        public async Task<IActionResult> GetAllLogs()
+        public async Task<IActionResult> GetMyLogs()
         {
-            // Адмін бачить ВСІ записи часу. 
-            // Використовуємо Include, щоб підтягнути дані про завдання (для відображення назви)
+            var userId = GetUserId();
+            if (userId == -1) return Unauthorized();
+
+            // Юзер бачить тільки СВОЇ записи часу
             var logs = await _context.TimeLogs
+                .Where(l => l.UserId == userId)
                 .Include(l => l.Task) 
                 .OrderByDescending(l => l.LoggedAt)
                 .ToListAsync();
@@ -67,16 +75,24 @@ namespace TaskFlow.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLog(long id)
         {
-            // Адмін може видалити БУДЬ-ЯКИЙ запис, тому шукаємо лише за Id логу
-            var log = await _context.TimeLogs.FirstOrDefaultAsync(l => l.Id == id);
+            var userId = GetUserId();
+            
+            // Шукаємо лог, який належить саме цьому юзеру
+            var log = await _context.TimeLogs.FirstOrDefaultAsync(l => l.Id == id && l.UserId == userId);
 
             if (log == null) 
-                return NotFound("Запис не знайдено.");
+                return NotFound("Запис не знайдено або ви не маєте прав на його видалення.");
 
             _context.TimeLogs.Remove(log);
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Запис часу видалено." });
+        }
+
+        private long GetUserId()
+        {
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return long.TryParse(userIdString, out long userId) ? userId : -1;
         }
     }
 }

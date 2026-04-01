@@ -1,5 +1,4 @@
 <<<<<<< HEAD
-<<<<<<< HEAD
 D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\my_publish\web.config
 D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\appsettings.Development.json
 D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\appsettings.json
@@ -166,7 +165,6 @@ C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.sourcelink.json
-=======
 >>>>>>> 2644a9f3fdd13d907e7d9778bb42508319cc8822
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\publish\web.config
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\web.config
@@ -295,39 +293,10 @@ C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\refint\Ta
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.pdb
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.genruntimeconfig.cache
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\ref\TaskFlow.Api.dll
-<<<<<<< HEAD
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Microsoft.Build.Locator.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Microsoft.Extensions.Caching.Abstractions.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\MySqlConnector.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\System.IO.Pipelines.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\System.Text.Encodings.Web.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\System.Text.Json.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 >>>>>>> bae4bc1cad3de1819241cc641292a3fea7959c5d
-=======
->>>>>>> 2644a9f3fdd13d907e7d9778bb42508319cc8822
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\my_publish\web.config
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\my_publish\appsettings.Development.json
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\my_publish\appsettings.json
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\my_publish\TaskFlow.Api.deps.json
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\my_publish\TaskFlow.Api.runtimeconfig.json
+C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\my_publish\TaskFlow.Api.staticwebassets.endpoints.json

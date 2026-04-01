@@ -12,8 +12,8 @@ using TaskFlow.Api.Data;
 namespace TaskFlow.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260401193932_InitialPostgres")]
-    partial class InitialPostgres
+    [Migration("20260401202851_PostgreInit")]
+    partial class PostgreInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
