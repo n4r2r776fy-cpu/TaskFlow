@@ -1,5 +1,4 @@
 <<<<<<< HEAD
-<<<<<<< HEAD
 D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\my_publish\web.config
 D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\appsettings.Development.json
 D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\appsettings.json
@@ -166,7 +165,6 @@ C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.sourcelink.json
-=======
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\publish\web.config
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\web.config
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\web.config
@@ -280,15 +278,6 @@ C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\ru\Micros
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.csproj.AssemblyReference.cache
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\rpswa.dswa.cache.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.AssemblyInfoInputs.cache
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.AssemblyInfo.cs
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.csproj.CoreCompileInputs.cache
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.sourcelink.json
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\rjimswa.dswa.cache.json
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
@@ -304,26 +293,6 @@ C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\refint\Ta
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.pdb
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.genruntimeconfig.cache
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\ref\TaskFlow.Api.dll
-<<<<<<< HEAD
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\publish\web.config
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\web.config
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\web.config
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\appsettings.Development.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\appsettings.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\appsettings.Development.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\appsettings.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\publish\appsettings.Development.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\publish\appsettings.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\publish\TaskFlow.Api.deps.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\publish\TaskFlow.Api.runtimeconfig.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\publish\TaskFlow.Api.staticwebassets.endpoints.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\TaskFlow.Api.deps.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\TaskFlow.Api.runtimeconfig.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\publish\TaskFlow.Api.staticwebassets.endpoints.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\TaskFlow.Api.deps.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\TaskFlow.Api.runtimeconfig.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\publish\TaskFlow.Api.staticwebassets.endpoints.json
-C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\TaskFlow.Api.staticwebassets.runtime.json
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Microsoft.Build.Locator.dll
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.dll
@@ -357,5 +326,3 @@ C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\zh-Hans\M
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 >>>>>>> bae4bc1cad3de1819241cc641292a3fea7959c5d
-=======
->>>>>>> 4bc26062a6363cdaa023b66405f290ee32afab03
