@@ -3,102 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow - Трекінг часу (Admin)</title>
+    <title>TaskFlow - Адмін Панель</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        :root {
+            --bg-color: #020617;
+            --text-main: #f8fafc;
+            --glass-bg: rgba(15, 23, 42, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+        }
+        .bg-grid { 
+            position: fixed; inset: 0; 
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px); 
+            background-size: 40px 40px; 
+            z-index: 0; pointer-events: none;
+        }
+        .glass-panel { 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid var(--border); 
+        }
+        .input-glass { 
+            background: rgba(0,0,0,0.3); 
+            border: 1px solid var(--border); 
+            color: white; 
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+        
+        ::placeholder { color: rgba(255,255,255,0.3); }
+        select option { background-color: #0f172a; color: white; }
     </style>
 </head>
-<body class="bg-slate-50 h-screen flex overflow-hidden text-slate-800">
+<body class="h-screen flex overflow-hidden relative">
+    
+    <div class="bg-grid"></div>
 
-    <aside class="w-72 bg-slate-900 text-white flex flex-col shadow-2xl z-20">
-        <div class="h-20 flex items-center px-6 border-b border-slate-800 shrink-0">
-            <div class="flex items-center gap-3 text-indigo-400">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    <aside class="w-72 glass-panel flex flex-col shadow-2xl z-20 border-r border-white/5 relative">
+        <div class="h-20 flex items-center px-6 border-b border-white/5 shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
                 <span class="text-xl font-extrabold tracking-wide text-white">TaskFlow</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-black bg-rose-500/20 text-rose-400 border border-rose-500/30 ml-auto uppercase tracking-wider">Admin</span>
             </div>
         </div>
 
-        <div class="p-4 border-b border-slate-800">
-            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 px-2">Меню</h3>
-            <ul class="space-y-1">
+        <div class="p-4">
+            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 px-2">Меню управління</h3>
+            <ul class="space-y-2">
                 <li>
-                    <a href="tasks.html" class="px-3 py-2.5 rounded-lg transition-all flex items-center gap-3 font-medium text-sm text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer">
+                    <a href="tasks.html" class="px-4 py-3 rounded-xl transition-all flex items-center gap-3 font-medium text-sm text-slate-400 hover:bg-white/5 hover:text-white cursor-pointer">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                        Дашборд
+                        Загальний Дашборд
                     </a>
                 </li>
                 <li>
-                    <a href="timelogs.html" class="px-3 py-2.5 rounded-lg transition-all flex items-center gap-3 font-medium text-sm bg-indigo-600 text-white shadow-md shadow-indigo-900/20 cursor-pointer">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                        Трекінг часу
+                    <a href="timelogs.html" class="px-4 py-3 rounded-xl transition-all flex items-center gap-3 font-bold text-sm bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 shadow-[0_0_15px_rgba(99,102,241,0.1)] cursor-pointer relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 opacity-50"></div>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="relative z-10"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <span class="relative z-10">Управління часом</span>
                     </a>
                 </li>
             </ul>
         </div>
     </aside>
 
-    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
-        <header class="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between shadow-sm shrink-0 min-h-[5rem]">
-            <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-3">
-                <span class="text-indigo-500">⏱</span> Управління часом (Адмін)
-            </h2>
-            <button onclick="logout()" class="text-sm font-bold text-slate-500 hover:text-red-500 bg-slate-100 hover:bg-red-50 px-4 py-2 rounded-lg transition-all">
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
+        <header class="glass-panel px-8 py-5 flex items-center justify-between border-b border-white/5 shrink-0 relative z-20">
+            <div>
+                <h2 class="text-2xl font-black text-white tracking-tight flex items-center gap-3">
+                    Журнал часу команди
+                </h2>
+                <p class="text-sm text-slate-400 mt-1">Панель моніторингу та управління записами</p>
+            </div>
+            <button onclick="logout()" class="text-sm font-bold text-slate-300 hover:text-white bg-white/5 hover:bg-rose-500/20 hover:border-rose-500/50 border border-white/10 px-5 py-2.5 rounded-xl transition-all flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                 Вийти
             </button>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-8 relative custom-scrollbar">
+        <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
             
-            <div class="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <h3 class="text-lg font-bold text-slate-800 mb-4">Додати запис часу</h3>
-                <form id="createTimeLogForm" class="flex flex-col md:flex-row gap-4 items-end">
-                    
+            <div class="mb-8 glass-panel p-6 rounded-3xl shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
+                
+                <h3 class="text-lg font-bold text-white mb-5 flex items-center gap-2">
+                    <svg width="20" height="20" class="text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                    Додати новий запис
+                </h3>
+                
+                <form id="createTimeLogForm" class="flex flex-col lg:flex-row gap-5 items-end relative z-10">
                     <div class="flex-1 w-full">
-                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 px-1">Завдання</label>
-                        <select id="taskSelect" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all font-medium appearance-none cursor-pointer">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 pl-1">Завдання</label>
+                        <select id="taskSelect" required class="w-full input-glass rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all font-medium appearance-none cursor-pointer">
                             <option value="" disabled selected>Завантаження завдань...</option>
                         </select>
                     </div>
 
-                    <div class="w-full md:w-32">
-                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 px-1">Годин</label>
-                        <input type="number" id="timeHours" placeholder="0" min="0.1" step="0.1" required
-                               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all font-medium text-center">
+                    <div class="w-full lg:w-32">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 pl-1">Годин</label>
+                        <input type="number" id="timeHours" placeholder="0.0" min="0.1" step="0.1" required
+                               class="w-full input-glass rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all font-medium text-center">
                     </div>
 
-                    <div class="flex-2 w-full">
-                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1 px-1">Коментар</label>
-                        <input type="text" id="timeDesc" placeholder="Що було зроблено..." required
-                               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all text-sm">
+                    <div class="flex-2 w-full lg:w-1/3">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 pl-1">Коментар (опис робіт)</label>
+                        <input type="text" id="timeDesc" placeholder="Що саме було зроблено..." required
+                               class="w-full input-glass rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all text-sm">
                     </div>
 
-                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95 whitespace-nowrap h-[50px]">
-                        Зберегти
+                    <button type="submit" class="w-full lg:w-auto bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-8 rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] transition-all active:scale-95 whitespace-nowrap">
+                        Зберегти час
                     </button>
                 </form>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="glass-panel rounded-3xl shadow-2xl overflow-hidden flex flex-col">
+                <div class="px-6 py-5 border-b border-white/5 bg-white/[0.02]">
+                    <h3 class="text-lg font-bold text-white">Історія записів</h3>
+                </div>
+                
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-50 border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
-                                <th class="px-6 py-4 font-semibold">Дата</th>
-                                <th class="px-6 py-4 font-semibold">Завдання</th>
-                                <th class="px-6 py-4 font-semibold">Коментар</th>
-                                <th class="px-6 py-4 font-semibold text-center">Витрачено</th>
-                                <th class="px-6 py-4 font-semibold text-right">Дії</th>
+                            <tr class="border-b border-white/5 text-xs uppercase tracking-wider text-slate-500 bg-black/20">
+                                <th class="px-6 py-4 font-bold">Дата / Час</th>
+                                <th class="px-6 py-4 font-bold">Завдання</th>
+                                <th class="px-6 py-4 font-bold">Опис робіт</th>
+                                <th class="px-6 py-4 font-bold text-center">Витрачено</th>
+                                <th class="px-6 py-4 font-bold text-right">Управління</th>
                             </tr>
                         </thead>
-                        <tbody id="timeLogsTableBody" class="divide-y divide-slate-100">
+                        <tbody id="timeLogsTableBody" class="divide-y divide-white/5">
                             <tr>
-                                <td colspan="5" class="px-6 py-8 text-center text-slate-400 animate-pulse">
-                                    Завантаження історії...
+                                <td colspan="5" class="px-6 py-12 text-center text-slate-500 animate-pulse">
+                                    <div class="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin mx-auto mb-3"></div>
+                                    Завантаження захищених даних...
                                 </td>
                             </tr>
                         </tbody>
@@ -113,14 +164,12 @@
         // ==========================================
         // 1. НАЛАШТУВАННЯ API ТА ТОКЕНА
         // ==========================================
-        // УВАГА: Змініть порт 7196 на той, який використовує ваш бекенд!
         const API_BASE = "http://localhost:5143/api"
         const token = localStorage.getItem("token"); 
         
         if (!token) {
             window.location.href = "login.html";
         } else {
-            // Розшифровуємо JWT токен
             function parseJwt(t) {
                 try {
                     const base64Url = t.split('.')[1];
@@ -136,12 +185,8 @@
 
             const tokenData = parseJwt(token);
             const roleClaim = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-            
-            // Шукаємо роль у різних можливих ключах
             const userRole = tokenData ? (tokenData[roleClaim] || tokenData.role || tokenData.Role) : null;
-            console.log("Отримана роль з токена:", userRole);
 
-            // Якщо вас все ще викидає на tasks.html, закоментуйте ці 4 рядки нижче (додайте // перед кожним)
             if (userRole !== "Admin" && userRole !== "admin") {
                 alert("Доступ заборонено! Ця сторінка доступна лише для адміністраторів.");
                 window.location.href = "tasks.html"; 
@@ -155,34 +200,34 @@
         // ==========================================
 
         async function loadTasksForSelect() {
+            const select = document.getElementById("taskSelect");
             try {
                 const response = await fetch(`${API_BASE}/Tasks`, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
                 if (response.ok) {
                     allTasks = await response.json();
-                    
-                    // Обробка $values якщо повертається OData/ReferenceHandler.Preserve
                     const tasksArray = allTasks.$values ? allTasks.$values : allTasks;
-                    
-                    const select = document.getElementById("taskSelect");
-                    select.innerHTML = `<option value="" disabled selected>Оберіть завдання...</option>`;
                     
                     if(!tasksArray || tasksArray.length === 0) {
                         select.innerHTML = `<option value="" disabled selected>Немає доступних завдань</option>`;
                         return;
                     }
-
+                    
+                    select.innerHTML = `<option value="" disabled selected>Оберіть завдання...</option>`;
                     tasksArray.forEach(task => {
                         const id = task.id || task.Id;
                         const title = task.title || task.Title;
                         const status = task.status || task.Status;
-                        const prefix = status === "done" ? "✅ " : "⏳ ";
+                        const prefix = status === "done" ? "✓ " : "⏳ ";
                         select.innerHTML += `<option value="${id}">${prefix}${title}</option>`;
                     });
+                } else {
+                    select.innerHTML = `<option value="" disabled selected>Помилка: Сервер відхилив запит</option>`;
                 }
             } catch (error) {
                 console.error("Помилка завантаження завдань:", error);
+                select.innerHTML = `<option value="" disabled selected>Помилка мережі (CORS або сервер не запущено)</option>`;
             }
         }
 
@@ -197,10 +242,10 @@
                     const logs = await response.json();
                     renderTimeLogs(logs);
                 } else {
-                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Помилка завантаження. Перевірте CORS або TimeLogsController.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-rose-400 bg-rose-500/10">Помилка завантаження. Перевірте CORS або TimeLogsController.</td></tr>`;
                 }
             } catch (error) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400">Немає зв'язку з сервером. Перевірте API_BASE.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-rose-400 bg-rose-500/10">Немає зв'язку з сервером. Перевірте API_BASE (${API_BASE}) або CORS.</td></tr>`;
                 console.error("Fetch error:", error);
             }
         }
@@ -214,11 +259,12 @@
             if (logsArray.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5" class="px-6 py-12 text-center text-slate-500">
-                            <div class="flex justify-center mb-3 text-slate-300">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <td colspan="5" class="px-6 py-16 text-center text-slate-500">
+                            <div class="flex justify-center mb-4 text-slate-600">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 4"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                             </div>
-                            Жодного запису часу не знайдено.
+                            <p class="text-lg">Жодного запису часу не знайдено</p>
+                            <p class="text-sm opacity-60 mt-1">Додайте свій перший запис вище.</p>
                         </td>
                     </tr>`;
                 return;
@@ -230,8 +276,6 @@
 
             logsArray.forEach(log => {
                 const id = log.id || log.Id;
-                
-                // ВИПРАВЛЕННЯ КЛЮЧІВ: Беремо timeSpent або hours (залежить від бекенду)
                 const hours = log.timeSpent || log.TimeSpent || log.hours || log.Hours || 0;
                 const desc = log.comment || log.Comment || log.description || log.Description || "Без коментаря";
                 const dateRaw = log.loggedAt || log.LoggedAt || log.date || log.Date || log.createdAt || new Date().toISOString();
@@ -245,22 +289,25 @@
                     if (foundTask) taskName = foundTask.title || foundTask.Title;
                 }
 
-                const formattedDate = new Date(dateRaw).toLocaleDateString('uk-UA', { 
-                    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit' 
-                });
+                const dateObj = new Date(dateRaw);
+                const dateStr = dateObj.toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                const timeStr = dateObj.toLocaleTimeString('uk-UA', { hour: '2-digit', minute:'2-digit' });
 
                 tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition-colors group">
-                        <td class="px-6 py-4 text-sm text-slate-500 whitespace-nowrap">${formattedDate}</td>
-                        <td class="px-6 py-4 font-medium text-slate-800">${taskName}</td>
-                        <td class="px-6 py-4 text-sm text-slate-600">${desc}</td>
+                    <tr class="hover:bg-white/5 transition-colors group">
+                        <td class="px-6 py-4">
+                            <div class="text-sm font-medium text-slate-300">${dateStr}</div>
+                            <div class="text-xs text-slate-500">${timeStr}</div>
+                        </td>
+                        <td class="px-6 py-4 font-bold text-white">${taskName}</td>
+                        <td class="px-6 py-4 text-sm text-slate-400 max-w-xs truncate" title="${desc}">${desc}</td>
                         <td class="px-6 py-4 text-center">
-                            <span class="inline-block px-3 py-1 bg-indigo-50 text-indigo-700 font-bold text-xs rounded-full border border-indigo-100">
+                            <span class="inline-block px-3 py-1 bg-emerald-500/10 text-emerald-400 font-black text-xs rounded-lg border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
                                 ${hours} год
                             </span>
                         </td>
                         <td class="px-6 py-4 text-right">
-                            <button onclick="deleteTimeLog(${id})" class="text-slate-400 hover:text-red-500 transition-colors p-1 opacity-0 group-hover:opacity-100 focus:opacity-100" title="Видалити запис">
+                            <button onclick="deleteTimeLog(${id})" class="text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 p-2 rounded-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 border border-transparent hover:border-rose-500/20" title="Видалити запис">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                             </button>
                         </td>
@@ -278,11 +325,10 @@
             
             const btn = e.target.querySelector('button');
             const originalText = btn.innerText;
-            btn.innerText = "Зберігаю...";
+            btn.innerHTML = `<div class="flex items-center justify-center gap-2"><div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> Обробка...</div>`;
             btn.disabled = true;
 
             try {
-                // Використовуємо саме ті ключі, які є на бекенді (виходячи з вашого попереднього коду)
                 const payload = { 
                     taskId: parseInt(taskId), 
                     timeSpent: parseFloat(hours), 
@@ -301,12 +347,12 @@
                     document.getElementById("timeDesc").value = "";
                     loadTimeLogs(); 
                 } else {
-                    alert("Помилка при збереженні. Перевірте консоль (F12) для деталей.");
+                    alert("Помилка при збереженні. Можливо, проблема з CORS або валідацією на сервері.");
                     console.error(await response.text());
                 }
             } catch (error) { 
                 console.error("Помилка мережі при збереженні:", error); 
-                alert("Немає зв'язку з сервером.");
+                alert("Немає зв'язку з сервером. Перевірте підключення.");
             } finally {
                 btn.innerText = originalText;
                 btn.disabled = false;
@@ -314,7 +360,7 @@
         });
 
         async function deleteTimeLog(id) {
-            if (!confirm("Видалити цей запис часу?")) return;
+            if (!confirm("Ви впевнені, що хочете видалити цей запис часу безповоротно?")) return;
             try {
                 const response = await fetch(`${API_BASE}/TimeLogs/${id}`, {
                     method: "DELETE",
@@ -327,6 +373,7 @@
 
         function logout() {
             localStorage.removeItem("token"); 
+            localStorage.removeItem("userEmail"); 
             window.location.href = "login.html";
         }
 

@@ -134,3 +134,15 @@ C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\refint\Ta
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.pdb
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.genruntimeconfig.cache
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\ref\TaskFlow.Api.dll
+D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.csproj.AssemblyReference.cache
+D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\rpswa.dswa.cache.json
+D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.GeneratedMSBuildEditorConfig.editorconfig
+D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.AssemblyInfoInputs.cache
+D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.AssemblyInfo.cs
+D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.csproj.CoreCompileInputs.cache
+D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.MvcApplicationPartsAssemblyInfo.cs
+D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.MvcApplicationPartsAssemblyInfo.cache
+D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.sourcelink.json
+D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.dll
+D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\refint\TaskFlow.Api.dll
+D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.pdb
