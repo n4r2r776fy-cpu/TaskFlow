@@ -293,20 +293,6 @@ C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\refint\Ta
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.pdb
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.genruntimeconfig.cache
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\ref\TaskFlow.Api.dll
-<<<<<<< HEAD
-D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.csproj.AssemblyReference.cache
-D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\rpswa.dswa.cache.json
-D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.GeneratedMSBuildEditorConfig.editorconfig
-D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.AssemblyInfoInputs.cache
-D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.AssemblyInfo.cs
-D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.csproj.CoreCompileInputs.cache
-D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.MvcApplicationPartsAssemblyInfo.cs
-D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.MvcApplicationPartsAssemblyInfo.cache
-D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.sourcelink.json
-D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.dll
-D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\refint\TaskFlow.Api.dll
-D:\Практика з технологыъ веб програмування\TaskFlow\TaskFlow.Api\obj\Debug\net8.0\TaskFlow.Api.pdb
-=======
 >>>>>>> bae4bc1cad3de1819241cc641292a3fea7959c5d
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\my_publish\web.config
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\my_publish\appsettings.Development.json
@@ -314,4 +300,3 @@ C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\my_publis
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\my_publish\TaskFlow.Api.deps.json
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\my_publish\TaskFlow.Api.runtimeconfig.json
 C:\Users\andri\Documents\GitHub\TaskFlow\TaskFlow.Api\bin\Debug\net8.0\my_publish\TaskFlow.Api.staticwebassets.endpoints.json
->>>>>>> def24ee5b6d18923c0007d71fb1ccf981d7a25b9
