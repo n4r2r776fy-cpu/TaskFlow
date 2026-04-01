@@ -65,6 +65,7 @@
 
     <nav class="fixed top-0 w-full z-50 glass border-b h-20">
         <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+            
             <a href="index.html" class="text-2xl font-black flex items-center gap-3 tracking-tighter">
                 <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
@@ -72,18 +73,13 @@
                 TaskFlow
             </a>
             
-            <div class="flex items-center gap-3">
-                <a href="settings.html" class="w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 glass hover:bg-white/5 transition group">
-                    <svg class="w-5 h-5 text-slate-400 group-hover:rotate-90 transition-transform duration-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                </a>
-
-                <button id="themeToggle" class="w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 glass hover:scale-110 transition">
+            <div class="flex items-center gap-4">
+                
+                <button id="themeToggle" class="w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 glass hover:scale-110 transition" aria-label="Перемкнути тему">
                     <svg id="sunIcon" class="hidden" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
                     <svg id="moonIcon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
                 </button>
+                
                 <div id="authButtons" class="flex gap-2"></div>
             </div>
         </div>
@@ -244,56 +240,66 @@
     </footer>
 
     <script>
-        const body = document.body;
-        const toggleBtn = document.getElementById('themeToggle');
-        const sunIcon = document.getElementById('sunIcon');
-        const moonIcon = document.getElementById('moonIcon');
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const toggleBtn = document.getElementById('themeToggle');
+            const sunIcon = document.getElementById('sunIcon');
+            const moonIcon = document.getElementById('moonIcon');
 
-        // Логіка теми
-        function setTheme(theme) {
-            if (theme === 'light') {
-                body.classList.add('light-theme');
-                sunIcon.classList.remove('hidden');
-                moonIcon.classList.add('hidden');
-            } else {
-                body.classList.remove('light-theme');
-                sunIcon.classList.add('hidden');
-                moonIcon.classList.remove('hidden');
-            }
-            localStorage.setItem('theme', theme);
-        }
-
-        setTheme(localStorage.getItem('theme') || 'dark');
-        toggleBtn.addEventListener('click', () => setTheme(body.classList.contains('light-theme') ? 'dark' : 'light'));
-
-        // Анімації появи при скролі
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { 
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active'); 
+            // --- Логіка перемикання теми ---
+            function setTheme(theme) {
+                if (theme === 'light') {
+                    body.classList.add('light-theme');
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                } else {
+                    body.classList.remove('light-theme');
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
                 }
-            });
-        }, { threshold: 0.15 });
-        document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
-
-        // Динамічні кнопки (Авторизація)
-        function updateUI() {
-            const token = localStorage.getItem('token');
-            const authButtons = document.getElementById('authButtons');
-            const heroActions = document.getElementById('heroActions');
-
-            if (token) {
-                authButtons.innerHTML = `<a href="tasks.html" class="px-5 py-2 font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition">Кабінет</a>`;
-                heroActions.innerHTML = `<a href="tasks.html" class="px-10 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-xl hover:scale-105 transition">Продовжити роботу</a>`;
-            } else {
-                authButtons.innerHTML = `
-                    <a href="login.html" class="px-5 py-2 font-bold hover:text-indigo-500 transition">Увійти</a>
-                    <a href="register.html" class="px-5 py-2 font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition">Реєстрація</a>
-                `;
-                heroActions.innerHTML = `<a href="register.html" class="px-10 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-xl hover:scale-105 transition">Почати безкоштовно</a>`;
+                localStorage.setItem('theme', theme);
             }
-        }
-        updateUI();
+
+            // Ініціалізація теми при завантаженні
+            setTheme(localStorage.getItem('theme') || 'dark');
+            
+            // Обробник кліку по кнопці зміни теми
+            toggleBtn.addEventListener('click', () => {
+                const currentTheme = body.classList.contains('light-theme') ? 'dark' : 'light';
+                setTheme(currentTheme);
+            });
+
+            // --- Анімації появи при скролі (Intersection Observer) ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { 
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active'); 
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
+
+            // --- Динамічний рендер кнопок (Авторизація) ---
+            function updateUI() {
+                const token = localStorage.getItem('token');
+                const authButtons = document.getElementById('authButtons');
+                const heroActions = document.getElementById('heroActions');
+
+                if (token) {
+                    authButtons.innerHTML = `<a href="tasks.html" class="px-5 py-2 font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition">Кабінет</a>`;
+                    heroActions.innerHTML = `<a href="tasks.html" class="px-10 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-xl hover:scale-105 transition">Продовжити роботу</a>`;
+                } else {
+                    authButtons.innerHTML = `
+                        <a href="login.html" class="px-5 py-2 font-bold hover:text-indigo-500 transition">Увійти</a>
+                        <a href="register.html" class="px-5 py-2 font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition">Реєстрація</a>
+                    `;
+                    heroActions.innerHTML = `<a href="register.html" class="px-10 py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-xl hover:scale-105 transition">Почати безкоштовно</a>`;
+                }
+            }
+            
+            updateUI();
+        });
     </script>
 </body>
 </html>
