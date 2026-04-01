@@ -261,16 +261,24 @@
 
         // --- БАЗА ДАНИХ ТА СТАН (API) ---
 <<<<<<< HEAD
+<<<<<<< HEAD
         const API_BASE = "/api";
 =======
         // УВАГА: Тут вказано локальний порт 5143 (http). Якщо твій бекенд працює на іншому (напр. 5234 або https://localhost:7143) - зміни його!
         const API_BASE = "http://localhost:5143/api"; 
 >>>>>>> bae4bc1cad3de1819241cc641292a3fea7959c5d
+=======
+        const API_BASE = "http://localhost:5143/api";
+>>>>>>> 4bc26062a6363cdaa023b66405f290ee32afab03
         
-        const getAuthHeaders = () => ({
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem("token")}`
-        });
+        const getAuthHeaders = () => {
+    const token = localStorage.getItem("token");
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+};
 
         let projects = [];
         let tasks = [];
@@ -626,11 +634,15 @@
 
             elements.forEach(el => {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4bc26062a6363cdaa023b66405f290ee32afab03
                 const dueString = el.getAttribute('data-due');
                 if (!dueString) return;
 
                 const dueDate = new Date(dueString).getTime();
                 const distance = dueDate - now;
+<<<<<<< HEAD
 
                 if (distance < 0) {
                     el.innerHTML = '<span class="text-rose-400 font-bold">⚠️ Прострочено</span>';
@@ -650,23 +662,23 @@
 =======
                 const due = new Date(el.getAttribute('data-due')).getTime();
                 const distance = due - now;
+=======
+>>>>>>> 4bc26062a6363cdaa023b66405f290ee32afab03
 
                 if (distance < 0) {
-                    el.innerHTML = "Протерміновано!";
-                    el.classList.replace('text-amber-400', 'text-rose-500');
-                    el.classList.replace('bg-amber-400/10', 'bg-rose-500/10');
-                    el.classList.replace('border-amber-400/20', 'border-rose-500/20');
-                    return;
-                }
-
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                
-                if (days > 0) {
-                    el.innerHTML = `⏳ ${days} дн. ${hours} год.`;
+                    el.innerHTML = '<span class="text-rose-400 font-bold">⚠️ Прострочено</span>';
+                    el.classList.remove('bg-amber-400/10', 'border-amber-400/20', 'text-amber-400');
+                    el.classList.add('bg-rose-500/10', 'border-rose-500/20');
                 } else {
-                    const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    el.innerHTML = `⏳ ${hours} год. ${mins} хв.`;
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    
+                    let timeText = '⏳ ';
+                    if (days > 0) timeText += `${days}д `;
+                    timeText += `${hours}г ${minutes}хв`;
+                    
+                    el.innerHTML = timeText;
                 }
 >>>>>>> bae4bc1cad3de1819241cc641292a3fea7959c5d
             });
@@ -676,6 +688,7 @@
         setInterval(updateCountdowns, 60000);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         // Ініціалізуємо завантаження даних при відкритті сторінки
 =======
         // Оновлювати таймер щохвилини
@@ -683,6 +696,9 @@
 
         // !!! НАЙГОЛОВНІШЕ: Запускаємо завантаження даних одразу при відкритті сторінки
 >>>>>>> bae4bc1cad3de1819241cc641292a3fea7959c5d
+=======
+        // Ініціалізуємо завантаження даних при відкритті сторінки
+>>>>>>> 4bc26062a6363cdaa023b66405f290ee32afab03
         loadData();
 
     </script>

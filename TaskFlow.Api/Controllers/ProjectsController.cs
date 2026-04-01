@@ -8,7 +8,7 @@ using TaskFlow.Api.Models;
 
 namespace TaskFlow.Api.Controllers
 {
-    [Authorize] // 🔐 МАГІЯ! Цей рядок закриває доступ усім, у кого немає токена
+   // [Authorize] // 🔐 МАГІЯ! Цей рядок закриває доступ усім, у кого немає токена
     [Route("api/[controller]")]
     [ApiController]
     public class ProjectsController : ControllerBase

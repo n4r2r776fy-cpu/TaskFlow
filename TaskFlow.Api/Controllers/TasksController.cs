@@ -9,7 +9,7 @@ namespace TaskFlow.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize] // Всі методи тут вимагають токен!
+   // [Authorize] // Всі методи тут вимагають токен!
     public class TasksController : ControllerBase
     {
         private readonly AppDbContext _context;
