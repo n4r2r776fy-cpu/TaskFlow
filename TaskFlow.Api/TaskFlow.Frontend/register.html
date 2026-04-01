@@ -145,6 +145,102 @@
     setupPasswordToggle('regPass', 'togglePassBtn1', 'eyeIcon1');
     setupPasswordToggle('regConfirmPass', 'togglePassBtn2', 'eyeIcon2');
 
+<<<<<<< HEAD
+
+    // БАЗОВИЙ URL БЕКЕНДУ
+    const API_BASE = "/api";
+
+    // --- ЛОГІКА РЕЄСТРАЦІЇ ТА ВХОДУ ---
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const nameInput = document.getElementById('regName').value.trim();
+        const emailInput = document.getElementById('regEmail').value.trim();
+        const passInput = document.getElementById('regPass').value;
+        const confirmPassInput = document.getElementById('regConfirmPass').value;
+        const errorMsg = document.getElementById('errorMsg');
+
+        // Валідація паролів на фронтенді
+        if (passInput !== confirmPassInput) {
+            showError("Паролі не співпадають. Спробуйте ще раз.");
+            return; 
+        }
+
+        // Приховуємо помилку і блокуємо кнопку
+        errorMsg.classList.add('hidden');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = "Реєстрація...";
+        submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
+
+        try {
+            // ВІДПРАВЛЯЄМО ЗАПИТ НА БЕКЕНД
+            const response = await fetch(`${API_BASE}/Auth/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                // Зверни увагу: відправляємо Name, Email і Password.
+                // ConfirmPassword зазвичай перевіряється тільки на фронтенді, але якщо твій DTO його вимагає - додай.
+                body: JSON.stringify({ 
+                    name: nameInput, 
+                    email: emailInput, 
+                    password: passInput 
+                })
+            });
+
+            if (response.ok) {
+                // Реєстрація успішна! 
+                // Зазвичай бекенд повертає повідомлення або відразу токен.
+                // Припустимо, що після реєстрації треба просто залогінитись:
+                
+                // Тимчасово зберігаємо ім'я (корисно для UI)
+                localStorage.setItem('userName', nameInput);
+                
+                // Варіант 1: Якщо твій бекенд одразу повертає токен після реєстрації:
+                /*
+                const data = await response.json();
+                const realToken = data.token || data.jwt || data;
+                localStorage.setItem('token', realToken);
+                localStorage.setItem('userEmail', emailInput);
+                window.location.replace('tasks.html');
+                */
+
+                // Варіант 2 (більш стандартний): Перекидаємо на сторінку логіну, щоб користувач сам увійшов
+                alert("Реєстрація успішна! Тепер ви можете увійти.");
+                window.location.replace('login.html'); 
+
+            } else {
+                // Якщо бекенд повернув помилку (наприклад, email вже зайнятий)
+                // Намагаємося прочитати текст помилки з бекенда
+                let errorMessage = "Помилка реєстрації.";
+                try {
+                    const errorData = await response.text();
+                    errorMessage = errorData || "Цей Email вже використовується або дані некоректні.";
+                } catch (e) {
+                    errorMessage = "Помилка сервера при реєстрації.";
+                }
+                
+                showError(errorMessage);
+                resetButton();
+            }
+        } catch (error) {
+            console.error("Помилка з'єднання з сервером:", error);
+            showError("Помилка з'єднання з сервером. Перевірте підключення.");
+            resetButton();
+        }
+
+        // Допоміжні функції
+        function showError(text) {
+            errorMsg.textContent = text;
+            errorMsg.classList.remove('hidden');
+        }
+
+        function resetButton() {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "Зареєструватися";
+            submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+=======
     // --- РЕАЛЬНА ЛОГІКА РЕЄСТРАЦІЇ ---
     const API_BASE = "http://localhost:5143/api"; // Твоя локальна адреса
 
@@ -186,6 +282,7 @@
             errorMsg.textContent = "Сервер не відповідає. Перевір, чи запущений бекенд!";
             errorMsg.classList.remove('hidden');
             console.error(error);
+>>>>>>> c3971bcef7a1c14cfa339b7065658f3eed04205c
         }
     });
 </script>

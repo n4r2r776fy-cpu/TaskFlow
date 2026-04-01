@@ -234,10 +234,33 @@
             }
         }
 
+<<<<<<< HEAD
+        // --- БАЗА ДАНИХ ТА СТАН (API) ---
+<<<<<<< HEAD
+<<<<<<< HEAD
+       const API_BASE = "/api";
+=======
+        // УВАГА: Тут вказано локальний порт 5143 (http). Якщо твій бекенд працює на іншому (напр. 5234 або https://localhost:7143) - зміни його!
+        const API_BASE = "http://localhost:5143/api"; 
+>>>>>>> bae4bc1cad3de1819241cc641292a3fea7959c5d
+=======
+        const API_BASE = "http://localhost:5143/api";
+>>>>>>> 4bc26062a6363cdaa023b66405f290ee32afab03
+        
+        const getAuthHeaders = () => ({
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem("token")}`
+        });
+
+        let projects = [];
+        let tasks = [];
+        let activeProjectId = null;
+=======
         // --- БАЗА ДАНИХ ТА СТАН ---
         let projects = JSON.parse(localStorage.getItem('projects')) || [{ id: 1, title: 'Мій перший проєкт' }];
         let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
         let activeProjectId = projects.length > 0 ? projects[0].id : null;
+>>>>>>> c3971bcef7a1c14cfa339b7065658f3eed04205c
 
         const projectList = document.getElementById('projectList');
         const projectForm = document.getElementById('projectForm');

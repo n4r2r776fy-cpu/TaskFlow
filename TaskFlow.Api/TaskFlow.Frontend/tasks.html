@@ -234,10 +234,37 @@
             }
         }
 
+<<<<<<< HEAD
+        // --- БАЗА ДАНИХ ТА СТАН (API) ---
+<<<<<<< HEAD
+<<<<<<< HEAD
+        const API_BASE = "/api";
+=======
+        // УВАГА: Тут вказано локальний порт 5143 (http). Якщо твій бекенд працює на іншому (напр. 5234 або https://localhost:7143) - зміни його!
+        const API_BASE = "http://localhost:5143/api"; 
+>>>>>>> bae4bc1cad3de1819241cc641292a3fea7959c5d
+=======
+        const API_BASE = "http://localhost:5143/api";
+>>>>>>> 4bc26062a6363cdaa023b66405f290ee32afab03
+        
+        const getAuthHeaders = () => {
+    const token = localStorage.getItem("token");
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+};
+
+        let projects = [];
+        let tasks = [];
+        let activeProjectId = null;
+=======
         // --- БАЗА ДАНИХ ТА СТАН ---
         let projects = JSON.parse(localStorage.getItem('projects')) || [{ id: 1, title: 'Мій перший проєкт' }];
         let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
         let activeProjectId = projects.length > 0 ? projects[0].id : null;
+>>>>>>> c3971bcef7a1c14cfa339b7065658f3eed04205c
 
         const projectList = document.getElementById('projectList');
         const projectForm = document.getElementById('projectForm');
@@ -528,11 +555,20 @@
             const now = new Date().getTime();
 
             elements.forEach(el => {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4bc26062a6363cdaa023b66405f290ee32afab03
                 const dueString = el.getAttribute('data-due');
                 if (!dueString) return;
                 
                 const dueDate = new Date(dueString).getTime();
+<<<<<<< HEAD
+                const distance = dueDate - now;
+<<<<<<< HEAD
+=======
                 if (isNaN(dueDate)) return;
+>>>>>>> c3971bcef7a1c14cfa339b7065658f3eed04205c
 
                 const diff = dueDate - now;
 
@@ -542,6 +578,30 @@
                     el.classList.add('text-rose-500', 'bg-rose-500/10', 'border-rose-500/20');
                     return;
                 }
+<<<<<<< HEAD
+=======
+                const due = new Date(el.getAttribute('data-due')).getTime();
+                const distance = due - now;
+=======
+>>>>>>> 4bc26062a6363cdaa023b66405f290ee32afab03
+
+                if (distance < 0) {
+                    el.innerHTML = '<span class="text-rose-400 font-bold">⚠️ Прострочено</span>';
+                    el.classList.remove('bg-amber-400/10', 'border-amber-400/20', 'text-amber-400');
+                    el.classList.add('bg-rose-500/10', 'border-rose-500/20');
+                } else {
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    
+                    let timeText = '⏳ ';
+                    if (days > 0) timeText += `${days}д `;
+                    timeText += `${hours}г ${minutes}хв`;
+                    
+                    el.innerHTML = timeText;
+                }
+>>>>>>> bae4bc1cad3de1819241cc641292a3fea7959c5d
+=======
 
                 const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -554,11 +614,28 @@
                 timeStr += `${minutes}хв ${seconds}с`;
 
                 el.innerHTML = timeStr;
+>>>>>>> c3971bcef7a1c14cfa339b7065658f3eed04205c
             });
         }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+        // Ініціалізуємо завантаження даних при відкритті сторінки
+=======
+        // Оновлювати таймер щохвилини
+        setInterval(updateCountdowns, 60000); 
+
+        // !!! НАЙГОЛОВНІШЕ: Запускаємо завантаження даних одразу при відкритті сторінки
+>>>>>>> bae4bc1cad3de1819241cc641292a3fea7959c5d
+=======
+        // Ініціалізуємо завантаження даних при відкритті сторінки
+>>>>>>> 4bc26062a6363cdaa023b66405f290ee32afab03
+        loadData();
+=======
         // Запускаємо таймер кожну секунду
         setInterval(updateCountdowns, 1000);
+>>>>>>> c3971bcef7a1c14cfa339b7065658f3eed04205c
 
         // Ініціалізація
         renderProjects();
