@@ -95,11 +95,7 @@
         });
 
         // БАЗОВИЙ URL БЕКЕНДУ (Зміни, якщо твій AuthController має інший шлях)
-<<<<<<< HEAD
-        const API_BASE = "/api";
-=======
         const API_BASE = "http://localhost:5143/api";
->>>>>>> c3971bcef7a1c14cfa339b7065658f3eed04205c
 
         // РЕАЛЬНА ЛОГІКА ВХОДУ НА БЕКЕНД
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -146,7 +142,7 @@
                 }
             } catch (error) {
                 console.error("Помилка з'єднання з сервером:", error);
-                alert("Помилка з'єднання з сервером. Спробуйте пізніше або перевірте інтернет.");
+                alert("Помилка з'єднання з сервером. Перевірте, чи запущений бекенд ASP.NET (порт 5143).");
                 resetButton();
             }
 
