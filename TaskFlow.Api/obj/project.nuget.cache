@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "H9/InO7DsGU=",
+  "dgSpecHash": "FseS7Hs8HM0=",
   "success": true,
   "projectFilePath": "D:\\Практика з технологыъ веб програмування\\TaskFlow\\TaskFlow.Api\\TaskFlow.Api.csproj",
   "expectedPackageFiles": [
@@ -64,10 +64,20 @@
     "C:\\Users\\romag\\.nuget\\packages\\system.text.encodings.web\\9.0.0\\system.text.encodings.web.9.0.0.nupkg.sha512",
     "C:\\Users\\romag\\.nuget\\packages\\system.text.json\\9.0.0\\system.text.json.9.0.0.nupkg.sha512",
     "C:\\Users\\romag\\.nuget\\packages\\system.threading.channels\\7.0.0\\system.threading.channels.7.0.0.nupkg.sha512",
-    "C:\\Users\\romag\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.25\\microsoft.aspnetcore.app.ref.8.0.25.nupkg.sha512",
-    "C:\\Users\\romag\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.25\\microsoft.netcore.app.host.win-x64.8.0.25.nupkg.sha512",
     "C:\\Users\\romag\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.25\\microsoft.netcore.app.ref.8.0.25.nupkg.sha512",
-    "C:\\Users\\romag\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.25\\microsoft.windowsdesktop.app.ref.8.0.25.nupkg.sha512"
+    "C:\\Users\\romag\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.25\\microsoft.windowsdesktop.app.ref.8.0.25.nupkg.sha512",
+    "C:\\Users\\romag\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.25\\microsoft.aspnetcore.app.ref.8.0.25.nupkg.sha512",
+    "C:\\Users\\romag\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.25\\microsoft.netcore.app.host.win-x64.8.0.25.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "message": "Problem reading the cache file D:\\Практика з технологыъ веб програмування\\TaskFlow\\TaskFlow.Api\\obj\\project.nuget.cache : '<' is an invalid start of a value. Path: $.expectedPackageFiles[0] | LineNumber: 6 | BytePositionInLine: 0.",
+      "projectPath": "D:\\Практика з технологыъ веб програмування\\TaskFlow\\TaskFlow.Api\\TaskFlow.Api.csproj",
+      "warningLevel": 1,
+      "filePath": "D:\\Практика з технологыъ веб програмування\\TaskFlow\\TaskFlow.Api\\TaskFlow.Api.csproj",
+      "targetGraphs": []
+    }
+  ]
 }
