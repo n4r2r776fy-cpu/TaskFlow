@@ -9,8 +9,7 @@ namespace TaskFlow.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
-   // [Authorize] // Всі методи тут вимагають токен!
+    [Authorize] // 1. ПРАВКА: Обов'язково вмикаємо Authorize для захисту даних (JWT за ТЗ)
     public class TasksController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -24,21 +23,16 @@ namespace TaskFlow.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTask([FromBody] TaskCreateDto dto)
         {
-            // Дістаємо ID користувача з токена
-            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdString) || !long.TryParse(userIdString, out long userId))
-            {
-                return Unauthorized("Недійсний токен користувача.");
-            }
+            var userId = GetUserId();
+            if (userId == -1) return Unauthorized();
 
-            // Якщо передали ProjectId, перевіряємо, чи існує такий проєкт і чи належить він цьому юзеру
             if (dto.ProjectId.HasValue)
             {
                 var project = await _context.Projects
                     .FirstOrDefaultAsync(p => p.Id == dto.ProjectId.Value && p.UserId == userId);
                 
                 if (project == null)
-                    return BadRequest("Проєкт не знайдено, або у вас немає до нього доступу.");
+                    return BadRequest("Проєкт не знайдено.");
             }
 
             var newTask = new TaskItem
@@ -51,7 +45,7 @@ namespace TaskFlow.Api.Controllers
                 Status = "todo",
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                DueDate = dto.DueDate // ДОДАНО ДЕДЛАЙН
+                DueDate = dto.DueDate
             };
 
             _context.Tasks.Add(newTask);
@@ -60,72 +54,99 @@ namespace TaskFlow.Api.Controllers
             return Ok(newTask);
         }
 
-        // 2. ОТРИМАННЯ ВСІХ ЗАВДАНЬ КОРИСТУВАЧА
+        // 2. ОТРИМАННЯ ВСІХ ЗАВДАННЯ (Дашборд)
         [HttpGet]
         public async Task<IActionResult> GetMyTasks()
         {
-            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdString) || !long.TryParse(userIdString, out long userId))
-            {
-                return Unauthorized();
-            }
+            var userId = GetUserId();
+            if (userId == -1) return Unauthorized();
 
+            // 2. ПРАВКА: Додаємо Include(t => t.TimeLogs) для автоматичного підрахунку часу
             var tasks = await _context.Tasks
+                .Include(t => t.TimeLogs) 
                 .Where(t => t.UserId == userId)
                 .OrderByDescending(t => t.CreatedAt)
+                .Select(t => new {
+                    t.Id,
+                    t.Title,
+                    t.Status,
+                    t.Priority,
+                    t.DueDate,
+                    t.CompletedAt,
+                    // Автоматичний підрахунок за ТЗ:
+                    TotalTimeSpent = t.TimeLogs.Sum(l => l.TimeSpent) 
+                })
                 .ToListAsync();
 
             return Ok(tasks);
         }
 
-        // 3. ОНОВЛЕННЯ ЗАВДАННЯ (Зміна статусу або тексту)
+        // 3. ОТРИМАННЯ ДЕТАЛЕЙ ЗАВДАННЯ (Сторінка деталей за ТЗ)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTaskDetails(long id)
+        {
+            var userId = GetUserId();
+            
+            // Завантажуємо завдання разом з усіма логами часу
+            var task = await _context.Tasks
+                .Include(t => t.TimeLogs)
+                .FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
+
+            if (task == null) return NotFound();
+
+            return Ok(new {
+                task.Id,
+                task.Title,
+                task.Description,
+                task.Status,
+                task.Priority,
+                task.DueDate,
+                task.CompletedAt,
+                TotalTimeSpent = task.TimeLogs.Sum(l => l.TimeSpent),
+                Logs = task.TimeLogs.OrderByDescending(l => l.LoggedAt) // Список усіх записів прогресу
+            });
+        }
+
+        // 4. ОНОВЛЕННЯ ЗАВДАННЯ (Зміна статусу)
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask(long id, [FromBody] TaskCreateDto dto, [FromQuery] string? newStatus)
         {
-            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!long.TryParse(userIdString, out long userId)) return Unauthorized();
-
-            // Шукаємо завдання, яке належить саме цьому юзеру
+            var userId = GetUserId();
             var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
-            if (task == null) return NotFound("Завдання не знайдено.");
+            if (task == null) return NotFound();
 
-            // Оновлюємо дані
             task.Title = dto.Title;
             task.Description = dto.Description;
             task.Priority = dto.Priority;
             task.ProjectId = dto.ProjectId;
+            task.DueDate = dto.DueDate;
             task.UpdatedAt = DateTime.UtcNow;
-            task.DueDate = dto.DueDate; // ДОДАНО ДЕДЛАЙН
 
-            // Якщо передали новий статус — оновлюємо і його
+            // 3. ПРАВКА: Чітка логіка статусів за ТЗ
             if (!string.IsNullOrEmpty(newStatus))
             {
-                task.Status = newStatus;
-                // Якщо статус "done", записуємо час завершення
-                if (newStatus == "done" && task.CompletedAt == null)
-                    task.CompletedAt = DateTime.UtcNow;
-                else if (newStatus != "done")
-                    task.CompletedAt = null; // Якщо повернули в роботу
+                task.Status = newStatus.ToLower();
+                
+                if (task.Status == "done")
+                {
+                    // Автоматична фіксація за ТЗ:
+                    task.CompletedAt = DateTime.UtcNow; 
+                }
+                else
+                {
+                    task.CompletedAt = null;
+                }
             }
 
             await _context.SaveChangesAsync();
             return Ok(task);
         }
 
-        // 4. ВИДАЛЕННЯ ЗАВДАННЯ
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTask(long id)
+        // 5. ДОПОМІЖНИЙ МЕТОД (щоб не дублювати код)
+        private long GetUserId()
         {
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!long.TryParse(userIdString, out long userId)) return Unauthorized();
-
-            var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
-            if (task == null) return NotFound("Завдання не знайдено.");
-
-            _context.Tasks.Remove(task);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Завдання успішно видалено." });
+            return long.TryParse(userIdString, out long userId) ? userId : -1;
         }
     }
 }
