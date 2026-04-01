@@ -124,55 +124,123 @@
     </main>
 
     <script>
-        // --- Логіка показати/приховати пароль ---
-        function setupPasswordToggle(inputId, btnId, iconId) {
-            const btn = document.getElementById(btnId);
-            const input = document.getElementById(inputId);
-            const icon = document.getElementById(iconId);
+    // --- Логіка показати/приховати пароль ---
+    function setupPasswordToggle(inputId, btnId, iconId) {
+        const btn = document.getElementById(btnId);
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
 
-            btn.addEventListener('click', () => {
-                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-                input.setAttribute('type', type);
-                
-                if (type === 'text') {
-                    // Відкрите око
-                    icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
-                } else {
-                    // Закрите око (перекреслене)
-                    icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />`;
-                }
-            });
+        btn.addEventListener('click', () => {
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+            
+            if (type === 'text') {
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
+            } else {
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />`;
+            }
+        });
+    }
+
+    setupPasswordToggle('regPass', 'togglePassBtn1', 'eyeIcon1');
+    setupPasswordToggle('regConfirmPass', 'togglePassBtn2', 'eyeIcon2');
+
+
+    // БАЗОВИЙ URL БЕКЕНДУ
+    const API_BASE = "/api";
+
+    // --- ЛОГІКА РЕЄСТРАЦІЇ ТА ВХОДУ ---
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const nameInput = document.getElementById('regName').value.trim();
+        const emailInput = document.getElementById('regEmail').value.trim();
+        const passInput = document.getElementById('regPass').value;
+        const confirmPassInput = document.getElementById('regConfirmPass').value;
+        const errorMsg = document.getElementById('errorMsg');
+
+        // Валідація паролів на фронтенді
+        if (passInput !== confirmPassInput) {
+            showError("Паролі не співпадають. Спробуйте ще раз.");
+            return; 
         }
 
-        // Запускаємо функцію для обох полів
-        setupPasswordToggle('regPass', 'togglePassBtn1', 'eyeIcon1');
-        setupPasswordToggle('regConfirmPass', 'togglePassBtn2', 'eyeIcon2');
+        // Приховуємо помилку і блокуємо кнопку
+        errorMsg.classList.add('hidden');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = "Реєстрація...";
+        submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
 
+        try {
+            // ВІДПРАВЛЯЄМО ЗАПИТ НА БЕКЕНД
+            const response = await fetch(`${API_BASE}/Auth/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                // Зверни увагу: відправляємо Name, Email і Password.
+                // ConfirmPassword зазвичай перевіряється тільки на фронтенді, але якщо твій DTO його вимагає - додай.
+                body: JSON.stringify({ 
+                    name: nameInput, 
+                    email: emailInput, 
+                    password: passInput 
+                })
+            });
 
-        // --- Логіка відправки форми реєстрації ---
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('regName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const pass = document.getElementById('regPass').value;
-            const confirmPass = document.getElementById('regConfirmPass').value;
-            const errorMsg = document.getElementById('errorMsg');
+            if (response.ok) {
+                // Реєстрація успішна! 
+                // Зазвичай бекенд повертає повідомлення або відразу токен.
+                // Припустимо, що після реєстрації треба просто залогінитись:
+                
+                // Тимчасово зберігаємо ім'я (корисно для UI)
+                localStorage.setItem('userName', nameInput);
+                
+                // Варіант 1: Якщо твій бекенд одразу повертає токен після реєстрації:
+                /*
+                const data = await response.json();
+                const realToken = data.token || data.jwt || data;
+                localStorage.setItem('token', realToken);
+                localStorage.setItem('userEmail', emailInput);
+                window.location.replace('tasks.html');
+                */
 
-            if (pass !== confirmPass) {
-                errorMsg.textContent = "Паролі не співпадають. Спробуйте ще раз.";
-                errorMsg.classList.remove('hidden');
-                return; 
+                // Варіант 2 (більш стандартний): Перекидаємо на сторінку логіну, щоб користувач сам увійшов
+                alert("Реєстрація успішна! Тепер ви можете увійти.");
+                window.location.replace('login.html'); 
+
+            } else {
+                // Якщо бекенд повернув помилку (наприклад, email вже зайнятий)
+                // Намагаємося прочитати текст помилки з бекенда
+                let errorMessage = "Помилка реєстрації.";
+                try {
+                    const errorData = await response.text();
+                    errorMessage = errorData || "Цей Email вже використовується або дані некоректні.";
+                } catch (e) {
+                    errorMessage = "Помилка сервера при реєстрації.";
+                }
+                
+                showError(errorMessage);
+                resetButton();
             }
+        } catch (error) {
+            console.error("Помилка з'єднання з сервером:", error);
+            showError("Помилка з'єднання з сервером. Перевірте підключення.");
+            resetButton();
+        }
 
-            errorMsg.classList.add('hidden');
+        // Допоміжні функції
+        function showError(text) {
+            errorMsg.textContent = text;
+            errorMsg.classList.remove('hidden');
+        }
 
-            localStorage.setItem('token', 'taskflow-token-' + Date.now());
-            localStorage.setItem('userName', name);
-            localStorage.setItem('userEmail', email);
-
-            window.location.href = 'index.html'; 
-        });
-    </script>
+        function resetButton() {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "Зареєструватися";
+            submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+        }
+    });
+</script>
 </body>
 </html>

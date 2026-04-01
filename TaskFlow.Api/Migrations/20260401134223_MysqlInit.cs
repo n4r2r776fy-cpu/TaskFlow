@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TaskFlow.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMySql : Migration
+    public partial class MysqlInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
