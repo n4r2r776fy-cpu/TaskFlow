@@ -260,7 +260,12 @@
         }
 
         // --- БАЗА ДАНИХ ТА СТАН (API) ---
+<<<<<<< HEAD
         const API_BASE = "/api";
+=======
+        // УВАГА: Тут вказано локальний порт 5143 (http). Якщо твій бекенд працює на іншому (напр. 5234 або https://localhost:7143) - зміни його!
+        const API_BASE = "http://localhost:5143/api"; 
+>>>>>>> bae4bc1cad3de1819241cc641292a3fea7959c5d
         
         const getAuthHeaders = () => ({
             'Content-Type': 'application/json',
@@ -620,6 +625,7 @@
             const now = new Date().getTime();
 
             elements.forEach(el => {
+<<<<<<< HEAD
                 const dueString = el.getAttribute('data-due');
                 if (!dueString) return;
 
@@ -641,13 +647,42 @@
                     
                     el.innerHTML = timeText;
                 }
+=======
+                const due = new Date(el.getAttribute('data-due')).getTime();
+                const distance = due - now;
+
+                if (distance < 0) {
+                    el.innerHTML = "Протерміновано!";
+                    el.classList.replace('text-amber-400', 'text-rose-500');
+                    el.classList.replace('bg-amber-400/10', 'bg-rose-500/10');
+                    el.classList.replace('border-amber-400/20', 'border-rose-500/20');
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                
+                if (days > 0) {
+                    el.innerHTML = `⏳ ${days} дн. ${hours} год.`;
+                } else {
+                    const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    el.innerHTML = `⏳ ${hours} год. ${mins} хв.`;
+                }
+>>>>>>> bae4bc1cad3de1819241cc641292a3fea7959c5d
             });
         }
         
         // Оновлюємо таймери кожну хвилину
         setInterval(updateCountdowns, 60000);
 
+<<<<<<< HEAD
         // Ініціалізуємо завантаження даних при відкритті сторінки
+=======
+        // Оновлювати таймер щохвилини
+        setInterval(updateCountdowns, 60000); 
+
+        // !!! НАЙГОЛОВНІШЕ: Запускаємо завантаження даних одразу при відкритті сторінки
+>>>>>>> bae4bc1cad3de1819241cc641292a3fea7959c5d
         loadData();
 
     </script>
