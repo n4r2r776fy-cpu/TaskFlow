@@ -233,7 +233,8 @@
         }
 
         // --- БАЗА ДАНИХ ТА СТАН (API) ---
-        const API_BASE = "https://taskflow.tryasp.net/api"; // Заміни на https://localhost:5143/api для локального тестування
+        // УВАГА: Тут вказано локальний порт 5143 (http). Якщо твій бекенд працює на іншому (напр. 5234 або https://localhost:7143) - зміни його!
+        const API_BASE = "http://localhost:5143/api"; 
         
         const getAuthHeaders = () => ({
             'Content-Type': 'application/json',
@@ -266,7 +267,6 @@
                 if (taskRes.ok) tasks = await taskRes.json();
 
                 if (projects.length > 0 && !activeProjectId) {
-                    // Перевіряємо, як бекенд віддає поле: id чи Id
                     activeProjectId = projects[0].id || projects[0].Id; 
                 }
                 
@@ -518,7 +518,6 @@
         }
 
         // ЛОГІКА ПІДЗАВДАНЬ 
-        // (Оновлює головне завдання через PUT запит. Якщо на бекенді для цього окремий контролер, тут треба буде змінити URL)
         window.toggleSubtaskForm = function(taskId) {
             const form = document.getElementById(`subform-${taskId}`);
             const btn = document.getElementById(`subbtn-${taskId}`);
@@ -594,39 +593,35 @@
             const now = new Date().getTime();
 
             elements.forEach(el => {
-                const dueString = el.getAttribute('data-due');
-                if (!dueString) return;
-                
-                const dueDate = new Date(dueString).getTime();
-                if (isNaN(dueDate)) return;
+                const due = new Date(el.getAttribute('data-due')).getTime();
+                const distance = due - now;
 
-                const diff = dueDate - now;
-
-                if (diff < 0) {
-                    el.innerHTML = `⚠️ Протерміновано`;
-                    el.classList.remove('text-amber-400', 'bg-amber-400/10', 'border-amber-400/20');
-                    el.classList.add('text-rose-500', 'bg-rose-500/10', 'border-rose-500/20');
+                if (distance < 0) {
+                    el.innerHTML = "Протерміновано!";
+                    el.classList.replace('text-amber-400', 'text-rose-500');
+                    el.classList.replace('bg-amber-400/10', 'bg-rose-500/10');
+                    el.classList.replace('border-amber-400/20', 'border-rose-500/20');
                     return;
                 }
 
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-                let timeStr = '⏳ ';
-                if (days > 0) timeStr += `${days}д `;
-                if (hours > 0 || days > 0) timeStr += `${hours}г `;
-                timeStr += `${minutes}хв ${seconds}с`;
-
-                el.innerHTML = timeStr;
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                
+                if (days > 0) {
+                    el.innerHTML = `⏳ ${days} дн. ${hours} год.`;
+                } else {
+                    const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    el.innerHTML = `⏳ ${hours} год. ${mins} хв.`;
+                }
             });
         }
 
-        setInterval(updateCountdowns, 1000);
+        // Оновлювати таймер щохвилини
+        setInterval(updateCountdowns, 60000); 
 
-        // ІНІЦІАЛІЗАЦІЯ ПРИ ЗАВАНТАЖЕННІ СТОРІНКИ
+        // !!! НАЙГОЛОВНІШЕ: Запускаємо завантаження даних одразу при відкритті сторінки
         loadData();
+
     </script>
 </body>
 </html>

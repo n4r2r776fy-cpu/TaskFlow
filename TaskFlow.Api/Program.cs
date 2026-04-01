@@ -5,13 +5,14 @@ using OpenApiModels = Microsoft.OpenApi.Models;
 using System.Text;
 using TaskFlow.Api.Data;
 using TaskFlow.Api.Models;
+using System;
+using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. ПІДКЛЮЧЕННЯ ДО БД (Змінено на MySQL)
-// Замість старого блоку з AutoDetect
+// 1. ПІДКЛЮЧЕННЯ ДО БД (MySQL)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-var serverVersion = new MySqlServerVersion(new Version(8, 0, 31)); // Версія 8.0 як на хостингу
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 31)); 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, serverVersion));
@@ -72,43 +73,46 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// --- БЛОК БАЗИ ДАНИХ ТА АДМІНІСТРАТОРА ---
+// --- БЕЗПЕЧНИЙ БЛОК БАЗИ ДАНИХ ТА АДМІНІСТРАТОРА ---
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    
-    // Автоматичне застосування міграцій при старті
-    db.Database.Migrate();
-
-    var adminEmail = "admin@taskflow.com";
-    var adminUser = db.Users.FirstOrDefault(u => u.Email == adminEmail);
-
-    if (adminUser == null)
+    var services = scope.ServiceProvider;
+    try
     {
-        // Якщо адміна взагалі немає - створюємо
-        adminUser = new User
+        var db = services.GetRequiredService<AppDbContext>();
+        
+        Console.WriteLine("--> Запуск міграцій...");
+        db.Database.Migrate();
+        Console.WriteLine("--> Міграції успішно перевірені/застосовані!");
+
+        var adminEmail = "admin@taskflow.com";
+        
+        // Перевіряємо, чи існує адмін. Any() працює швидше і безпечніше
+        if (!db.Users.Any(u => u.Email == adminEmail))
         {
-            Username = "Admin", 
-            Email = adminEmail,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
-            Role = "Admin",
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
-        db.Users.Add(adminUser);
-        Console.WriteLine("--> Admin account created with BCrypt hash!");
+            var adminUser = new User
+            {
+                Username = "Admin", 
+                Email = adminEmail,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
+                Role = "Admin",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            db.Users.Add(adminUser);
+            db.SaveChanges();
+            Console.WriteLine("--> Адміністратора створено!");
+        }
+        else
+        {
+            Console.WriteLine("--> Адміністратор вже існує в базі.");
+        }
     }
-    else
+    catch (Exception ex)
     {
-        // Якщо адмін є, але щось зламалося - ПРИМУСОВО ВІДНОВЛЮЄМО
-        adminUser.Role = "Admin";
-        adminUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!");
-        adminUser.UpdatedAt = DateTime.UtcNow;
-        db.Users.Update(adminUser);
-        Console.WriteLine("--> Admin account restored/updated to default password and role!");
+        // Якщо база даних видасть помилку, додаток все одно продовжить роботу!
+        Console.WriteLine($"[CRITICAL] Помилка ініціалізації БД: {ex.Message}");
     }
-    
-    db.SaveChanges(); // Зберігаємо зміни в будь-якому випадку
 }
 // ----------------------------------------
 
@@ -117,9 +121,8 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-// 1. Статичні файли (фронтенд) мають бути на початку
-app.UseDefaultFiles(); // Дозволяє відкривати index.html за замовчуванням
-// Вимикаємо кешування для HTML файлів щоб браузер завжди отримував свіжу версію
+// 1. Статичні файли (фронтенд)
+app.UseDefaultFiles(); 
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>
@@ -136,11 +139,11 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseCors("AllowAll");
 
-// 2. Потім безпека
+// 2. Безпека
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 3. І в самому кінці — маршрутизація API
+// 3. Маршрутизація API
 app.MapControllers();
 
 app.Run();
