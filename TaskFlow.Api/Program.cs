@@ -10,14 +10,13 @@ using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. ПІДКЛЮЧЕННЯ ДО БД (MySQL)
+// --- 1. ПІДКЛЮЧЕННЯ ДО БД (PostgreSQL) ---
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-var serverVersion = new MySqlServerVersion(new Version(8, 0, 31)); 
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, serverVersion));
+builder.Services.AddDbContext<AppDbContext>(options => 
+    options.UseNpgsql(connectionString));
 
-// 2. Налаштування JWT
+// --- 2. НАЛАШТУВАННЯ JWT ---
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "SuperSecretKeyForTaskFlowApp_1234567890_MakeItVeryLong_1234567890"; 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -27,14 +26,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
             ValidateIssuer = false,
-            ValidateAudience = false
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero // Прибирає затримку валідації часу токена
         };
     });
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// 3. Налаштування Swagger
+// --- 3. НАЛАШТУВАННЯ SWAGGER ---
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiModels.OpenApiSecurityScheme
@@ -62,38 +62,40 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// 4. CORS
+// --- 4. CORS ПРАВИЛА ---
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
     });
 });
 
 var app = builder.Build();
 
-// --- БЕЗПЕЧНИЙ БЛОК БАЗИ ДАНИХ ТА АДМІНІСТРАТОРА ---
+// --- 5. ІНІЦІАЛІЗАЦІЯ БАЗИ ДАНИХ ТА АДМІНІСТРАТОРА ---
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
-        var db = services.GetRequiredService<AppDbContext>();
+        var db = services.GetRequiredService<AppDbContext>(); 
         
-        Console.WriteLine("--> Запуск міграцій...");
+        Console.WriteLine("--> Запуск міграцій PostgreSQL...");
         db.Database.Migrate();
-        Console.WriteLine("--> Міграції успішно перевірені/застосовані!");
+        Console.WriteLine("--> Міграції успішно застосовані!");
 
         var adminEmail = "admin@taskflow.com";
         
-        // Перевіряємо, чи існує адмін. Any() працює швидше і безпечніше
         if (!db.Users.Any(u => u.Email == adminEmail))
         {
             var adminUser = new User
             {
                 Username = "Admin", 
                 Email = adminEmail,
+                // Використовуємо BCrypt для хешування
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
                 Role = "Admin",
                 CreatedAt = DateTime.UtcNow,
@@ -105,30 +107,30 @@ using (var scope = app.Services.CreateScope())
         }
         else
         {
-            Console.WriteLine("--> Адміністратор вже існує в базі.");
+            Console.WriteLine("--> Адміністратор вже існує.");
         }
     }
     catch (Exception ex)
     {
-        // Якщо база даних видасть помилку, додаток все одно продовжить роботу!
-        Console.WriteLine($"[CRITICAL] Помилка ініціалізації БД: {ex.Message}");
+        Console.WriteLine($"[CRITICAL] Помилка БД: {ex.Message}");
     }
 }
-// ----------------------------------------
 
-app.UseSwagger();
-app.UseSwaggerUI();
+// --- 6. MIDDLEWARE (ПОРЯДОК ВАЖЛИВИЙ) ---
 
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-// 1. Статичні файли (фронтенд)
 app.UseDefaultFiles(); 
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>
     {
-        var path = ctx.File.Name;
-        if (path.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+        // Вимикаємо кешування для HTML, щоб бачити зміни в скриптах відразу
+        if (ctx.File.Name.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
         {
             ctx.Context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
             ctx.Context.Response.Headers["Pragma"] = "no-cache";
@@ -139,11 +141,9 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseCors("AllowAll");
 
-// 2. Безпека
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 3. Маршрутизація API
 app.MapControllers();
 
 app.Run();

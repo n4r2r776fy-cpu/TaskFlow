@@ -145,6 +145,7 @@
     setupPasswordToggle('regPass', 'togglePassBtn1', 'eyeIcon1');
     setupPasswordToggle('regConfirmPass', 'togglePassBtn2', 'eyeIcon2');
 
+<<<<<<< HEAD
 
     // БАЗОВИЙ URL БЕКЕНДУ
     const API_BASE = "/api";
@@ -239,6 +240,49 @@
             submitBtn.disabled = false;
             submitBtn.innerHTML = "Зареєструватися";
             submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+=======
+    // --- РЕАЛЬНА ЛОГІКА РЕЄСТРАЦІЇ ---
+    const API_BASE = "http://localhost:5143/api"; // Твоя локальна адреса
+
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPass').value;
+        const confirmPass = document.getElementById('regConfirmPass').value;
+        const errorMsg = document.getElementById('errorMsg');
+
+        if (password !== confirmPass) {
+            errorMsg.textContent = "Паролі не співпадають!";
+            errorMsg.classList.remove('hidden');
+            return; 
+        }
+
+        try {
+            const response = await fetch(`${API_BASE}/Auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    username: name, 
+                    email: email, 
+                    password: password 
+                })
+            });
+
+            if (response.ok) {
+                alert("Реєстрація успішна! Тепер увійдіть.");
+                window.location.href = 'login.html'; 
+            } else {
+                const data = await response.json();
+                errorMsg.textContent = data.message || "Помилка реєстрації. Можливо, такий Email вже існує.";
+                errorMsg.classList.remove('hidden');
+            }
+        } catch (error) {
+            errorMsg.textContent = "Сервер не відповідає. Перевір, чи запущений бекенд!";
+            errorMsg.classList.remove('hidden');
+            console.error(error);
+>>>>>>> c3971bcef7a1c14cfa339b7065658f3eed04205c
         }
     });
 </script>
