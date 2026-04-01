@@ -9,6 +9,7 @@ namespace TaskFlow.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
    // [Authorize] // Всі методи тут вимагають токен!
     public class TasksController : ControllerBase
     {

@@ -12,8 +12,8 @@ using TaskFlow.Api.Data;
 namespace TaskFlow.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260329171142_AddRoleToUser")]
-    partial class AddRoleToUser
+    [Migration("20260401193932_InitialPostgres")]
+    partial class InitialPostgres
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

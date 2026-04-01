@@ -11,6 +11,7 @@ namespace TaskFlow.Api.Controllers
    // [Authorize] // 🔐 МАГІЯ! Цей рядок закриває доступ усім, у кого немає токена
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class ProjectsController : ControllerBase
     {
         private readonly AppDbContext _context;
